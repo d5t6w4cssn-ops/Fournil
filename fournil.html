@@ -128,6 +128,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .meteo-temp { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: white; line-height: 1; }
 .meteo-desc { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 2px; text-transform: capitalize; }
 .meteo-city { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 3px; }
+.meteo-suggestion { font-size: 11px; color: var(--ocre-light); margin-top: 5px; font-style: italic; line-height: 1.3; }
 .meteo-details { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; flex-shrink: 0; }
 .meteo-det { font-size: 11px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 4px; }
 .meteo-det b { color: white; font-weight: 600; }
@@ -194,6 +195,88 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .task-histo-text { flex: 1; font-size: 13px; color: var(--brown-light); }
 .task-histo-time { font-size: 10px; color: var(--brown-light); flex-shrink: 0; }
 
+/* MATIÈRES PREMIÈRES */
+.mat-card { background: var(--paper); border-radius: var(--r); padding: 13px 14px; margin-bottom: 9px; box-shadow: var(--sh); position: relative; overflow: hidden; }
+.mat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--green); border-radius: 3px 0 0 3px; }
+.mat-card.low::before { background: var(--orange); }
+.mat-card.empty::before { background: var(--red); }
+.mat-card.dlc-soon::before { background: var(--red); }
+.mat-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.mat-name { flex: 1; font-weight: 500; font-size: 14px; }
+.mat-badges { display: flex; gap: 5px; align-items: center; }
+.mat-dlc-badge { font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; }
+.dlc-ok   { background: var(--green-light); color: var(--green); }
+.dlc-soon { background: var(--orange-light); color: var(--orange); }
+.dlc-exp  { background: var(--red-light); color: var(--red); }
+.mat-stock-row { display: flex; align-items: center; gap: 8px; }
+.mat-stock-val { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--brown); }
+.mat-unit { font-size: 11px; color: var(--brown-light); }
+.mat-ctrl { display: flex; align-items: center; background: var(--cream); border-radius: 8px; overflow: hidden; height: 34px; flex: 1; }
+.mat-btn { width: 34px; height: 34px; border: none; background: none; font-size: 18px; font-weight: 700; color: var(--brown-mid); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.mat-btn:active { background: var(--ocre-pale); }
+.mat-in { flex: 1; height: 34px; border: none; background: none; text-align: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--ink); min-width: 0; }
+.mat-in:focus { outline: none; }
+.mat-add-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 10px; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 14px; }
+
+/* COMMANDES CLIENTS */
+.cmd-client-card {
+  background: var(--paper); border-radius: var(--r);
+  padding: 13px 14px; margin-bottom: 9px; box-shadow: var(--sh);
+  position: relative; overflow: hidden;
+}
+.cmd-client-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--ocre); border-radius:3px 0 0 3px; }
+.cmd-client-card.urgent::before { background:var(--red); }
+.cmd-client-card.validated::before { background:var(--green); }
+.cmd-client-card.sent::before { background:var(--cold-light); }
+.cmd-client-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.cmd-client-name { flex:1; font-weight:600; font-size:14px; }
+.cmd-client-badge { font-size:9px; font-weight:600; padding:2px 8px; border-radius:20px; text-transform:uppercase; }
+.badge-pending  { background:var(--ocre-pale); color:var(--brown-mid); }
+.badge-sent     { background:var(--cold-light); color:var(--cold); }
+.badge-validated{ background:var(--green-light); color:var(--green); }
+.badge-urgent   { background:var(--red-light); color:var(--red); }
+.cmd-client-detail { font-size:13px; color:var(--brown-mid); margin-bottom:4px; }
+.cmd-client-date { font-size:11px; color:var(--brown-light); }
+.cmd-client-actions { display:flex; gap:6px; margin-top:10px; }
+.cmd-action-btn { flex:1; padding:8px; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; cursor:pointer; transition:background 0.15s; }
+.btn-send     { background:var(--brown); color:var(--ocre-light); }
+.btn-validate { background:var(--green); color:white; }
+.btn-del-cmd  { background:var(--red-light); color:var(--red); flex:0 0 auto; padding:8px 12px; }
+
+/* FOURNIL TASKS — badge "Gestion" */
+.from-gestion { font-size:9px; background:#E8D4F8; color:#6A20A0; padding:2px 7px; border-radius:20px; font-weight:600; text-transform:uppercase; flex-shrink:0; }
+
+/* CALENDRIER */
+.cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.cal-nav { background:none; border:1px solid rgba(196,154,108,0.3); border-radius:8px; padding:6px 12px; font-size:16px; cursor:pointer; color:var(--brown-light); }
+.cal-month { font-family:'Playfair Display',serif; font-size:17px; color:var(--brown); }
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:16px; }
+.cal-day-name { text-align:center; font-size:9px; font-weight:600; color:var(--brown-light); text-transform:uppercase; padding:4px 0; }
+.cal-day {
+  aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  border-radius:8px; font-size:12px; font-weight:500; cursor:pointer;
+  position:relative; transition:background 0.15s;
+}
+.cal-day:active { background:var(--ocre-pale); }
+.cal-day.today { background:var(--brown); color:var(--ocre-light); font-weight:700; }
+.cal-day.has-event::after { content:''; position:absolute; bottom:3px; width:4px; height:4px; border-radius:50%; background:var(--ocre); }
+.cal-day.today.has-event::after { background:var(--ocre-light); }
+.cal-day.other-month { opacity:0.3; }
+.cal-day.has-cmd::after { background:var(--red); }
+.cal-events { background:var(--paper); border-radius:var(--r); padding:13px 14px; box-shadow:var(--sh); }
+.cal-event-title { font-family:'Playfair Display',serif; font-size:14px; color:var(--brown-mid); margin-bottom:10px; }
+.cal-event-item { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid rgba(196,154,108,0.1); }
+.cal-event-item:last-child { border-bottom:none; }
+.cal-event-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.cal-event-text { flex:1; font-size:13px; }
+
+/* RÉSUMÉ HEBDO */
+.hebdo-card { background: var(--paper); border-radius: var(--r); padding: 13px 14px; margin-bottom: 9px; box-shadow: var(--sh); }
+.hebdo-prod-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(196,154,108,0.1); }
+.hebdo-prod-row:last-child { border-bottom: none; }
+.hebdo-prod-name { font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.hebdo-prod-qty { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--orange); }
+
 /* HISTORIQUE */
 .histo-filters { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
 .histo-filters::-webkit-scrollbar { display: none; }
@@ -214,7 +297,11 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .histo-entry.recharge .histo-qty { color: var(--green); }
 
 /* SETTINGS */
-.pcard-set { background: var(--paper); border-radius: var(--r); padding: 12px 13px; margin-bottom: 8px; box-shadow: var(--sh); display: flex; align-items: center; gap: 10px; }
+.pcard-set { background: var(--paper); border-radius: var(--r); padding: 12px 13px; margin-bottom: 8px; box-shadow: var(--sh); display: flex; align-items: center; gap: 10px; cursor: grab; transition: opacity 0.2s, transform 0.2s; }
+.pcard-set.dragging { opacity: 0.4; transform: scale(0.98); }
+.pcard-set.drag-over { border: 2px dashed var(--ocre); }
+.drag-handle { color: var(--brown-light); font-size: 18px; cursor: grab; padding: 0 4px; flex-shrink: 0; }
+.edit-prod-btn { background: none; border: 1px solid rgba(196,154,108,0.3); border-radius: 7px; padding: 5px 9px; color: var(--brown-light); font-size: 12px; cursor: pointer; margin-right: 4px; }
 .pcard-set-info { flex: 1; }
 .pcard-set-name { font-weight: 500; font-size: 14px; }
 .pcard-set-sub { font-size: 11px; color: var(--brown-light); margin-top: 2px; }
@@ -471,6 +558,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
         <div class="tab-badge" id="taskBadge" style="display:none"></div>
       </div>
       <div class="tab" onclick="sw('histo')">📈 Histo</div>
+      <div class="tab" onclick="sw('calendrier')">📅</div>
       <div class="tab" onclick="sw('settings')">⚙️</div>
     </div>
   </div>
@@ -483,9 +571,9 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     </div>
     <div class="tabs">
       <div class="tab active" onclick="swB('matieres')">🌾 Matières</div>
-      <div class="tab" onclick="swB('commandes')">📦 Commandes</div>
+      <div class="tab" onclick="swB('cmd-fournisseur')">📦 Fournisseurs</div>
+      <div class="tab" onclick="swB('cmd-clients')">🧁 Clients</div>
       <div class="tab" onclick="swB('journal')">📋 Journal</div>
-      <div class="tab" onclick="swB('histo')">📈 Résumé</div>
       <div class="tab" onclick="swB('stats')">📊 Stats</div>
     </div>
   </div>
@@ -519,15 +607,24 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
         <div class="histo-filters" id="histoFilters"></div>
         <div id="histoList"></div>
       </div>
+      <div class="section" id="tab-calendrier">
+        <div id="calendrierContent"></div>
+      </div>
     </div>
     </div>
 
     <div id="bureauModule" style="display:none">
       <div class="bur-section active" id="bur-matieres">
-        <div class="bureau-placeholder"><div class="bureau-placeholder-icon">🌾</div><div class="bureau-placeholder-title">Matières premières</div><div class="bureau-placeholder-desc">Suivi du stock et DLC.<br><em style="font-size:11px;color:var(--brown-light)">En cours de développement</em></div></div>
+        <div id="matieresContent"></div>
       </div>
       <div class="bur-section" id="bur-commandes">
-        <div class="bureau-placeholder"><div class="bureau-placeholder-icon">📦</div><div class="bureau-placeholder-title">Commandes fournisseur</div><div class="bureau-placeholder-desc">Calcul automatique selon consommation moyenne.<br><em style="font-size:11px;color:var(--brown-light)">En cours de développement</em></div></div>
+        <div id="commandesContent"></div>
+      </div>
+      <div class="bur-section" id="bur-cmd-fournisseur">
+        <div id="cmdFournisseurContent"></div>
+      </div>
+      <div class="bur-section" id="bur-cmd-clients">
+        <div id="cmdClientsContent"></div>
       </div>
 
       <div class="bur-section" id="bur-journal">
@@ -614,13 +711,13 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 
 <div class="overlay" id="mProduct">
   <div class="modal">
-    <div class="modal-title">Nouveau produit</div>
+    <div class="modal-title" id="mProductTitle">Nouveau produit</div>
     <div class="mgroup" style="margin-bottom:8px"><label>Nom</label><input class="minput" id="np-name" placeholder="Ex: Pain de campagne" style="margin-bottom:0"></div>
     <div class="mgrid">
       <div class="mgroup"><label>Emoji</label><input class="minput" id="np-emoji" placeholder="🍞" maxlength="2" style="margin-bottom:0"></div>
       <div class="mgroup"><label>Seuil alerte</label><input class="minput" id="np-seuil" type="number" min="0" placeholder="10" style="margin-bottom:0"></div>
       <div class="mgroup"><label>📦 Base / jour</label><input class="minput" id="np-base" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
-      <div class="mgroup"><label>❄️ Stock initial</label><input class="minput" id="np-stock" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
+      <div class="mgroup" id="np-stock-group"><label>❄️ Stock initial</label><input class="minput" id="np-stock" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
     </div>
     <div class="pdf-upload-zone" onclick="document.getElementById('np-pdf').click()">
       <input type="file" id="np-pdf" accept="application/pdf" onchange="onPdfSelect(this)">
@@ -628,8 +725,8 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
       <div class="pdf-selected" id="pdfSelectedName" style="display:none"></div>
     </div>
     <div class="mactions" style="margin-top:10px">
-      <button class="mbtn mbtn-c" onclick="closeM('mProduct');clearPdfInput()">Annuler</button>
-      <button class="mbtn mbtn-p" onclick="addProduct()">Créer</button>
+      <button class="mbtn mbtn-c" onclick="closeM('mProduct');clearPdfInput();editProductId=null">Annuler</button>
+      <button class="mbtn mbtn-p" id="mProductBtn" onclick="saveProduct()">Créer</button>
     </div>
   </div>
 </div>
@@ -703,6 +800,64 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- Modal matière première -->
+<div class="overlay" id="mMatiere">
+  <div class="modal">
+    <div class="modal-title">Nouvelle matière première</div>
+    <div class="mgroup" style="margin-bottom:8px"><label>Nom</label><input class="minput" id="mat-name" placeholder="Ex: Farine T55" style="margin-bottom:0"></div>
+    <div class="mgrid">
+      <div class="mgroup"><label>Emoji</label><input class="minput" id="mat-emoji" placeholder="🌾" maxlength="2" style="margin-bottom:0"></div>
+      <div class="mgroup"><label>Unité</label>
+        <select class="minput" id="mat-unit" style="margin-bottom:0">
+          <option value="kg">kg</option>
+          <option value="g">g</option>
+          <option value="L">L</option>
+          <option value="unités">unités</option>
+          <option value="sacs">sacs</option>
+          <option value="boîtes">boîtes</option>
+        </select>
+      </div>
+      <div class="mgroup"><label>Stock actuel</label><input class="minput" id="mat-stock" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
+      <div class="mgroup"><label>Seuil alerte</label><input class="minput" id="mat-seuil" type="number" min="0" placeholder="5" style="margin-bottom:0"></div>
+      <div class="mgroup"><label>Conso / semaine</label><input class="minput" id="mat-conso" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
+      <div class="mgroup"><label>DLC (date)</label><input class="minput" id="mat-dlc" type="date" style="margin-bottom:0"></div>
+    </div>
+    <div class="mactions" style="margin-top:10px">
+      <button class="mbtn mbtn-c" onclick="closeM('mMatiere')">Annuler</button>
+      <button class="mbtn mbtn-p" onclick="addMatiere()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal commande client -->
+<div class="overlay" id="mCmdClient">
+  <div class="modal">
+    <div class="modal-title">🧁 Nouvelle commande client</div>
+    <div class="mgroup" style="margin-bottom:8px">
+      <label>Client / Description</label>
+      <input class="minput" id="cc-nom" placeholder="Ex: Hôpital — 20 croissants" style="margin-bottom:0">
+    </div>
+    <div class="mgrid">
+      <div class="mgroup">
+        <label>📅 Date de livraison</label>
+        <input class="minput" id="cc-date" type="date" style="margin-bottom:0">
+      </div>
+      <div class="mgroup">
+        <label>⏰ Heure</label>
+        <input class="minput" id="cc-heure" type="time" style="margin-bottom:0">
+      </div>
+    </div>
+    <div class="mgroup" style="margin-bottom:0">
+      <label>📝 Détail de la commande</label>
+      <textarea class="minput" id="cc-detail" placeholder="Ex: 20 croissants, 10 pains au chocolat…" style="min-height:60px;resize:none"></textarea>
+    </div>
+    <div class="mactions" style="margin-top:10px">
+      <button class="mbtn mbtn-c" onclick="closeM('mCmdClient')">Annuler</button>
+      <button class="mbtn mbtn-p" onclick="addCmdClient()">Créer</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const DEFAULTS = [
   {id:'croissant',name:'Croissant',emoji:'🥐',stockReel:0,base:0,commande:0,seuil:20},
@@ -793,6 +948,8 @@ function normalizeState() {
   if (!S.freeNotes)  S.freeNotes = '';
   if (!S.journal)    S.journal = {};
   if (!S.histoTaches) S.histoTaches = [];
+  if (!S.matieres)    S.matieres = [];
+  if (!S.cmdClients)  S.cmdClients = [];
 }
 
 async function load() {
@@ -879,26 +1036,31 @@ function sw(t){
   tab=t;
   const hdr=document.getElementById('hdrFournil');
   hdr.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tmap={stock:0,magasin:1,tasks:2,histo:3,settings:4};
+  const tmap={stock:0,magasin:1,tasks:2,histo:3,calendrier:4,settings:5};
   hdr.querySelectorAll('.tab')[tmap[t]].classList.add('active');
   document.querySelectorAll('#fournilModule .section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
-  const hideFab=['stock','magasin','histo'];
+  const hideFab=['stock','magasin','histo','calendrier'];
   document.getElementById('fab').classList.toggle('hidden',hideFab.includes(t));
   if(t==='tasks')genAutoTasks();
   if(t==='histo')renderHisto();
+  if(t==='calendrier')renderCalendrier();
   render();
 }
 
 function swB(t){
   const hdr=document.getElementById('hdrBureau');
   hdr.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tmap={matieres:0,commandes:1,journal:2,histo:3,stats:4};
-  hdr.querySelectorAll('.tab')[tmap[t]].classList.add('active');
+  const tmap={'matieres':0,'cmd-fournisseur':1,'cmd-clients':2,'journal':3,'stats':4};
+  hdr.querySelectorAll('.tab')[tmap[t]]?.classList.add('active');
   document.querySelectorAll('#bureauModule .bur-section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('bur-'+t).classList.add('active');
-  if(t==='histo')renderHistoB();
+  const secEl = document.getElementById('bur-'+t);
+  if(secEl) secEl.classList.add('active');
   if(t==='journal')renderJournal();
+  if(t==='matieres')renderMatieres();
+  if(t==='cmd-fournisseur')renderCmdFournisseur();
+  if(t==='cmd-clients')renderCmdClients();
+  if(t==='stats')renderHebdo();
 }
 
 function fabClick(){
@@ -1075,11 +1237,16 @@ function renderTasks(){
 function tHTML(t){
   let rb='';
   if(t.auto&&t.pid){const p=S.products.find(x=>x.id===t.pid);if(p?.recipeUrl)rb=`<button class="recipe-btn" onclick="openRecipe('${p.id}')">📄</button>`;}
-  const catBadge=t.cat&&!t.auto?`<span class="task-cat-badge cat-${t.cat}">${CAT_LABELS[t.cat]||t.cat}</span>`:'';
-  return`<div class="titem ${t.done?'done':''}">
+  const catBadge=t.cat&&!t.auto&&!t.fromGestion?`<span class="task-cat-badge cat-${t.cat}">${CAT_LABELS[t.cat]||t.cat}</span>`:'';
+  const gestionBadge=t.fromGestion?`<span class="from-gestion">📋 Gestion</span>`:'';
+  return`<div class="titem ${t.done?'done':''}" id="titem-${t.id}"
+    draggable="true"
+    ontouchstart="touchTaskStart(event,'${t.id}')"
+    ontouchmove="touchTaskMove(event)"
+    ontouchend="touchTaskEnd(event,'${t.id}')">
     <div class="tchk" onclick="toggleTask('${t.id}')"></div>
     <div class="ttext" onclick="toggleTask('${t.id}')">${t.text}</div>
-    ${t.auto?'<span class="tauto">Auto</span>':''}${catBadge}${rb}
+    ${t.auto?'<span class="tauto">Auto</span>':''}${catBadge}${gestionBadge}${rb}
     <button class="tdel" onclick="delTask('${t.id}')">×</button>
   </div>`;
 }
@@ -1106,19 +1273,19 @@ function addTask(){
 function toggleTask(id){
   const t=S.tasks.find(t=>t.id===id);
   if(!t) return;
-  if(t.auto && !t.done) {
-    // Tâche auto réappro → ouvrir modal quantité
-    openReappro(t);
-    return;
-  }
+  if(t.auto && !t.done) { openReappro(t); return; }
   t.done=!t.done;
+  // Si tâche validée venant de la gestion → mettre à jour la commande
+  if(t.done && t.fromGestion && t.cmdId) {
+    const cmd = (S.cmdClients||[]).find(c=>c.id===t.cmdId);
+    if(cmd) { cmd.status='validated'; }
+  }
   if(t.done && !t.auto) {
-    // Archiver dans histoTaches
     if(!S.histoTaches) S.histoTaches=[];
     const now=new Date();
     S.histoTaches.unshift({
       id:'ht_'+Date.now(), text:t.text,
-      cat:t.cat||'general',
+      cat:t.fromGestion?'production':(t.cat||'general'),
       date:today(),
       time:now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})
     });
@@ -1131,7 +1298,22 @@ function delTask(id){S.tasks=S.tasks.filter(t=>t.id!==id);save();renderTasks();}
 function renderSettings(){
   const el=document.getElementById('settingsList');
   if(!S.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">⚙️</div>Aucun produit.</div>';return;}
-  el.innerHTML=S.products.map(p=>`<div class="pcard-set"><span style="font-size:20px">${p.emoji}</span><div class="pcard-set-info"><div class="pcard-set-name">${p.name}</div><div class="pcard-set-sub">Stock : ${p.stockReel}u · Seuil : ${p.seuil}u · Base/j : ${p.base||0}u</div></div><button class="sdel" onclick="delProduct('${p.id}')">Suppr.</button></div>`).join('');
+  el.innerHTML=S.products.map((p,i)=>`
+    <div class="pcard-set" draggable="true"
+      ondragstart="dragStart(event,'${p.id}')"
+      ondragover="dragOver(event,'${p.id}')"
+      ondrop="dragDrop(event,'${p.id}')"
+      ondragend="dragEnd()"
+      id="pset-${p.id}">
+      <span class="drag-handle">⠿</span>
+      <span style="font-size:20px">${p.emoji}</span>
+      <div class="pcard-set-info">
+        <div class="pcard-set-name">${p.name}</div>
+        <div class="pcard-set-sub">Stock : ${p.stockReel}u · Seuil : ${p.seuil}u · Base/j : ${p.base||0}u</div>
+      </div>
+      <button class="edit-prod-btn" onclick="openEditProduct('${p.id}')">✏️</button>
+      <button class="sdel" onclick="delProduct('${p.id}')">Suppr.</button>
+    </div>`).join('');
 
   // Config thermomètres
   el.innerHTML += `
@@ -1148,17 +1330,72 @@ function renderSettings(){
     <button class="thermo-add-btn" onclick="openM('mThermo')" style="margin-top:8px">+ Ajouter un thermomètre</button>`;
 }
 
-function addProduct(){
-  const name=document.getElementById('np-name').value.trim();
-  const emoji=document.getElementById('np-emoji').value.trim()||'🍞';
-  const seuil=parseInt(document.getElementById('np-seuil').value)||10;
-  const base=parseInt(document.getElementById('np-base').value)||0;
-  const stock=parseInt(document.getElementById('np-stock').value)||0;
-  if(!name)return;
-  S.products.push({id:'p_'+Date.now(),name,emoji,stockReel:stock,base,commande:0,seuil,recipeUrl:pendingPdfUrl||null});
-  ['np-name','np-emoji','np-seuil','np-base','np-stock'].forEach(id=>document.getElementById(id).value='');
-  clearPdfInput();closeM('mProduct');save();render();toast('Produit créé : '+name);
+// ── ÉDITION PRODUIT ──
+let editProductId = null;
+
+function openEditProduct(id) {
+  const p = S.products.find(x=>x.id===id);
+  if(!p) return;
+  editProductId = id;
+  document.getElementById('mProductTitle').textContent = '✏️ Modifier ' + p.name;
+  document.getElementById('mProductBtn').textContent = 'Enregistrer';
+  document.getElementById('np-name').value = p.name;
+  document.getElementById('np-emoji').value = p.emoji;
+  document.getElementById('np-seuil').value = p.seuil;
+  document.getElementById('np-base').value = p.base||0;
+  // Cacher stock initial en mode édition
+  document.getElementById('np-stock-group').style.display = 'none';
+  openM('mProduct');
 }
+
+function saveProduct() {
+  const name  = document.getElementById('np-name').value.trim();
+  const emoji = document.getElementById('np-emoji').value.trim()||'🍞';
+  const seuil = parseInt(document.getElementById('np-seuil').value)||10;
+  const base  = parseInt(document.getElementById('np-base').value)||0;
+  if(!name) return;
+
+  if(editProductId) {
+    // Mode édition
+    const p = S.products.find(x=>x.id===editProductId);
+    if(p){ p.name=name; p.emoji=emoji; p.seuil=seuil; p.base=base; }
+    editProductId = null;
+    toast('Produit modifié ✓');
+  } else {
+    // Mode création
+    const stock = parseInt(document.getElementById('np-stock').value)||0;
+    S.products.push({id:'p_'+Date.now(), name, emoji, stockReel:stock, base, commande:0, seuil, recipeUrl:pendingPdfUrl||null});
+    toast('Produit créé : '+name);
+  }
+  // Reset modal
+  document.getElementById('mProductTitle').textContent = 'Nouveau produit';
+  document.getElementById('mProductBtn').textContent = 'Créer';
+  document.getElementById('np-stock-group').style.display = 'block';
+  ['np-name','np-emoji','np-seuil','np-base','np-stock'].forEach(id=>document.getElementById(id).value='');
+  clearPdfInput();
+  closeM('mProduct'); save(); render();
+}
+
+// ── DRAG & DROP ──
+let dragId = null;
+function dragStart(e, id) { dragId=id; setTimeout(()=>document.getElementById('pset-'+id)?.classList.add('dragging'),0); }
+function dragEnd() { document.querySelectorAll('.pcard-set').forEach(el=>{el.classList.remove('dragging','drag-over');}); }
+function dragOver(e, id) {
+  e.preventDefault();
+  document.querySelectorAll('.pcard-set').forEach(el=>el.classList.remove('drag-over'));
+  document.getElementById('pset-'+id)?.classList.add('drag-over');
+}
+function dragDrop(e, targetId) {
+  e.preventDefault();
+  if(dragId===targetId) return;
+  const fromIdx = S.products.findIndex(p=>p.id===dragId);
+  const toIdx   = S.products.findIndex(p=>p.id===targetId);
+  if(fromIdx<0||toIdx<0) return;
+  const [moved] = S.products.splice(fromIdx,1);
+  S.products.splice(toIdx,0,moved);
+  save(); renderSettings(); toast('Ordre mis à jour');
+}
+
 function delProduct(id){S.products=S.products.filter(p=>p.id!==id);stopFlip(id);save();render();toast('Produit supprimé');}
 
 // ── BULLE NOTES ──
@@ -1308,6 +1545,526 @@ function renderHisto(){
   el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${h.emoji}</span><div class="histo-info"><div class="histo-name">${h.name}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div></div>`).join('')}</div>`).join('');
 }
 function setHistoFilter(pid){histoFilter=pid;renderHisto();}
+
+// ── MATIÈRES PREMIÈRES ──
+// Flips matières
+const matFlips = {};
+
+function renderMatieres() {
+  const el = document.getElementById('matieresContent');
+  if(!el) return;
+  if(!S.matieres) S.matieres = [];
+
+  const today_d = new Date(); today_d.setHours(0,0,0,0);
+  const in7 = new Date(today_d); in7.setDate(in7.getDate()+7);
+
+  let html = `<button class="mat-add-btn" onclick="openM('mMatiere')">+ Ajouter une matière première</button>`;
+
+  if(!S.matieres.length) {
+    html += '<div class="empty"><div class="empty-icon">🌾</div>Aucune matière première.<br>Ajoutez farine, beurre, levure…</div>';
+    el.innerHTML = html; return;
+  }
+
+  html += S.matieres.map(m => {
+    const stockNum = parseFloat(m.stock)||0;
+    const seuilNum = parseFloat(m.seuil)||0;
+    const consoNum = parseFloat(m.consoDuJour)||0;
+    const cls = stockNum <= 0 ? 'empty' : stockNum <= seuilNum ? 'low' : '';
+
+    let dlcBadge = '', dlcCls = '';
+    if(m.dlc) {
+      const dlcDate = new Date(m.dlc);
+      if(dlcDate < today_d)      { dlcBadge = `<span class="mat-dlc-badge dlc-exp">⚠️ Expiré</span>`; dlcCls='dlc-soon'; }
+      else if(dlcDate <= in7)    { dlcBadge = `<span class="mat-dlc-badge dlc-soon">DLC dans ${Math.ceil((dlcDate-today_d)/86400000)}j</span>`; dlcCls='dlc-soon'; }
+      else                       { dlcBadge = `<span class="mat-dlc-badge dlc-ok">DLC ${new Date(m.dlc).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</span>`; }
+    }
+
+    const consoStr = consoNum > 0 ? `−${consoNum}` : '—';
+
+    return `<div class="scard ${cls||dlcCls}" id="mpc-${m.id}" style="margin-bottom:9px">
+      <div class="flip-box" id="mflip-${m.id}">
+        <div class="flip-face ff-s">
+          <div class="fn" id="mfn-s-${m.id}" style="font-size:24px">${stockNum}</div>
+          <div class="fl">${m.unit||'unités'}</div>
+        </div>
+        <div class="flip-face ff-d">
+          <div class="fn neg" id="mfn-d-${m.id}" style="font-size:24px">${consoStr}</div>
+          <div class="fl">utilisé</div>
+        </div>
+      </div>
+      <div class="scard-info">
+        <div class="scard-name">
+          <span class="scard-emoji">${m.emoji||'📦'}</span>${m.name}
+        </div>
+        <div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap">
+          ${dlcBadge}
+          <span class="mat-dlc-badge" style="background:var(--cream);color:var(--brown-light)">seuil : ${seuilNum} ${m.unit||''}</span>
+        </div>
+        <div class="scard-nums">
+          <div class="scard-num-block">
+            <div class="sn-val" id="msv-s-${m.id}">${stockNum}</div>
+            <div class="sn-lbl">📦 Stock</div>
+          </div>
+          <div class="scard-num-block">
+            <div class="sn-val" id="msv-d-${m.id}" style="${consoNum>0?'color:var(--orange)':''}">${consoNum>0?consoNum:'—'}</div>
+            <div class="sn-lbl">📉 Utilisé</div>
+          </div>
+        </div>
+      </div>
+      <div class="scard-actions">
+        <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+          <div style="display:flex;align-items:center;background:var(--cream);border-radius:8px;overflow:hidden;height:32px">
+            <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock('${m.id}',-1)">−</button>
+            <input style="width:40px;height:32px;border:none;background:none;text-align:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--ink)" type="number" min="0" id="mat-val-${m.id}" value="0" inputmode="numeric">
+            <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock('${m.id}',+1)">+</button>
+          </div>
+          <button style="font-size:9px;background:var(--rust,#963020);color:white;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;white-space:nowrap" onclick="useMatiere('${m.id}')">Utiliser</button>
+          <button class="sdel" style="font-size:11px;padding:3px 7px" onclick="delMatiere('${m.id}')">Suppr.</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = html;
+
+  // Démarrer les flips pour les matières avec consommation
+  S.matieres.forEach(m => {
+    if((m.consoDuJour||0) > 0) startMatFlip(m.id);
+    else stopMatFlip(m.id);
+  });
+}
+
+function adjMatStock(id, delta) {
+  const input = document.getElementById('mat-val-'+id);
+  const v = Math.max(0, (parseInt(input.value)||0) + delta);
+  input.value = v;
+}
+
+function useMatiere(id) {
+  const m = (S.matieres||[]).find(x=>x.id===id);
+  if(!m) return;
+  const input = document.getElementById('mat-val-'+id);
+  const qty = parseFloat(input.value)||0;
+  if(qty <= 0) { toast('Entre une quantité à utiliser'); return; }
+  if(qty > m.stock) { toast('Stock insuffisant'); return; }
+  m.stock = Math.max(0, (m.stock||0) - qty);
+  m.consoDuJour = (m.consoDuJour||0) + qty;
+  input.value = 0;
+  save();
+  // Refresh sans re-render complet
+  const sfn = document.getElementById('mfn-s-'+id); if(sfn) sfn.textContent = m.stock;
+  const dfn = document.getElementById('mfn-d-'+id); if(dfn) dfn.textContent = `−${m.consoDuJour}`;
+  const svs = document.getElementById('msv-s-'+id); if(svs) svs.textContent = m.stock;
+  const svd = document.getElementById('msv-d-'+id); if(svd) { svd.textContent = m.consoDuJour; svd.style.color='var(--orange)'; }
+  const card = document.getElementById('mpc-'+id);
+  if(card) {
+    const s = m.stock <= 0 ? 'empty' : m.stock <= (m.seuil||0) ? 'low' : '';
+    card.className = `scard ${s}`;
+  }
+  startMatFlip(id);
+  toast(`−${qty} ${m.unit||''} de ${m.name}`);
+}
+
+function startMatFlip(id) {
+  if(matFlips[id]) clearInterval(matFlips[id]);
+  let show = 'stock';
+  matFlips[id] = setInterval(() => {
+    const el = document.getElementById('mflip-'+id);
+    if(!el) { clearInterval(matFlips[id]); return; }
+    show = show==='stock' ? 'd' : 'stock';
+    el.classList.toggle('show-d', show==='d');
+  }, 2600);
+}
+
+function stopMatFlip(id) {
+  if(matFlips[id]) { clearInterval(matFlips[id]); delete matFlips[id]; }
+  const el = document.getElementById('mflip-'+id);
+  if(el) el.classList.remove('show-d');
+}
+
+function adjMat(id, delta) {
+  const input = document.getElementById('mat-val-'+id);
+  const v = Math.max(0, (parseFloat(input.value)||0) + delta);
+  input.value = v;
+}
+
+function setMat(id, val) {
+  const m = (S.matieres||[]).find(x=>x.id===id);
+  if(m){ m.stock = Math.max(0, parseFloat(val)||0); save(); }
+}
+
+function addMatiere() {
+  const name  = document.getElementById('mat-name').value.trim();
+  const emoji = document.getElementById('mat-emoji').value.trim()||'📦';
+  const unit  = document.getElementById('mat-unit').value;
+  const stock = parseFloat(document.getElementById('mat-stock').value)||0;
+  const seuil = parseFloat(document.getElementById('mat-seuil').value)||5;
+  const conso = parseFloat(document.getElementById('mat-conso').value)||0;
+  const dlc   = document.getElementById('mat-dlc').value||'';
+  if(!name) return;
+  if(!S.matieres) S.matieres = [];
+  S.matieres.push({id:'m_'+Date.now(), name, emoji, unit, stock, seuil, conso, dlc});
+  ['mat-name','mat-emoji','mat-stock','mat-seuil','mat-conso','mat-dlc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  closeM('mMatiere'); save(); renderMatieres();
+  toast('Matière ajoutée : '+name);
+}
+
+function delMatiere(id) {
+  S.matieres = (S.matieres||[]).filter(m=>m.id!==id);
+  save(); renderMatieres();
+  toast('Supprimé');
+}
+
+// ── COMMANDES FOURNISSEUR ──
+function renderCommandes() {
+  const el = document.getElementById('commandesContent');
+  if(!el) return;
+  if(!S.matieres||!S.matieres.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>Ajoutez d\'abord vos matières premières<br>dans l\'onglet Matières.</div>';
+    return;
+  }
+
+  // Calcul : besoin = conso hebdo - stock actuel, arrondi au dessus
+  const commandes = S.matieres.filter(m => (m.conso||0) > 0).map(m => {
+    const besoin = Math.max(0, Math.ceil((m.conso||0) - (m.stock||0)));
+    return {...m, besoin};
+  }).filter(m => m.besoin > 0);
+
+  if(!commandes.length) {
+    el.innerHTML = `
+      <div class="empty"><div class="empty-icon">✅</div>Tout est en stock !<br>Aucune commande nécessaire cette semaine.</div>
+      <div class="tgroup-lbl">Toutes les matières</div>
+      ${S.matieres.map(m=>`<div class="cmd-card"><div class="cmd-info"><div class="cmd-name">${m.emoji||'📦'} ${m.name}</div><div class="cmd-detail">Stock : ${m.stock||0} ${m.unit} · Conso/sem : ${m.conso||0}</div></div><div><div class="cmd-qty" style="color:var(--green)">✓</div><div class="cmd-unit">suffisant</div></div></div>`).join('')}`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="journal-card" style="margin-bottom:12px">
+      <div class="journal-section-title">📋 Liste de commande cette semaine</div>
+      ${commandes.map(m=>`
+        <div class="cmd-card" style="padding:8px 0;border-bottom:1px solid rgba(196,154,108,0.1)">
+          <div class="cmd-info">
+            <div class="cmd-name">${m.emoji||'📦'} ${m.name}</div>
+            <div class="cmd-detail">Stock : ${m.stock||0} · Conso : ${m.conso||0}/sem</div>
+          </div>
+          <div>
+            <div class="cmd-qty">→ ${m.besoin}</div>
+            <div class="cmd-unit">${m.unit}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="tgroup-lbl">Matières OK</div>
+    ${S.matieres.filter(m=>!commandes.find(c=>c.id===m.id)).map(m=>`
+      <div class="cmd-card"><div class="cmd-info"><div class="cmd-name">${m.emoji||'📦'} ${m.name}</div><div class="cmd-detail">Stock : ${m.stock||0} ${m.unit}</div></div><div><div class="cmd-qty" style="color:var(--green);font-size:16px">✓</div></div></div>`).join('')}`;
+}
+
+// ── RÉSUMÉ HEBDOMADAIRE ──
+function renderHebdo() {
+  const el = document.getElementById('bur-stats');
+  if(!el) return;
+
+  const today_d = new Date();
+  const days = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(today_d);
+    d.setDate(d.getDate()-i);
+    days.push(d.toISOString().slice(0,10));
+  }
+
+  // Sorties par produit sur 7 jours (depuis historique)
+  const sorties = {};
+  S.products.forEach(p=>sorties[p.id]=0);
+  (S.history||[]).filter(h=>h.type==='sortie'&&days.includes(h.date)).forEach(h=>{
+    if(sorties[h.pid]!==undefined) sorties[h.pid]+=h.qty;
+  });
+
+  // Production depuis journal
+  const production = {};
+  S.products.forEach(p=>production[p.id]=0);
+  days.forEach(d=>{
+    const entry = (S.journal||{})[d];
+    if(entry?.produits) {
+      Object.entries(entry.produits).forEach(([pid,qty])=>{
+        if(production[pid]!==undefined) production[pid]+=qty;
+      });
+    }
+  });
+
+  const weekLabel = `${new Date(days[0]).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})} → ${new Date(days[6]).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}`;
+
+  el.innerHTML = `
+    <div class="journal-card">
+      <div class="journal-section-title">📊 Semaine du ${weekLabel}</div>
+      ${S.products.map(p=>`
+        <div class="hebdo-prod-row">
+          <div class="hebdo-prod-name"><span>${p.emoji}</span>${p.name}</div>
+          <div style="display:flex;gap:14px;align-items:center">
+            <div style="text-align:center">
+              <div class="hebdo-prod-qty" style="color:var(--orange)">${sorties[p.id]||0}</div>
+              <div style="font-size:9px;color:var(--brown-light);text-transform:uppercase">Sorti</div>
+            </div>
+            <div style="text-align:center">
+              <div class="hebdo-prod-qty" style="color:var(--green)">${production[p.id]||0}</div>
+              <div style="font-size:9px;color:var(--brown-light);text-transform:uppercase">Produit</div>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ── COMMANDES CLIENTS ──
+function renderCmdClients() {
+  const el = document.getElementById('cmdClientsContent');
+  if(!el) return;
+  if(!S.cmdClients) S.cmdClients = [];
+
+  const today_d = new Date(); today_d.setHours(0,0,0,0);
+  const tomorrow = new Date(today_d); tomorrow.setDate(tomorrow.getDate()+1);
+
+  let html = `<button class="mat-add-btn" onclick="openM('mCmdClient')">+ Nouvelle commande client</button>`;
+
+  if(!S.cmdClients.length) {
+    html += '<div class="empty"><div class="empty-icon">🧁</div>Aucune commande client.</div>';
+    el.innerHTML = html; return;
+  }
+
+  // Trier par date
+  const sorted = [...S.cmdClients].sort((a,b) => (a.date||'').localeCompare(b.date||''));
+
+  html += sorted.map(c => {
+    const dDate = c.date ? new Date(c.date) : null;
+    const isUrgent = dDate && dDate <= tomorrow && c.status !== 'validated';
+    const cls = c.status==='validated' ? 'validated' : c.status==='sent' ? 'sent' : isUrgent ? 'urgent' : '';
+    const badgeCls = c.status==='validated' ? 'badge-validated' : c.status==='sent' ? 'badge-sent' : isUrgent ? 'badge-urgent' : 'badge-pending';
+    const badgeTxt = c.status==='validated' ? '✓ Validé' : c.status==='sent' ? '📤 Envoyé au fournil' : isUrgent ? '⚠️ Urgent' : 'En attente';
+    const dateStr = c.date ? new Date(c.date).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}) : '—';
+
+    return `<div class="cmd-client-card ${cls}">
+      <div class="cmd-client-header">
+        <span class="cmd-client-name">${c.nom}</span>
+        <span class="cmd-client-badge ${badgeCls}">${badgeTxt}</span>
+      </div>
+      ${c.detail ? `<div class="cmd-client-detail">${c.detail}</div>` : ''}
+      <div class="cmd-client-date">📅 ${dateStr}${c.heure?' à '+c.heure:''}</div>
+      <div class="cmd-client-actions">
+        ${c.status!=='sent'&&c.status!=='validated' ? `<button class="cmd-action-btn btn-send" onclick="sendCmdToFournil('${c.id}')">📤 Envoyer au fournil</button>` : ''}
+        ${c.status==='sent' ? `<button class="cmd-action-btn btn-validate" onclick="validateCmd('${c.id}')">✓ Marquer validé</button>` : ''}
+        ${c.status==='validated' ? `<div style="font-size:12px;color:var(--green);font-weight:500;flex:1">✓ Traité par le fournil</div>` : ''}
+        <button class="cmd-action-btn btn-del-cmd" onclick="delCmdClient('${c.id}')">×</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = html;
+}
+
+function addCmdClient() {
+  const nom    = document.getElementById('cc-nom').value.trim();
+  const date   = document.getElementById('cc-date').value;
+  const heure  = document.getElementById('cc-heure').value;
+  const detail = document.getElementById('cc-detail').value.trim();
+  if(!nom) return;
+  if(!S.cmdClients) S.cmdClients = [];
+  S.cmdClients.push({ id:'cc_'+Date.now(), nom, date, heure, detail, status:'pending', createdAt:today() });
+  ['cc-nom','cc-date','cc-heure','cc-detail'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  closeM('mCmdClient'); save(); renderCmdClients();
+  toast('Commande créée');
+}
+
+function sendCmdToFournil(id) {
+  const c = (S.cmdClients||[]).find(x=>x.id===id);
+  if(!c) return;
+  c.status = 'sent';
+  // Créer une tâche dans le fournil avec mention "Gestion"
+  if(!S.tasks) S.tasks = [];
+  const dateStr = c.date ? new Date(c.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) : '';
+  S.tasks.unshift({
+    id: 'gc_'+Date.now(),
+    text: `${c.nom}${c.detail?' — '+c.detail:''}${dateStr?' (livraison '+dateStr+')':''}`,
+    done: false, auto: false, cat: 'production',
+    fromGestion: true, cmdId: id
+  });
+  save(); renderCmdClients(); renderTasks();
+  toast('Commande envoyée au fournil ✓');
+}
+
+function validateCmd(id) {
+  const c = (S.cmdClients||[]).find(x=>x.id===id);
+  if(!c) return;
+  c.status = 'validated';
+  save(); renderCmdClients();
+  toast('Commande validée ✓');
+}
+
+function delCmdClient(id) {
+  S.cmdClients = (S.cmdClients||[]).filter(c=>c.id!==id);
+  save(); renderCmdClients();
+}
+
+// ── COMMANDES FOURNISSEUR ──
+function renderCmdFournisseur() {
+  const el = document.getElementById('cmdFournisseurContent');
+  if(!el) return;
+  if(!S.matieres||!S.matieres.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>Ajoutez d\'abord vos matières premières.</div>';
+    return;
+  }
+  const today_d = new Date(); today_d.setHours(0,0,0,0);
+  const commandes = S.matieres.filter(m=>(m.conso||0)>0).map(m=>({
+    ...m, besoin: Math.max(0, Math.ceil((m.conso||0)-(m.stock||0)))
+  })).filter(m=>m.besoin>0);
+
+  let html = '';
+  if(!commandes.length) {
+    html = '<div class="empty"><div class="empty-icon">✅</div>Tout est en stock !<br>Aucune commande nécessaire.</div>';
+  } else {
+    html = `<div class="journal-card" style="margin-bottom:12px">
+      <div class="journal-section-title">📋 À commander cette semaine</div>
+      ${commandes.map(m=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(196,154,108,0.1)">
+          <div><div style="font-weight:500;font-size:14px">${m.emoji||'📦'} ${m.name}</div>
+          <div style="font-size:11px;color:var(--brown-light)">Stock : ${m.stock||0} · Conso : ${m.conso}/sem</div></div>
+          <div style="text-align:right"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--brown)">→ ${m.besoin}</div>
+          <div style="font-size:10px;color:var(--brown-light)">${m.unit}</div></div>
+        </div>`).join('')}
+    </div>`;
+  }
+  // Toutes les matières
+  html += `<div class="tgroup-lbl">Toutes les matières</div>
+    ${S.matieres.map(m=>`
+      <div style="background:var(--paper);border-radius:10px;padding:9px 12px;margin-bottom:5px;box-shadow:var(--sh);display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-weight:500;font-size:13px">${m.emoji||'📦'} ${m.name}</div>
+        <div style="font-size:11px;color:var(--brown-light)">${m.stock||0} ${m.unit}</div></div>
+        <div style="font-size:12px;color:${(m.stock||0)<=(m.seuil||0)?'var(--red)':'var(--green)'}">${(m.stock||0)<=(m.seuil||0)?'⚠️ Faible':'✓ OK'}</div>
+      </div>`).join('')}`;
+  el.innerHTML = html;
+}
+
+// ── CALENDRIER ──
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let calSelectedDate = today();
+
+function renderCalendrier() {
+  const el = document.getElementById('calendrierContent');
+  if(!el) return;
+
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay  = new Date(calYear, calMonth+1, 0);
+  const startDow = (firstDay.getDay()+6)%7; // Lundi=0
+  const monthName = firstDay.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+
+  // Jours avec événements
+  const eventDays = new Set();
+  const cmdDays   = new Set();
+  (S.history||[]).forEach(h=>{ if(h.date.startsWith(calYear+'-'+(String(calMonth+1).padStart(2,'0')))) eventDays.add(h.date); });
+  (S.cmdClients||[]).forEach(c=>{ if(c.date&&c.date.startsWith(calYear+'-'+(String(calMonth+1).padStart(2,'0')))) cmdDays.add(c.date); });
+  Object.keys(S.journal||{}).forEach(d=>{ if(d.startsWith(calYear+'-'+(String(calMonth+1).padStart(2,'0')))) eventDays.add(d); });
+
+  let daysHtml = ['L','M','M','J','V','S','D'].map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+  // Jours vides avant
+  for(let i=0;i<startDow;i++) daysHtml += '<div></div>';
+  // Jours du mois
+  for(let d=1;d<=lastDay.getDate();d++){
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr===today();
+    const hasEv   = eventDays.has(dateStr);
+    const hasCmd  = cmdDays.has(dateStr);
+    const isSel   = dateStr===calSelectedDate;
+    const cls     = [isToday?'today':'', hasCmd?'has-cmd':hasEv?'has-event':'', isSel&&!isToday?'has-event':''].filter(Boolean).join(' ');
+    daysHtml += `<div class="cal-day ${cls}" onclick="calSelectDate('${dateStr}')" style="${isSel&&!isToday?'background:var(--ocre-pale);':''}"><span>${d}</span></div>`;
+  }
+
+  // Événements du jour sélectionné
+  const selLabel = new Date(calSelectedDate).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  const histoSel = (S.history||[]).filter(h=>h.date===calSelectedDate);
+  const cmdsSel  = (S.cmdClients||[]).filter(c=>c.date===calSelectedDate);
+  // Commandes à préparer la veille
+  const tomorrow2 = new Date(calSelectedDate); tomorrow2.setDate(tomorrow2.getDate()+1);
+  const tomorrowStr = tomorrow2.toISOString().slice(0,10);
+  const cmdsTomorrow = (S.cmdClients||[]).filter(c=>c.date===tomorrowStr&&c.status!=='validated');
+
+  el.innerHTML = `
+    <div class="cal-header">
+      <button class="cal-nav" onclick="calNav(-1)">‹</button>
+      <div class="cal-month">${monthName}</div>
+      <button class="cal-nav" onclick="calNav(+1)">›</button>
+    </div>
+    <div class="cal-grid">${daysHtml}</div>
+    <div class="cal-events">
+      <div class="cal-event-title">${selLabel}</div>
+      ${!histoSel.length&&!cmdsSel.length&&!cmdsTomorrow.length ? '<div style="font-size:13px;color:var(--brown-light)">Aucun événement ce jour.</div>' : ''}
+      ${cmdsTomorrow.map(c=>`
+        <div class="cal-event-item">
+          <div class="cal-event-dot" style="background:var(--red)"></div>
+          <div class="cal-event-text">⚠️ À préparer demain : <b>${c.nom}</b>${c.detail?' — '+c.detail:''}</div>
+        </div>`).join('')}
+      ${cmdsSel.map(c=>`
+        <div class="cal-event-item">
+          <div class="cal-event-dot" style="background:var(--ocre)"></div>
+          <div class="cal-event-text">🧁 Livraison : <b>${c.nom}</b>${c.detail?' — '+c.detail:''}</div>
+        </div>`).join('')}
+      ${histoSel.map(h=>`
+        <div class="cal-event-item">
+          <div class="cal-event-dot" style="background:${h.type==='sortie'?'var(--orange)':'var(--green)'}"></div>
+          <div class="cal-event-text">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'} : ${h.emoji} ${h.name} (${h.qty})</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function calNav(delta) {
+  calMonth += delta;
+  if(calMonth < 0) { calMonth=11; calYear--; }
+  if(calMonth > 11){ calMonth=0;  calYear++; }
+  renderCalendrier();
+}
+
+function calSelectDate(d) {
+  calSelectedDate = d;
+  renderCalendrier();
+}
+
+// ── DRAG & DROP MOBILE (appui long) ──
+let touchDragId=null, touchDragType=null, touchStartY=0, touchLongPress=null, touchClone=null;
+
+function touchTaskStart(e, id){
+  touchStartY = e.touches[0].clientY;
+  touchLongPress = setTimeout(()=>{
+    touchDragId=id; touchDragType='task';
+    const el=document.getElementById('titem-'+id);
+    if(el){ el.style.opacity='0.4'; navigator.vibrate&&navigator.vibrate(40); }
+  },500);
+}
+
+function touchTaskMove(e){
+  if(!touchDragId) return;
+  e.preventDefault();
+  const y=e.touches[0].clientY;
+  const els=document.querySelectorAll('.titem[id]');
+  els.forEach(el=>{
+    const r=el.getBoundingClientRect();
+    if(y>r.top&&y<r.bottom&&el.id!=='titem-'+touchDragId) el.style.borderTop='2px solid var(--ocre)';
+    else el.style.borderTop='';
+  });
+}
+
+function touchTaskEnd(e, id){
+  clearTimeout(touchLongPress);
+  if(!touchDragId){return;}
+  const y=e.changedTouches[0].clientY;
+  let targetId=null;
+  document.querySelectorAll('.titem[id]').forEach(el=>{
+    el.style.borderTop=''; el.style.opacity='';
+    const r=el.getBoundingClientRect();
+    if(y>r.top&&y<r.bottom) targetId=el.id.replace('titem-','');
+  });
+  if(targetId&&targetId!==touchDragId){
+    const fi=S.tasks.findIndex(t=>t.id===touchDragId);
+    const ti=S.tasks.findIndex(t=>t.id===targetId);
+    if(fi>=0&&ti>=0){ const [m]=S.tasks.splice(fi,1); S.tasks.splice(ti,0,m); save(); renderTasks(); }
+  }
+  touchDragId=null;
+}
 
 function renderHistoB(){
   const entries=histoFilterB==='all'?S.history:S.history.filter(h=>h.pid===histoFilterB);
@@ -1502,9 +2259,33 @@ async function loadMeteo(){
     let city='';
     try{const g=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);const gd=await g.json();city=gd.address?.city||gd.address?.town||gd.address?.village||'';}catch{}
     const{icon,desc}=wmo(c.weather_code);
-    el.innerHTML=`<div class="meteo-card"><div class="meteo-icon">${icon}</div><div class="meteo-main"><div class="meteo-temp">${Math.round(c.temperature_2m)}°C</div><div class="meteo-desc">${desc}</div>${city?`<div class="meteo-city">📍 ${city}</div>`:''}</div><div class="meteo-details"><div class="meteo-det">💧 <b>${c.relative_humidity_2m}%</b></div><div class="meteo-det">💨 <b>${Math.round(c.wind_speed_10m)} km/h</b></div></div></div>`;
+    // Suggestion selon météo
+    const suggestion = getMeteoSuggestion(c.weather_code, c.temperature_2m);
+    el.innerHTML=`<div class="meteo-card">
+      <div class="meteo-icon">${icon}</div>
+      <div class="meteo-main">
+        <div class="meteo-temp">${Math.round(c.temperature_2m)}°C</div>
+        <div class="meteo-desc">${desc}</div>
+        ${city?`<div class="meteo-city">📍 ${city}</div>`:''}
+        ${suggestion?`<div class="meteo-suggestion">${suggestion}</div>`:''}
+      </div>
+      <div class="meteo-details">
+        <div class="meteo-det">💧 <b>${c.relative_humidity_2m}%</b></div>
+        <div class="meteo-det">💨 <b>${Math.round(c.wind_speed_10m)} km/h</b></div>
+      </div>
+    </div>`;
     meteoLoaded=true;
   }catch{el.innerHTML='';}
+}
+
+function getMeteoSuggestion(code, temp) {
+  if(code>=61&&code<=69) return '🌧️ Pluie prévue — sortez un peu moins';
+  if(code>=71&&code<=79) return '❄️ Neige prévue — prévoyez du stock';
+  if(code>=80&&code<=99) return '⛈️ Mauvais temps — réduisez les sorties';
+  if(code===0&&temp>22)  return '☀️ Beau temps chaud — sortez un peu plus';
+  if(code<=2&&temp>18)   return '🌤️ Bonne journée — ventes normales';
+  if(temp<5)             return '🥶 Froid — pensez à vérifier la chambre froide';
+  return '';
 }
 function wmo(c){
   if(c===0)return{icon:'☀️',desc:'Ciel dégagé'};
