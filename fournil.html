@@ -297,10 +297,10 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .histo-entry.recharge .histo-qty { color: var(--green); }
 
 /* SETTINGS */
-.pcard-set { background: var(--paper); border-radius: var(--r); padding: 12px 13px; margin-bottom: 8px; box-shadow: var(--sh); display: flex; align-items: center; gap: 10px; cursor: grab; transition: opacity 0.2s, transform 0.2s; }
-.pcard-set.dragging { opacity: 0.4; transform: scale(0.98); }
-.pcard-set.drag-over { border: 2px dashed var(--ocre); }
-.drag-handle { color: var(--brown-light); font-size: 18px; cursor: grab; padding: 0 4px; flex-shrink: 0; }
+.pcard-set { background: var(--paper); border-radius: var(--r); padding: 12px 13px; margin-bottom: 8px; box-shadow: var(--sh); display: flex; align-items: center; gap: 10px; }
+.move-btn { background: var(--cream); border: none; border-radius: 6px; width: 26px; height: 26px; font-size: 13px; cursor: pointer; color: var(--brown-mid); display: flex; align-items: center; justify-content: center; font-weight: 700; transition: background 0.1s; flex-shrink: 0; }
+.move-btn:active { background: var(--ocre-pale); }
+.move-btn:disabled { opacity: 0.25; cursor: default; }
 .edit-prod-btn { background: none; border: 1px solid rgba(196,154,108,0.3); border-radius: 7px; padding: 5px 9px; color: var(--brown-light); font-size: 12px; cursor: pointer; margin-right: 4px; }
 .pcard-set-info { flex: 1; }
 .pcard-set-name { font-weight: 500; font-size: 14px; }
@@ -511,7 +511,10 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 
 <div id="homeScreen">
   <div class="home-header">
-    <div class="home-logo">🥐 Fournil<em>Gestion de boulangerie</em></div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div class="home-logo">🥐 Fournil<em>Gestion de boulangerie</em></div>
+      <button onclick="openHelp()" style="background:rgba(196,154,108,0.15);border:1px solid rgba(196,154,108,0.25);border-radius:50%;width:34px;height:34px;color:var(--ocre-light);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">ℹ️</button>
+    </div>
     <div class="home-date" id="homeDate"></div>
     <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
       <div id="syncDot" style="width:7px;height:7px;border-radius:50%;background:#C05A18;transition:background 0.3s"></div>
@@ -539,6 +542,65 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
         <span class="module-tag">📊 Stats</span>
       </div>
       <div class="module-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- Panel Aide -->
+<div id="helpOverlay" style="display:none;position:fixed;inset:0;background:rgba(34,21,8,0.7);z-index:500;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeHelp()">
+  <div style="background:var(--paper);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:88svh;display:flex;flex-direction:column;animation:mup 0.25s ease">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 18px 12px;border-bottom:1px solid rgba(196,154,108,0.15);flex-shrink:0">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--ink)">ℹ️ Guide d'utilisation</div>
+      <button onclick="closeHelp()" style="background:none;border:none;color:var(--brown-light);font-size:22px;cursor:pointer">✕</button>
+    </div>
+    <div style="overflow-y:auto;padding:16px 18px 40px;flex:1">
+
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Playfair Display',serif;font-size:15px;color:var(--brown);margin-bottom:10px">🍞 Module Fournil</div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">❄️ Stock</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Affiche le stock disponible au congélateur. La carte alterne entre le stock restant et ce qui a été sorti aujourd'hui. Appuie sur ✏️ pour ajouter de la production — la quantité s'additionne au stock existant.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🛒 Magasin</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Swipe gauche/droite sur chaque carte pour alterner entre <b>Base/jour</b> (sortie fixe quotidienne) et <b>Commande du jour</b> (extra). Le total se soustrait automatiquement du stock au changement de journée.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">✅ Tâches</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Les tâches <b>Auto</b> apparaissent quand un stock est bas. Cocher une tâche auto ouvre une fenêtre pour saisir la quantité produite. Les tâches manuelles se créent avec <b>+</b> avec une catégorie (🧼 Nettoyage, 🔧 Maintenance…). Les tâches validées sont archivées en bas.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📅 Calendrier</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Vue mensuelle des événements. Appuie sur un jour pour voir sorties, rechargements et livraisons. Les commandes à livrer apparaissent en rouge la <b>veille</b> pour anticiper la production.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">💬 Notes équipe</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">La bulle marron en bas à droite ouvre les notes d'équipe. Chaque boulanger laisse un message signé. Une zone de notes libres partagée est disponible en bas.</div></div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Playfair Display',serif;font-size:15px;color:#7BB8F0;margin-bottom:10px">📋 Module Gestion</div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🌾 Matières premières</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Suivi des stocks de farine, beurre, levure… Saisis la quantité utilisée et appuie sur <b>Utiliser</b>. Les alertes DLC s'affichent en orange (moins de 7 jours) ou rouge (expiré).</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🧁 Commandes clients</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Crée une commande (ex: 20 croissants pour l'hôpital) avec date de livraison. Appuie sur <b>Envoyer au fournil</b> pour créer automatiquement une tâche côté Fournil avec badge violet. Quand le boulanger valide, le statut passe en <b>Validé</b> ici en temps réel.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📋 Journal de production</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Note les quantités produites par produit chaque jour et ajoute des observations (température du four, problème de pousse…). Navigue entre les jours avec les flèches.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📊 Stats hebdomadaires</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Résumé des 7 derniers jours : quantité sortie et produite par produit.</div></div>
+      </div>
+
+      <div style="background:var(--cream);border-radius:12px;padding:12px 14px">
+        <div style="font-weight:600;font-size:12px;color:var(--brown-mid);margin-bottom:6px">💡 Astuces</div>
+        <div style="font-size:12px;color:var(--brown-light);line-height:1.7">
+          • Ajoute l'appli à l'écran d'accueil iPhone : Safari → Partager → Sur l'écran d'accueil<br>
+          • Les données sont synchronisées en temps réel entre tous les appareils<br>
+          • Le point vert en haut = synchronisation Firebase active<br>
+          • Appui long sur une tâche pour la déplacer (mobile)<br>
+          • Dans ⚙️ Produits : glisse ⠿ pour réordonner, ✏️ pour modifier
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1083,7 +1145,7 @@ function renderStock(){
   renderThermoCards();
   const el=document.getElementById('stockList');
   if(!S.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">📦</div>Ajoutez vos produits<br>dans l\'onglet Produits.</div>';return;}
-  el.innerHTML=S.products.map(p=>{
+  el.innerHTML=S.products.map((p,i)=>{
     const s=status(p),d=dispo(p),so=sorti(p);
     return`<div class="scard ${s}" id="pc-${p.id}">
       <div class="flip-box" id="flip-${p.id}">
@@ -1097,7 +1159,14 @@ function renderStock(){
           <div class="scard-num-block"><div class="sn-val" id="sv-s-${p.id}" style="${so>0?'color:var(--orange)':''}">${so>0?so:'—'}</div><div class="sn-lbl">🌡️ Sorti</div></div>
         </div>
       </div>
-      <div class="scard-actions">${badge(s)}<button class="edit-ico" onclick="openCorrect('${p.id}')">✏️</button></div>
+      <div class="scard-actions">
+        ${badge(s)}
+        <button class="edit-ico" onclick="openCorrect('${p.id}')">✏️</button>
+        <div style="display:flex;gap:3px">
+          <button class="move-btn" onclick="moveProduct('${p.id}',-1);renderStock()" ${i===0?'disabled':''}>↑</button>
+          <button class="move-btn" onclick="moveProduct('${p.id}',+1);renderStock()" ${i===S.products.length-1?'disabled':''}>↓</button>
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -1225,8 +1294,8 @@ function renderTasks(){
   if(!S.tasks)S.tasks=[];
   const auto=S.tasks.filter(t=>t.auto),manual=S.tasks.filter(t=>!t.auto);
   document.getElementById('autoSection').style.display=auto.length?'block':'none';
-  document.getElementById('autoList').innerHTML=auto.map(tHTML).join('');
-  document.getElementById('manualList').innerHTML=manual.map(tHTML).join('');
+  document.getElementById('autoList').innerHTML=auto.map((t,i)=>tHTML(t,i,auto.length)).join('');
+  document.getElementById('manualList').innerHTML=manual.map((t,i)=>tHTML(t,i,manual.length)).join('');
   document.getElementById('emptyTasks').style.display=(!auto.length&&!manual.length)?'block':'none';
   const pending=S.tasks.filter(t=>!t.done).length;
   const be=document.getElementById('taskBadge');
@@ -1234,16 +1303,17 @@ function renderTasks(){
   renderHistoTaches();
 }
 
-function tHTML(t){
+function tHTML(t, idx, total){
   let rb='';
   if(t.auto&&t.pid){const p=S.products.find(x=>x.id===t.pid);if(p?.recipeUrl)rb=`<button class="recipe-btn" onclick="openRecipe('${p.id}')">📄</button>`;}
   const catBadge=t.cat&&!t.auto&&!t.fromGestion?`<span class="task-cat-badge cat-${t.cat}">${CAT_LABELS[t.cat]||t.cat}</span>`:'';
   const gestionBadge=t.fromGestion?`<span class="from-gestion">📋 Gestion</span>`:'';
-  return`<div class="titem ${t.done?'done':''}" id="titem-${t.id}"
-    draggable="true"
-    ontouchstart="touchTaskStart(event,'${t.id}')"
-    ontouchmove="touchTaskMove(event)"
-    ontouchend="touchTaskEnd(event,'${t.id}')">
+  const moveBtns=!t.auto?`<div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
+    <button class="move-btn" onclick="moveTask('${t.id}',-1)" ${idx===0?'disabled':''}>↑</button>
+    <button class="move-btn" onclick="moveTask('${t.id}',+1)" ${idx===total-1?'disabled':''}>↓</button>
+  </div>`:'';
+  return`<div class="titem ${t.done?'done':''}" id="titem-${t.id}">
+    ${moveBtns}
     <div class="tchk" onclick="toggleTask('${t.id}')"></div>
     <div class="ttext" onclick="toggleTask('${t.id}')">${t.text}</div>
     ${t.auto?'<span class="tauto">Auto</span>':''}${catBadge}${gestionBadge}${rb}
@@ -1299,13 +1369,11 @@ function renderSettings(){
   const el=document.getElementById('settingsList');
   if(!S.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">⚙️</div>Aucun produit.</div>';return;}
   el.innerHTML=S.products.map((p,i)=>`
-    <div class="pcard-set" draggable="true"
-      ondragstart="dragStart(event,'${p.id}')"
-      ondragover="dragOver(event,'${p.id}')"
-      ondrop="dragDrop(event,'${p.id}')"
-      ondragend="dragEnd()"
-      id="pset-${p.id}">
-      <span class="drag-handle">⠿</span>
+    <div class="pcard-set" id="pset-${p.id}">
+      <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
+        <button class="move-btn" onclick="moveProduct('${p.id}',-1)" ${i===0?'disabled':''}>↑</button>
+        <button class="move-btn" onclick="moveProduct('${p.id}',+1)" ${i===S.products.length-1?'disabled':''}>↓</button>
+      </div>
       <span style="font-size:20px">${p.emoji}</span>
       <div class="pcard-set-info">
         <div class="pcard-set-name">${p.name}</div>
@@ -1374,26 +1442,6 @@ function saveProduct() {
   ['np-name','np-emoji','np-seuil','np-base','np-stock'].forEach(id=>document.getElementById(id).value='');
   clearPdfInput();
   closeM('mProduct'); save(); render();
-}
-
-// ── DRAG & DROP ──
-let dragId = null;
-function dragStart(e, id) { dragId=id; setTimeout(()=>document.getElementById('pset-'+id)?.classList.add('dragging'),0); }
-function dragEnd() { document.querySelectorAll('.pcard-set').forEach(el=>{el.classList.remove('dragging','drag-over');}); }
-function dragOver(e, id) {
-  e.preventDefault();
-  document.querySelectorAll('.pcard-set').forEach(el=>el.classList.remove('drag-over'));
-  document.getElementById('pset-'+id)?.classList.add('drag-over');
-}
-function dragDrop(e, targetId) {
-  e.preventDefault();
-  if(dragId===targetId) return;
-  const fromIdx = S.products.findIndex(p=>p.id===dragId);
-  const toIdx   = S.products.findIndex(p=>p.id===targetId);
-  if(fromIdx<0||toIdx<0) return;
-  const [moved] = S.products.splice(fromIdx,1);
-  S.products.splice(toIdx,0,moved);
-  save(); renderSettings(); toast('Ordre mis à jour');
 }
 
 function delProduct(id){S.products=S.products.filter(p=>p.id!==id);stopFlip(id);save();render();toast('Produit supprimé');}
@@ -1565,7 +1613,7 @@ function renderMatieres() {
     el.innerHTML = html; return;
   }
 
-  html += S.matieres.map(m => {
+  html += S.matieres.map((m, idx) => {
     const stockNum = parseFloat(m.stock)||0;
     const seuilNum = parseFloat(m.seuil)||0;
     const consoNum = parseFloat(m.consoDuJour)||0;
@@ -1612,13 +1660,17 @@ function renderMatieres() {
         </div>
       </div>
       <div class="scard-actions">
-        <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+          <div style="display:flex;gap:3px">
+            <button class="move-btn" onclick="moveMatiere('${m.id}',-1)" ${idx===0?'disabled':''}>↑</button>
+            <button class="move-btn" onclick="moveMatiere('${m.id}',+1)" ${idx===(S.matieres.length-1)?'disabled':''}>↓</button>
+          </div>
           <div style="display:flex;align-items:center;background:var(--cream);border-radius:8px;overflow:hidden;height:32px">
             <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock('${m.id}',-1)">−</button>
             <input style="width:40px;height:32px;border:none;background:none;text-align:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--ink)" type="number" min="0" id="mat-val-${m.id}" value="0" inputmode="numeric">
             <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock('${m.id}',+1)">+</button>
           </div>
-          <button style="font-size:9px;background:var(--rust,#963020);color:white;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;white-space:nowrap" onclick="useMatiere('${m.id}')">Utiliser</button>
+          <button style="font-size:9px;background:var(--brown);color:var(--ocre-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;white-space:nowrap" onclick="useMatiere('${m.id}')">Utiliser</button>
           <button class="sdel" style="font-size:11px;padding:3px 7px" onclick="delMatiere('${m.id}')">Suppr.</button>
         </div>
       </div>
@@ -1831,7 +1883,7 @@ function renderCmdClients() {
   // Trier par date
   const sorted = [...S.cmdClients].sort((a,b) => (a.date||'').localeCompare(b.date||''));
 
-  html += sorted.map(c => {
+  html += sorted.map((c, idx) => {
     const dDate = c.date ? new Date(c.date) : null;
     const isUrgent = dDate && dDate <= tomorrow && c.status !== 'validated';
     const cls = c.status==='validated' ? 'validated' : c.status==='sent' ? 'sent' : isUrgent ? 'urgent' : '';
@@ -1841,6 +1893,10 @@ function renderCmdClients() {
 
     return `<div class="cmd-client-card ${cls}">
       <div class="cmd-client-header">
+        <div style="display:flex;gap:4px;flex-shrink:0">
+          <button class="move-btn" onclick="moveCmdClient('${c.id}',-1)" ${idx===0?'disabled':''}>↑</button>
+          <button class="move-btn" onclick="moveCmdClient('${c.id}',+1)" ${idx===sorted.length-1?'disabled':''}>↓</button>
+        </div>
         <span class="cmd-client-name">${c.nom}</span>
         <span class="cmd-client-badge ${badgeCls}">${badgeTxt}</span>
       </div>
@@ -2024,46 +2080,37 @@ function calSelectDate(d) {
   renderCalendrier();
 }
 
-// ── DRAG & DROP MOBILE (appui long) ──
-let touchDragId=null, touchDragType=null, touchStartY=0, touchLongPress=null, touchClone=null;
-
-function touchTaskStart(e, id){
-  touchStartY = e.touches[0].clientY;
-  touchLongPress = setTimeout(()=>{
-    touchDragId=id; touchDragType='task';
-    const el=document.getElementById('titem-'+id);
-    if(el){ el.style.opacity='0.4'; navigator.vibrate&&navigator.vibrate(40); }
-  },500);
+// ── RÉORDONNANCEMENT ↑ ↓ ──
+function moveItem(arr, id, dir) {
+  const idx = arr.findIndex(x=>x.id===id);
+  if(idx<0) return false;
+  if(dir<0 && idx===0) return false;
+  if(dir>0 && idx===arr.length-1) return false;
+  const [item] = arr.splice(idx,1);
+  arr.splice(idx+dir, 0, item);
+  return true;
 }
 
-function touchTaskMove(e){
-  if(!touchDragId) return;
-  e.preventDefault();
-  const y=e.touches[0].clientY;
-  const els=document.querySelectorAll('.titem[id]');
-  els.forEach(el=>{
-    const r=el.getBoundingClientRect();
-    if(y>r.top&&y<r.bottom&&el.id!=='titem-'+touchDragId) el.style.borderTop='2px solid var(--ocre)';
-    else el.style.borderTop='';
-  });
-}
-
-function touchTaskEnd(e, id){
-  clearTimeout(touchLongPress);
-  if(!touchDragId){return;}
-  const y=e.changedTouches[0].clientY;
-  let targetId=null;
-  document.querySelectorAll('.titem[id]').forEach(el=>{
-    el.style.borderTop=''; el.style.opacity='';
-    const r=el.getBoundingClientRect();
-    if(y>r.top&&y<r.bottom) targetId=el.id.replace('titem-','');
-  });
-  if(targetId&&targetId!==touchDragId){
-    const fi=S.tasks.findIndex(t=>t.id===touchDragId);
-    const ti=S.tasks.findIndex(t=>t.id===targetId);
-    if(fi>=0&&ti>=0){ const [m]=S.tasks.splice(fi,1); S.tasks.splice(ti,0,m); save(); renderTasks(); }
+function moveTask(id, dir) {
+  const manual = S.tasks.filter(t=>!t.auto);
+  if(moveItem(manual, id, dir)) {
+    // Reconstruire S.tasks en gardant les auto en premier
+    const auto = S.tasks.filter(t=>t.auto);
+    S.tasks = [...auto, ...manual];
+    save(); renderTasks();
   }
-  touchDragId=null;
+}
+
+function moveProduct(id, dir) {
+  if(moveItem(S.products, id, dir)) { save(); renderSettings(); }
+}
+
+function moveMatiere(id, dir) {
+  if(moveItem(S.matieres||[], id, dir)) { save(); renderMatieres(); }
+}
+
+function moveCmdClient(id, dir) {
+  if(moveItem(S.cmdClients||[], id, dir)) { save(); renderCmdClients(); }
 }
 
 function renderHistoB(){
@@ -2395,6 +2442,9 @@ document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='
 
 let tt;
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2500);}
+
+function openHelp(){const el=document.getElementById('helpOverlay');if(el){el.style.display='flex';}}
+function closeHelp(){const el=document.getElementById('helpOverlay');if(el){el.style.display='none';}}
 
 load();
 </script>
