@@ -42,18 +42,23 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .module-fournil::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(212,160,48,0.18) 0%, transparent 70%); border-radius: 50%; }
 .module-bureau { background: linear-gradient(135deg, #141824 0%, #1E2638 60%, #263248 100%); border: 1px solid rgba(74,144,217,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 .module-bureau::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(74,144,217,0.15) 0%, transparent 70%); border-radius: 50%; }
+.module-labo { background: linear-gradient(135deg, #1A0A2A 0%, #2A1040 60%, #3D1860 100%); border: 1px solid rgba(180,100,220,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.module-labo::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(180,100,220,0.15) 0%, transparent 70%); border-radius: 50%; }
 .module-icon { font-size: 38px; margin-bottom: 12px; display: block; }
 .module-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 5px; }
 .module-fournil .module-name { color: var(--ocre-light); }
 .module-bureau .module-name { color: #A8C8F0; }
+.module-labo .module-name { color: #E0B8FF; }
 .module-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
 .module-arrow { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 20px; opacity: 0.35; }
 .module-fournil .module-arrow { color: var(--ocre); }
 .module-bureau .module-arrow { color: var(--bureau-accent); }
+.module-labo .module-arrow { color: #C080FF; }
 .module-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
 .module-tag { font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
 .module-fournil .module-tag { background: rgba(212,160,48,0.15); color: var(--ocre); }
 .module-bureau .module-tag { background: rgba(74,144,217,0.15); color: #7BB8F0; }
+.module-labo .module-tag { background: rgba(180,100,220,0.15); color: #C080FF; }
 
 /* APP */
 #appWrapper { display: none; flex-direction: column; min-height: 100svh; }
@@ -263,6 +268,16 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .cal-day.today.has-event::after { background:var(--ocre-light); }
 .cal-day.other-month { opacity:0.3; }
 .cal-day.has-cmd::after { background:var(--red); }
+.cal-day.charge-low  { background:#C8E0C0; color:#2A5020; }
+.cal-day.charge-mid  { background:#FAD8A0; color:#7A4A00; }
+.cal-day.charge-high { background:#F0A8A0; color:#7A2018; }
+.cal-day.charge-low:active  { background:#A8C8A0; }
+.cal-day.charge-mid:active  { background:#F0C080; }
+.cal-day.charge-high:active { background:#E08878; }
+.cal-day.sel-day { outline: 2px solid var(--ocre); outline-offset: -2px; }
+.cal-legend { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+.cal-legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--brown-light); }
+.cal-legend-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
 .cal-events { background:var(--paper); border-radius:var(--r); padding:13px 14px; box-shadow:var(--sh); }
 .cal-event-title { font-family:'Playfair Display',serif; font-size:14px; color:var(--brown-mid); margin-bottom:10px; }
 .cal-event-item { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid rgba(196,154,108,0.1); }
@@ -496,6 +511,18 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .notes-input:focus { outline: none; border-color: var(--ocre); }
 .notes-send-btn { width: 100%; background: var(--brown); color: var(--ocre-light); border: none; border-radius: 8px; padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 7px; }
 .notes-send-btn:active { background: var(--brown-mid); }
+
+/* JOURNAL VOCAL */
+.vocal-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 8px; padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 7px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.vocal-btn.recording { background: var(--red); animation: pulse 1s infinite; }
+.vocal-btn:active { opacity: 0.85; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+.vocal-timer { font-size: 11px; color: var(--brown-light); text-align: center; margin-top: 4px; }
+.note-audio { width: 100%; margin-top: 6px; height: 36px; border-radius: 8px; accent-color: var(--brown); }
+.note-vocal-badge { font-size: 9px; background: #F0E8FF; color: #6A20A0; padding: 2px 7px; border-radius: 20px; font-weight: 600; flex-shrink: 0; }
+.transcribe-btn { background: none; border: 1px solid rgba(196,154,108,0.3); border-radius: 6px; padding: 4px 10px; font-size: 11px; color: var(--brown-light); cursor: pointer; margin-top: 6px; font-family: 'DM Sans', sans-serif; }
+.transcribe-btn:active { background: var(--cream); }
+.note-transcription { font-size: 12px; color: var(--brown-light); font-style: italic; margin-top: 6px; padding: 6px 10px; background: var(--cream); border-radius: 6px; line-height: 1.4; }
 .note-msg { background: var(--paper); border-radius: var(--r); padding: 11px 13px; margin-bottom: 7px; box-shadow: var(--sh); }
 .note-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
 .note-author { font-weight: 600; font-size: 12px; color: var(--brown-mid); }
@@ -532,6 +559,16 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
       </div>
       <div class="module-arrow">›</div>
     </div>
+    <div class="module-card module-labo" onclick="openModule('labo')">
+      <span class="module-icon">🍰</span>
+      <div class="module-name">Labo Pâtisserie</div>
+      <div class="module-desc">Stock pâtisserie, productions journalières,<br>tâches et calendrier</div>
+      <div class="module-tags">
+        <span class="module-tag">❄️ Stock</span><span class="module-tag">🛒 Magasin</span>
+        <span class="module-tag">✅ Tâches</span><span class="module-tag">📅 Calendrier</span>
+      </div>
+      <div class="module-arrow">›</div>
+    </div>
     <div class="module-card module-bureau" onclick="openModule('bureau')">
       <span class="module-icon">📋</span>
       <div class="module-name">Gestion</div>
@@ -559,45 +596,78 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
         <div style="font-family:'Playfair Display',serif;font-size:15px;color:var(--brown);margin-bottom:10px">🍞 Module Fournil</div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">❄️ Stock</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Affiche le stock disponible au congélateur. La carte alterne entre le stock restant et ce qui a été sorti aujourd'hui. Appuie sur ✏️ pour ajouter de la production — la quantité s'additionne au stock existant.</div></div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Affiche le stock disponible au congélateur. La carte alterne entre le stock restant et ce qui a été sorti. Appuie sur ✏️ pour ajouter de la production — la quantité s'additionne au stock existant. Les boutons ↑ ↓ permettent de réordonner les produits.</div></div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🛒 Magasin</div>
         <div style="font-size:13px;color:var(--ink);line-height:1.5">Swipe gauche/droite sur chaque carte pour alterner entre <b>Base/jour</b> (sortie fixe quotidienne) et <b>Commande du jour</b> (extra). Le total se soustrait automatiquement du stock au changement de journée.</div></div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">✅ Tâches</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Les tâches <b>Auto</b> apparaissent quand un stock est bas. Cocher une tâche auto ouvre une fenêtre pour saisir la quantité produite. Les tâches manuelles se créent avec <b>+</b> avec une catégorie (🧼 Nettoyage, 🔧 Maintenance…). Les tâches validées sont archivées en bas.</div></div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Les tâches <b>Auto</b> apparaissent quand un stock est bas — cocher une tâche auto ouvre une fenêtre pour saisir la quantité produite. Les tâches manuelles se créent avec <b>+</b> avec une catégorie (🧼 Nettoyage, 🔧 Maintenance, 📦 Production…). Les tâches venant de la Gestion ont un badge violet 📋. Les tâches validées sont archivées en bas par catégorie. Boutons ↑ ↓ pour réordonner.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📈 Historique</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Toutes les sorties et rechargements par produit et par date. Filtre par produit avec les boutons en haut.</div></div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📅 Calendrier</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Vue mensuelle des événements. Appuie sur un jour pour voir sorties, rechargements et livraisons. Les commandes à livrer apparaissent en rouge la <b>veille</b> pour anticiper la production.</div></div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Vue mensuelle avec code couleur de charge : 🟢 léger, 🟠 chargé, 🔴 surcharge selon le nombre de pièces commandées. Appuie sur ⚙️ Seuils pour personnaliser les limites. Les commandes à livrer le lendemain apparaissent en rouge pour anticiper la production.</div></div>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">💬 Notes équipe</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">La bulle marron en bas à droite ouvre les notes d'équipe. Chaque boulanger laisse un message signé. Une zone de notes libres partagée est disponible en bas.</div></div>
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">⚙️ Produits</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Ajoute, modifie (✏️) ou supprime des produits. Configure aussi les thermomètres connectés. Boutons ↑ ↓ pour réordonner.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">💬 Notes d'équipe</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">La bulle marron en bas à droite ouvre les notes. Messages texte signés + zone de notes libres. Bouton 🎙️ <b>Journal vocal</b> : enregistre jusqu'à 30s, le message audio est conservé et écoutable. Bouton <b>Retranscrire</b> pour convertir en texte.</div></div>
       </div>
 
       <div style="margin-bottom:20px">
         <div style="font-family:'Playfair Display',serif;font-size:15px;color:#7BB8F0;margin-bottom:10px">📋 Module Gestion</div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🌾 Matières premières</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Suivi des stocks de farine, beurre, levure… Saisis la quantité utilisée et appuie sur <b>Utiliser</b>. Les alertes DLC s'affichent en orange (moins de 7 jours) ou rouge (expiré).</div></div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Suivi des stocks de farine, beurre, levure… Saisis la quantité à utiliser et appuie sur <b>Utiliser</b>. Bouton ✏️ pour modifier une matière. Alertes DLC en orange (&lt;7 jours) ou rouge (expiré). Boutons ↑ ↓ pour réordonner.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📦 Fournisseurs</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Calcul automatique des commandes selon la consommation hebdomadaire vs stock actuel. Bouton <b>📋 Copier la liste</b> pour envoyer la commande par SMS ou email au fournisseur.</div></div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🧁 Commandes clients</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Crée une commande (ex: 20 croissants pour l'hôpital) avec date de livraison. Appuie sur <b>Envoyer au fournil</b> pour créer automatiquement une tâche côté Fournil avec badge violet. Quand le boulanger valide, le statut passe en <b>Validé</b> ici en temps réel.</div></div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Crée une commande avec nom, adresse, date et détail des produits. Bouton ✏️ pour modifier. Bouton <b>📤 Envoyer au fournil</b> crée une tâche automatique côté boulanger. Quand la tâche est validée, le statut passe en Validé ici en temps réel. Bouton <b>🗺️ Lancer la tournée</b> ouvre Google Maps avec toutes les adresses optimisées.</div></div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📋 Journal de production</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Note les quantités produites par produit chaque jour et ajoute des observations (température du four, problème de pousse…). Navigue entre les jours avec les flèches.</div></div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Note les quantités produites par produit chaque jour + observations libres (température du four, problème de pousse…). Navigue entre les jours avec les flèches ‹ ›.</div></div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📊 Stats hebdomadaires</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Résumé des 7 derniers jours : quantité sortie et produite par produit.</div></div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Résumé des 7 derniers jours : quantité sortie du congélateur et quantité produite par produit.</div></div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Playfair Display',serif;font-size:15px;color:#C080FF;margin-bottom:10px">🍰 Module Labo Pâtisserie</div>
+
+        <div style="font-size:13px;color:var(--ink);line-height:1.5;margin-bottom:10px">Le Labo a exactement les mêmes fonctionnalités que le Fournil, mais pour la pâtisserie. Les données sont totalement séparées — les produits, stocks et historiques pâtisserie sont indépendants de la boulangerie.</div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">❄️ Stock</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Même fonctionnement que le Fournil — flip animé, indicateurs colorés, bouton ✏️ pour réapprovisionner, boutons ↑ ↓ pour réordonner.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🛒 Magasin</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Sorties journalières pâtisserie — base/jour et commandes du jour avec swipe gauche/droite.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">✅ Tâches</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Tâches automatiques quand un stock pâtisserie est bas, tâches manuelles avec catégories, historique des tâches effectuées.</div></div>
+
+        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📈 Histo & 📅 Calendrier</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Historique des sorties et rechargements pâtisserie. Calendrier dédié avec les événements du labo.</div></div>
+
+        <div style="margin-bottom:0"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">⚙️ Produits</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Ajoute, modifie ou supprime tes produits pâtisserie (entremets, tartes, macarons…). Produits par défaut fournis au démarrage.</div></div>
       </div>
 
       <div style="background:var(--cream);border-radius:12px;padding:12px 14px">
         <div style="font-weight:600;font-size:12px;color:var(--brown-mid);margin-bottom:6px">💡 Astuces</div>
         <div style="font-size:12px;color:var(--brown-light);line-height:1.7">
           • Ajoute l'appli à l'écran d'accueil iPhone : Safari → Partager → Sur l'écran d'accueil<br>
-          • Les données sont synchronisées en temps réel entre tous les appareils<br>
-          • Le point vert en haut = synchronisation Firebase active<br>
-          • Appui long sur une tâche pour la déplacer (mobile)<br>
-          • Dans ⚙️ Produits : glisse ⠿ pour réordonner, ✏️ pour modifier
+          • Les données sont synchronisées en temps réel entre tous les appareils via Firebase<br>
+          • Le point vert en haut de l'accueil = synchronisation active<br>
+          • Boutons ↑ ↓ pour réordonner produits, tâches, matières et commandes<br>
+          • Le Labo et le Fournil ont des données séparées — la Gestion est commune aux deux<br>
+          • Le calendrier affiche la charge de travail en couleur selon les commandes clients<br>
+          • La tournée GPS ouvre Google Maps avec l'itinéraire optimisé automatiquement<br>
+          • Journal vocal : appuie 🎙️ dans les notes, parle 30s, puis "Retranscrire" pour le texte
         </div>
       </div>
 
@@ -640,6 +710,25 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     </div>
   </div>
 
+  <div class="hdr" id="hdrLabo" style="display:none;background:linear-gradient(180deg,#1A0A2A 0%,#2A1040 100%)">
+    <div class="hdr-top">
+      <button class="hdr-back" onclick="goHome()" style="color:rgba(192,128,255,0.6)">‹ <span>Menu</span></button>
+      <div class="hdr-logo" style="color:#E0B8FF">🍰 Labo <em style="color:#C080FF">pâtisserie</em></div>
+      <div class="hdr-date" id="hdateLabo" style="color:#6B4A8A"></div>
+    </div>
+    <div class="tabs" id="laboTabs">
+      <div class="tab active" onclick="swL('lstock')" style="color:rgba(192,128,255,0.5)">❄️ Stock</div>
+      <div class="tab" onclick="swL('lmagasin')" style="color:rgba(192,128,255,0.5)">🛒 Magasin</div>
+      <div class="tab-wrap">
+        <div class="tab" onclick="swL('ltasks')" style="color:rgba(192,128,255,0.5)">✅ Tâches</div>
+        <div class="tab-badge" id="laboTaskBadge" style="display:none"></div>
+      </div>
+      <div class="tab" onclick="swL('lhisto')" style="color:rgba(192,128,255,0.5)">📈 Histo</div>
+      <div class="tab" onclick="swL('lcalendr')" style="color:rgba(192,128,255,0.5)">📅</div>
+      <div class="tab" onclick="swL('lsettings')" style="color:rgba(192,128,255,0.5)">⚙️</div>
+    </div>
+  </div>
+
   <div class="content">
     <div id="fournilModule" style="display:none">
       <div class="section active" id="tab-stock">
@@ -673,6 +762,40 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
         <div id="calendrierContent"></div>
       </div>
     </div>
+
+    <!-- MODULE LABO -->
+    <div id="laboModule" style="display:none">
+      <div class="section active" id="ltab-lstock">
+        <div id="lMeteoCard"></div>
+        <div class="ov-strip" id="lOvStrip"></div>
+        <div class="sec-title">Inventaire congélateur pâtisserie</div>
+        <div id="lStockList"></div>
+      </div>
+      <div class="section" id="ltab-lmagasin">
+        <div class="day-pill">
+          <div><div class="day-pill-txt" id="lDayTxt"></div><div class="day-pill-sub" id="lDaySub"></div></div>
+          <div class="day-dot" id="lDayDot"></div>
+        </div>
+        <div id="lMagasinList"></div>
+      </div>
+      <div class="section" id="ltab-ltasks">
+        <div id="lAutoSection"><div class="tgroup-lbl">⚡ Auto — stocks bas</div><div id="lAutoList"></div></div>
+        <div class="tgroup-lbl">📋 Tâches du jour</div>
+        <div id="lManualList"></div>
+        <div class="empty" id="lEmptyTasks" style="display:none"><div class="empty-icon">✅</div>Tout est bouclé !</div>
+        <div class="tgroup-lbl" style="margin-top:20px">🗂️ Tâches effectuées</div>
+        <div id="lHistoTachesList"></div>
+      </div>
+      <div class="section" id="ltab-lhisto">
+        <div class="histo-filters" id="lHistoFilters"></div>
+        <div id="lHistoList"></div>
+      </div>
+      <div class="section" id="ltab-lcalendr">
+        <div id="lCalendrContent"></div>
+      </div>
+      <div class="section" id="ltab-lsettings">
+        <div id="lSettingsList"></div>
+      </div>
     </div>
 
     <div id="bureauModule" style="display:none">
@@ -865,7 +988,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 <!-- Modal matière première -->
 <div class="overlay" id="mMatiere">
   <div class="modal">
-    <div class="modal-title">Nouvelle matière première</div>
+    <div class="modal-title" id="mMatiereTitle">Nouvelle matière première</div>
     <div class="mgroup" style="margin-bottom:8px"><label>Nom</label><input class="minput" id="mat-name" placeholder="Ex: Farine T55" style="margin-bottom:0"></div>
     <div class="mgrid">
       <div class="mgroup"><label>Emoji</label><input class="minput" id="mat-emoji" placeholder="🌾" maxlength="2" style="margin-bottom:0"></div>
@@ -879,14 +1002,14 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
           <option value="boîtes">boîtes</option>
         </select>
       </div>
-      <div class="mgroup"><label>Stock actuel</label><input class="minput" id="mat-stock" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
+      <div class="mgroup" id="mat-stock-group"><label>Stock actuel</label><input class="minput" id="mat-stock" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
       <div class="mgroup"><label>Seuil alerte</label><input class="minput" id="mat-seuil" type="number" min="0" placeholder="5" style="margin-bottom:0"></div>
       <div class="mgroup"><label>Conso / semaine</label><input class="minput" id="mat-conso" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
       <div class="mgroup"><label>DLC (date)</label><input class="minput" id="mat-dlc" type="date" style="margin-bottom:0"></div>
     </div>
     <div class="mactions" style="margin-top:10px">
-      <button class="mbtn mbtn-c" onclick="closeM('mMatiere')">Annuler</button>
-      <button class="mbtn mbtn-p" onclick="addMatiere()">Ajouter</button>
+      <button class="mbtn mbtn-c" onclick="closeM('mMatiere');editMatiereId=null">Annuler</button>
+      <button class="mbtn mbtn-p" id="mMatiereBtn" onclick="saveMatiere()">Ajouter</button>
     </div>
   </div>
 </div>
@@ -898,6 +1021,10 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     <div class="mgroup" style="margin-bottom:8px">
       <label>Client / Description</label>
       <input class="minput" id="cc-nom" placeholder="Ex: Hôpital — 20 croissants" style="margin-bottom:0">
+    </div>
+    <div class="mgroup" style="margin-bottom:8px">
+      <label>📍 Adresse de livraison</label>
+      <input class="minput" id="cc-adresse" placeholder="Ex: 15 rue de la Paix, Nice" style="margin-bottom:0">
     </div>
     <div class="mgrid">
       <div class="mgroup">
@@ -920,6 +1047,43 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
   </div>
 </div>
 
+<!-- Modal édition commande client -->
+<div class="overlay" id="mEditCmd">
+  <div class="modal">
+    <div class="modal-title" id="mEditCmdTitle">Modifier la commande</div>
+    <div class="mgroup" style="margin-bottom:8px"><label>Client / Description</label><input class="minput" id="ec-nom" style="margin-bottom:0"></div>
+    <div class="mgroup" style="margin-bottom:8px"><label>📍 Adresse</label><input class="minput" id="ec-adresse" style="margin-bottom:0"></div>
+    <div class="mgrid">
+      <div class="mgroup"><label>📅 Date livraison</label><input class="minput" id="ec-date" type="date" style="margin-bottom:0"></div>
+      <div class="mgroup"><label>⏰ Heure</label><input class="minput" id="ec-heure" type="time" style="margin-bottom:0"></div>
+    </div>
+    <div class="mgroup" style="margin-bottom:0"><label>📝 Détail</label>
+      <textarea class="minput" id="ec-detail" style="min-height:60px;resize:none"></textarea>
+    </div>
+    <div class="mactions" style="margin-top:10px">
+      <button class="mbtn mbtn-c" onclick="closeM('mEditCmd')">Annuler</button>
+      <button class="mbtn mbtn-p" onclick="saveEditCmd()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal seuils charge de travail -->
+<div class="overlay" id="mSeuils">
+  <div class="modal">
+    <div class="modal-title">⚙️ Seuils charge de travail</div>
+    <div style="font-size:12px;color:var(--brown-light);margin-bottom:12px">Nombre de pièces par jour pour chaque niveau</div>
+    <div class="mgrid">
+      <div class="mgroup"><label>🟢 Max Léger</label><input class="minput" id="seuil-low" type="number" min="1" style="margin-bottom:0"></div>
+      <div class="mgroup"><label>🟠 Max Chargé</label><input class="minput" id="seuil-mid" type="number" min="1" style="margin-bottom:0"></div>
+    </div>
+    <div style="font-size:11px;color:var(--brown-light);margin-top:4px">Au-delà du max chargé → 🔴 Surcharge</div>
+    <div class="mactions" style="margin-top:12px">
+      <button class="mbtn mbtn-c" onclick="closeM('mSeuils')">Annuler</button>
+      <button class="mbtn mbtn-p" onclick="saveSeuils()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const DEFAULTS = [
   {id:'croissant',name:'Croissant',emoji:'🥐',stockReel:0,base:0,commande:0,seuil:20},
@@ -932,7 +1096,9 @@ const DEFAULTS = [
 ];
 
 let S={products:[],tasks:[],lastDate:null,history:[],thermos:[],notes:[],boulangers:[],freeNotes:'',thermoMode:'tuya',journal:{}};
+let L={products:[],tasks:[],lastDate:null,history:[],histoTaches:[]}; // State Labo séparé
 let flips={},tab='stock',activeModule=null,correctId=null,dbt={},histoFilter='all',histoFilterB='all',meteoLoaded=false,pendingPdfUrl=null,thermoTimers={};
+let laboTab='lstock',laboHistoFilter='all',laboDbt={},laboFlips={};
 
 const today=()=>new Date().toISOString().slice(0,10);
 const dispo=p=>Math.max(0,p.stockReel-(p.base||0)-(p.commande||0));
@@ -958,14 +1124,12 @@ function initFirebase() {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
 
-    // Écoute temps réel
+    // Écoute temps réel — Fournil
     db.collection('boulangerie').doc('state').onSnapshot(snap => {
       if (snap.exists) {
         const remote = snap.data().state;
         if (remote) {
-          const parsed = JSON.parse(remote);
-          // Ne mettre à jour que si les données sont plus récentes
-          S = parsed;
+          S = JSON.parse(remote);
           normalizeState();
           if (activeModule === 'fournil') render();
           if (tab === 'thermos') renderThermos();
@@ -973,10 +1137,19 @@ function initFirebase() {
         }
       }
       updateSyncIndicator(true);
-    }, err => {
-      console.warn('Firestore écoute erreur', err);
-      updateSyncIndicator(false);
-    });
+    }, err => { console.warn('Firestore erreur', err); updateSyncIndicator(false); });
+
+    // Écoute temps réel — Labo
+    db.collection('boulangerie').doc('labo').onSnapshot(snap => {
+      if (snap.exists) {
+        const remote = snap.data().state;
+        if (remote) {
+          L = JSON.parse(remote);
+          normalizeLabo();
+          if (activeModule === 'labo') renderLabo();
+        }
+      }
+    }, () => {});
 
     updateSyncIndicator(true);
   } catch(e) {
@@ -987,13 +1160,28 @@ function initFirebase() {
 
 async function save() {
   try {
-    // Fallback local
     try { await window.storage.set('fournil-local', JSON.stringify(S)); } catch {}
-    // Firebase
-    if (db) {
-      db.collection('boulangerie').doc('state').set({ state: JSON.stringify(S) });
-    }
+    if (db) db.collection('boulangerie').doc('state').set({ state: JSON.stringify(S) });
   } catch(e) { console.warn('Erreur save', e); }
+}
+
+async function saveL() {
+  try {
+    try { await window.storage.set('labo-local', JSON.stringify(L)); } catch {}
+    if (db) db.collection('boulangerie').doc('labo').set({ state: JSON.stringify(L) });
+  } catch(e) { console.warn('Erreur saveL', e); }
+}
+
+function normalizeLabo() {
+  if (!L.products)    L.products = [];
+  if (!L.tasks)       L.tasks = [];
+  if (!L.history)     L.history = [];
+  if (!L.histoTaches) L.histoTaches = [];
+  if (!L.lastDate)    L.lastDate = null;
+  L.products.forEach(p => {
+    if (p.stockReel === undefined) p.stockReel = 0;
+    p.base = p.base||0; p.commande = p.commande||0; p.seuil = p.seuil||10;
+  });
 }
 
 function normalizeState() {
@@ -1012,68 +1200,73 @@ function normalizeState() {
   if (!S.histoTaches) S.histoTaches = [];
   if (!S.matieres)    S.matieres = [];
   if (!S.cmdClients)  S.cmdClients = [];
+  if (!S.seuilsCharge) S.seuilsCharge = { low: 30, mid: 80 };
 }
 
 async function load() {
-  // 1. Local d'abord pour affichage immédiat
+  // Fournil
   try {
     const local = await window.storage.get('fournil-local');
     if (local?.value) { S = JSON.parse(local.value); }
     else { S.products = JSON.parse(JSON.stringify(DEFAULTS)); }
   } catch { S.products = JSON.parse(JSON.stringify(DEFAULTS)); }
-
   normalizeState();
+
+  // Labo
+  try {
+    const ll = await window.storage.get('labo-local');
+    if (ll?.value) { L = JSON.parse(ll.value); }
+  } catch {}
+  normalizeLabo();
+
   document.getElementById('homeDate').textContent =
     new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
   checkDay();
-
-  // 2. Firebase en arrière-plan
+  checkDayLabo();
   initFirebase();
 }
 
-function updateSyncIndicator(connected) {
-  const dot = document.getElementById('syncDot');
-  const txt = document.getElementById('syncTxt');
-  if (dot) dot.style.background = connected ? '#4A7040' : '#C05A18';
-  if (txt) txt.textContent = connected ? 'Synchronisé ✓' : 'Mode local';
-}
-
-function checkDay(){
-  if(S.lastDate===today())return;
-  S.products.forEach(p=>{
-    const s=Math.min(sorti(p),p.stockReel);
-    if(s>0)addHist('sortie',p,s);
+function checkDayLabo() {
+  if(L.lastDate===today()) return;
+  L.products.forEach(p=>{
+    const s=Math.min((p.base||0)+(p.commande||0), p.stockReel);
+    if(s>0) addLaboHist('sortie',p,s);
     p.stockReel=Math.max(0,p.stockReel-s);
     p.commande=0;
   });
-  S.lastDate=today();
-  if(S.tasks)S.tasks=S.tasks.filter(t=>!t.auto);
-  save();
+  L.lastDate=today();
+  if(L.tasks) L.tasks=L.tasks.filter(t=>!t.auto);
+  saveL();
 }
 
-function addHist(type,p,qty){
-  if(!S.history)S.history=[];
-  S.history.unshift({id:'h_'+Date.now(),date:today(),type,pid:p.id,name:p.name,emoji:p.emoji,qty});
-  if(S.history.length>630)S.history=S.history.slice(0,630);
+function addLaboHist(type,p,qty){
+  if(!L.history) L.history=[];
+  L.history.unshift({id:'lh_'+Date.now(),date:today(),type,pid:p.id,name:p.name,emoji:p.emoji,qty});
+  if(L.history.length>630) L.history=L.history.slice(0,630);
 }
 
 function openModule(m){
   activeModule=m;
   document.getElementById('homeScreen').style.display='none';
   document.getElementById('appWrapper').classList.add('visible');
+  // Cacher tout d'abord
+  ['hdrFournil','hdrBureau','hdrLabo'].forEach(id=>document.getElementById(id).style.display='none');
+  ['fournilModule','bureauModule','laboModule'].forEach(id=>document.getElementById(id).style.display='none');
+
   if(m==='fournil'){
     document.getElementById('hdrFournil').style.display='block';
-    document.getElementById('hdrBureau').style.display='none';
     document.getElementById('fournilModule').style.display='block';
-    document.getElementById('bureauModule').style.display='none';
-    document.getElementById('fab').classList.remove('bureau');
-    render(); startAllFlips(); loadMeteo();
-    updateNotesBubble();
-  }else{
+    document.getElementById('fab').classList.remove('bureau','hidden');
+    render(); startAllFlips(); loadMeteo(); updateNotesBubble();
+  } else if(m==='labo'){
+    document.getElementById('hdrLabo').style.display='block';
+    document.getElementById('laboModule').style.display='block';
+    document.getElementById('fab').classList.add('hidden');
+    document.getElementById('hdateLabo').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+    swL('lstock');
+  } else {
     document.getElementById('hdrBureau').style.display='block';
-    document.getElementById('hdrFournil').style.display='none';
     document.getElementById('bureauModule').style.display='block';
-    document.getElementById('fournilModule').style.display='none';
     document.getElementById('fab').classList.add('hidden');
     document.getElementById('hdateBureau').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
     swB('matieres');
@@ -1083,16 +1276,334 @@ function openModule(m){
 function goHome(){
   activeModule=null;
   Object.keys(flips).forEach(id=>{clearInterval(flips[id]);delete flips[id];});
+  Object.keys(laboFlips).forEach(id=>{clearInterval(laboFlips[id]);delete laboFlips[id];});
   document.getElementById('appWrapper').classList.remove('visible');
-  document.getElementById('hdrFournil').style.display='none';
-  document.getElementById('hdrBureau').style.display='none';
-  document.getElementById('fournilModule').style.display='none';
-  document.getElementById('bureauModule').style.display='none';
+  ['hdrFournil','hdrBureau','hdrLabo'].forEach(id=>document.getElementById(id).style.display='none');
+  ['fournilModule','bureauModule','laboModule'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('homeScreen').style.display='flex';
   document.getElementById('fab').classList.add('hidden');
   const nb=document.getElementById('notesBubble');
-  if(nb)nb.style.display='none';
+  if(nb) nb.style.display='none';
 }
+
+function updateSyncIndicator(connected) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncTxt');
+  if (dot) dot.style.background = connected ? '#4A7040' : '#C05A18';
+  if (txt) txt.textContent = connected ? 'Synchronisé ✓' : 'Mode local';
+}
+
+// ══════════════════════════════════════
+// ── MODULE LABO PÂTISSERIE ──
+// ══════════════════════════════════════
+
+const LABO_DEFAULTS = [
+  {id:'entremets',name:'Entremets',emoji:'🎂',stockReel:0,base:0,commande:0,seuil:5},
+  {id:'tarte',name:'Tarte',emoji:'🥧',stockReel:0,base:0,commande:0,seuil:8},
+  {id:'macaron',name:'Macaron',emoji:'🍬',stockReel:0,base:0,commande:0,seuil:20},
+  {id:'eclair',name:'Éclair',emoji:'⚡',stockReel:0,base:0,commande:0,seuil:10},
+  {id:'choux',name:'Choux',emoji:'🍮',stockReel:0,base:0,commande:0,seuil:10},
+];
+
+const ldispo=p=>Math.max(0,p.stockReel-(p.base||0)-(p.commande||0));
+const lsorti=p=>(p.base||0)+(p.commande||0);
+const lstatus=p=>{const d=ldispo(p);return d<=0?'empty':d<=p.seuil?'low':'ok';};
+
+function swL(t){
+  laboTab=t;
+  const hdr=document.getElementById('hdrLabo');
+  hdr.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  const tmap={lstock:0,lmagasin:1,ltasks:2,lhisto:3,lcalendr:4,lsettings:5};
+  const tabs=hdr.querySelectorAll('.tab');
+  if(tabs[tmap[t]]) tabs[tmap[t]].classList.add('active');
+  document.querySelectorAll('#laboModule .section').forEach(s=>s.classList.remove('active'));
+  const sec=document.getElementById('ltab-'+t);
+  if(sec) sec.classList.add('active');
+  // FAB labo
+  const hideFab=['lstock','lmagasin','lhisto','lcalendr'];
+  document.getElementById('fab').classList.toggle('hidden',hideFab.includes(t));
+  if(t==='ltasks') genLaboAutoTasks();
+  if(t==='lhisto') renderLaboHisto();
+  if(t==='lcalendr') renderLaboCalendrier();
+  renderLabo();
+}
+
+function renderLabo(){
+  if(activeModule!=='labo') return;
+  document.getElementById('hdateLabo').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  renderLaboStock(); renderLaboMagasin(); renderLaboTasks(); renderLaboSettings();
+}
+
+function renderLaboStock(){
+  const tD=L.products.reduce((a,p)=>a+ldispo(p),0);
+  const tS=L.products.reduce((a,p)=>a+lsorti(p),0);
+  const ov=document.getElementById('lOvStrip');
+  if(ov) ov.innerHTML=`
+    <div class="ov-pill"><div class="ov-icon">❄️</div><div><div class="ov-num">${tD}</div><div class="ov-lbl">Disponible</div></div></div>
+    <div class="ov-pill"><div class="ov-icon">🌡️</div><div><div class="ov-num" style="color:var(--orange)">${tS}</div><div class="ov-lbl">Sorti ce jour</div></div></div>`;
+  const el=document.getElementById('lStockList');
+  if(!el) return;
+  if(!L.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">📦</div>Ajoutez vos produits<br>dans l\'onglet Produits.</div>';return;}
+  el.innerHTML=L.products.map((p,i)=>{
+    const s=lstatus(p),d=ldispo(p),so=lsorti(p);
+    return`<div class="scard ${s}" id="lpc-${p.id}">
+      <div class="flip-box" id="lflip-${p.id}">
+        <div class="flip-face ff-s"><div class="fn" id="lfn-s-${p.id}">${d}</div><div class="fl">❄️ congelo</div></div>
+        <div class="flip-face ff-d"><div class="fn neg" id="lfn-d-${p.id}">${so>0?'−'+so:'—'}</div><div class="fl">🌡️ sorti</div></div>
+      </div>
+      <div class="scard-info">
+        <div class="scard-name"><span class="scard-emoji">${p.emoji}</span>${p.name}</div>
+        <div class="scard-nums">
+          <div class="scard-num-block"><div class="sn-val">${d}</div><div class="sn-lbl">❄️ Congelo</div></div>
+          <div class="scard-num-block"><div class="sn-val" style="${so>0?'color:var(--orange)':''}">${so>0?so:'—'}</div><div class="sn-lbl">🌡️ Sorti</div></div>
+        </div>
+      </div>
+      <div class="scard-actions">
+        ${badge(s)}
+        <button class="edit-ico" onclick="openLaboCorrect('${p.id}')">✏️</button>
+        <div style="display:flex;gap:3px">
+          <button class="move-btn" onclick="moveLaboProd('${p.id}',-1);renderLaboStock()" ${i===0?'disabled':''}>↑</button>
+          <button class="move-btn" onclick="moveLaboProd('${p.id}',+1);renderLaboStock()" ${i===L.products.length-1?'disabled':''}>↓</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  L.products.forEach(p=>{if(lsorti(p)>0)startLaboFlip(p.id);});
+}
+
+function startLaboFlip(id){
+  if(laboFlips[id]) clearInterval(laboFlips[id]);
+  let show='stock';
+  laboFlips[id]=setInterval(()=>{const el=document.getElementById('lflip-'+id);if(!el){clearInterval(laboFlips[id]);return;}show=show==='stock'?'d':'stock';el.classList.toggle('show-d',show==='d');},2600);
+}
+function stopLaboFlip(id){if(laboFlips[id]){clearInterval(laboFlips[id]);delete laboFlips[id];}const el=document.getElementById('lflip-'+id);if(el)el.classList.remove('show-d');}
+function moveLaboProd(id,dir){if(moveItem(L.products,id,dir)){saveL();renderLaboStock();}}
+
+let laboCorrectId=null;
+function openLaboCorrect(id){
+  const p=L.products.find(x=>x.id===id);if(!p)return;
+  laboCorrectId=id; window._laboCorrectMode=true;
+  document.getElementById('mCorrectTitle').textContent=p.emoji+' '+p.name;
+  document.getElementById('mc-stock').value='';
+  document.getElementById('mc-seuil').value=p.seuil;
+  const d=ldispo(p);
+  const dispEl=document.getElementById('mc-dispo');
+  const totEl=document.getElementById('mc-total');
+  if(dispEl) dispEl.textContent=d;
+  if(totEl) totEl.textContent=d;
+  document.getElementById('mc-stock').oninput=function(){const add=parseInt(this.value)||0;if(totEl)totEl.textContent=d+add;};
+  openM('mCorrect');
+}
+
+function saveCorrect(){
+  if(window._laboCorrectMode){
+    window._laboCorrectMode=false;
+    const p=L.products.find(x=>x.id===laboCorrectId);if(!p)return;
+    const ajout=Math.max(0,parseInt(document.getElementById('mc-stock').value)||0);
+    p.seuil=Math.max(0,parseInt(document.getElementById('mc-seuil').value)||5);
+    if(ajout>0){p.stockReel+=ajout;addLaboHist('recharge',p,ajout);}
+    // Marquer tâche auto comme faite si réappro depuis tâche
+    const t=L.tasks&&L.tasks.find(t=>t.auto&&t.pid===laboCorrectId&&!t.done);
+    if(t) t.done=true;
+    closeM('mCorrect');saveL();renderLaboStock();genLaboAutoTasks();
+    toast(ajout>0?'+ '+ajout+' ajouté au stock ✓':'Seuil mis à jour ✓');
+  } else {
+    const p=S.products.find(x=>x.id===correctId);if(!p)return;
+    const ajout=Math.max(0,parseInt(document.getElementById('mc-stock').value)||0);
+    p.seuil=Math.max(0,parseInt(document.getElementById('mc-seuil').value)||5);
+    if(ajout>0){p.stockReel=p.stockReel+ajout;addHist('recharge',p,ajout);}
+    closeM('mCorrect');save();refresh(p);genAutoTasks();
+    toast(ajout>0?'+ '+ajout+' ajouté au stock ✓':'Seuil mis à jour ✓');
+  }
+}
+
+function renderLaboMagasin(){
+  const el=document.getElementById('lMagasinList');if(!el)return;
+  const ldTxt=document.getElementById('lDayTxt');const ldSub=document.getElementById('lDaySub');const ldDot=document.getElementById('lDayDot');
+  if(ldTxt)ldTxt.textContent=L.lastDate===today()?'Journée en cours ✓':'En attente…';
+  if(ldSub)ldSub.textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  if(ldDot)ldDot.className='day-dot'+(L.lastDate===today()?'':' pending');
+  if(!L.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">🛒</div>Aucun produit.</div>';return;}
+  el.innerHTML=L.products.map(p=>{
+    const so=lsorti(p),d=ldispo(p);
+    return`<div class="mcard">
+      <div class="mcard-top"><div class="mcard-name"><span>${p.emoji}</span>${p.name}</div><div class="mcard-stock">Congelo : <b>${d}</b></div></div>
+      <div class="mcard-carousel"><div class="mcard-slides" id="lslides-${p.id}">
+        <div class="mcard-slide"><div class="mctrl-lbl">📦 Base / jour</div>
+          <div class="mcontrols" style="margin-top:4px"><div class="mctrl-group" style="flex:1"><div class="mctrl">
+            <button class="mc-btn" onclick="ladjM('base','${p.id}',-1)">−</button>
+            <input class="mc-in" id="lbase-${p.id}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="lonChange('base','${p.id}',this.value)">
+            <button class="mc-btn" onclick="ladjM('base','${p.id}',+1)">+</button>
+          </div></div><div class="mtotal-pill"><div class="mtotal-val">${so}</div><div class="mtotal-lbl">Total</div></div></div></div>
+        <div class="mcard-slide"><div class="mctrl-lbl">➕ Commande du jour</div>
+          <div class="mcontrols" style="margin-top:4px"><div class="mctrl-group" style="flex:1"><div class="mctrl">
+            <button class="mc-btn" onclick="ladjM('commande','${p.id}',-1)">−</button>
+            <input class="mc-in" id="lcommande-${p.id}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="lonChange('commande','${p.id}',this.value)">
+            <button class="mc-btn" onclick="ladjM('commande','${p.id}',+1)">+</button>
+          </div></div><div class="mtotal-pill"><div class="mtotal-val">${so}</div><div class="mtotal-lbl">Total</div></div></div></div>
+      </div>
+      <div class="mcard-dots"><div class="mcard-dot active"></div><div class="mcard-dot"></div></div></div>
+    </div>`;
+  }).join('');
+  L.products.forEach(p=>initLSwipe(p.id));
+}
+
+function ladjM(f,id,d){const i=document.getElementById('l'+f+'-'+id);const v=Math.max(0,(parseInt(i.value)||0)+d);i.value=v;lonChange(f,id,v);}
+function lonChange(f,id,val){clearTimeout(laboDbt[f+id]);laboDbt[f+id]=setTimeout(()=>{const p=L.products.find(x=>x.id===id);if(!p)return;p[f]=Math.max(0,parseInt(val)||0);saveL();},280);}
+
+const lcs={};
+function initLSwipe(id){
+  const s=document.getElementById('lslides-'+id);if(!s)return;
+  lcs[id]=0;let sx=0,drag=false;
+  s.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;drag=true;},{passive:true});
+  s.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();},{passive:false});
+  s.addEventListener('touchend',e=>{if(!drag)return;drag=false;const dx=e.changedTouches[0].clientX-sx;const cur=lcs[id];if(dx<-40&&cur===0)setLSlide(id,1);else if(dx>40&&cur===1)setLSlide(id,0);},{passive:true});
+}
+function setLSlide(id,idx){lcs[id]=idx;const s=document.getElementById('lslides-'+id);if(s)s.style.transform=`translateX(${idx*-100}%)`;}
+
+function genLaboAutoTasks(){
+  if(!L.tasks)L.tasks=[];
+  L.tasks=L.tasks.filter(t=>!t.auto||t.done);
+  L.products.forEach(p=>{
+    const s=lstatus(p);
+    if((s==='low'||s==='empty')&&!L.tasks.find(t=>t.auto&&t.pid===p.id&&!t.done))
+      L.tasks.unshift({id:'la_'+p.id+'_'+Date.now(),text:`Réapprovisionner ${p.emoji} ${p.name} — ${s==='empty'?'congelo vide':'faible ('+ldispo(p)+'u)'}`,done:false,auto:true,pid:p.id});
+  });
+  saveL(); renderLaboTasks();
+}
+
+function renderLaboTasks(){
+  if(!L.tasks)L.tasks=[];
+  const auto=L.tasks.filter(t=>t.auto),manual=L.tasks.filter(t=>!t.auto);
+  const autoSec=document.getElementById('lAutoSection');
+  if(autoSec)autoSec.style.display=auto.length?'block':'none';
+  const al=document.getElementById('lAutoList');const ml=document.getElementById('lManualList');const et=document.getElementById('lEmptyTasks');
+  if(al)al.innerHTML=auto.map((t,i)=>laboTHTML(t,i,auto.length)).join('');
+  if(ml)ml.innerHTML=manual.map((t,i)=>laboTHTML(t,i,manual.length)).join('');
+  if(et)et.style.display=(!auto.length&&!manual.length)?'block':'none';
+  const pending=L.tasks.filter(t=>!t.done).length;
+  const be=document.getElementById('laboTaskBadge');
+  if(be){be.style.display=pending>0?'flex':'none';be.textContent=pending>99?'99+':pending;}
+  renderLaboHistoTaches();
+}
+
+function laboTHTML(t,idx,total){
+  const catBadge=t.cat&&!t.auto?`<span class="task-cat-badge cat-${t.cat}">${CAT_LABELS[t.cat]||t.cat}</span>`:'';
+  const moveBtns=!t.auto?`<div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0"><button class="move-btn" onclick="moveLaboTask('${t.id}',-1)" ${idx===0?'disabled':''}>↑</button><button class="move-btn" onclick="moveLaboTask('${t.id}',+1)" ${idx===total-1?'disabled':''}>↓</button></div>`:'';
+  return`<div class="titem ${t.done?'done':''}">${moveBtns}<div class="tchk" onclick="toggleLaboTask('${t.id}')"></div><div class="ttext" onclick="toggleLaboTask('${t.id}')">${t.text}</div>${t.auto?'<span class="tauto">Auto</span>':''}${catBadge}<button class="tdel" onclick="delLaboTask('${t.id}')">×</button></div>`;
+}
+
+function moveLaboTask(id,dir){const manual=L.tasks.filter(t=>!t.auto);if(moveItem(manual,id,dir)){const auto=L.tasks.filter(t=>t.auto);L.tasks=[...auto,...manual];saveL();renderLaboTasks();}}
+function toggleLaboTask(id){
+  const t=L.tasks.find(t=>t.id===id);if(!t)return;
+  if(t.auto&&!t.done){openLaboCorrect(t.pid);return;}
+  t.done=!t.done;
+  if(t.done&&!t.auto){if(!L.histoTaches)L.histoTaches=[];const now=new Date();L.histoTaches.unshift({id:'lht_'+Date.now(),text:t.text,cat:t.cat||'general',date:today(),time:now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});}
+  saveL();renderLaboTasks();
+}
+function delLaboTask(id){L.tasks=L.tasks.filter(t=>t.id!==id);saveL();renderLaboTasks();}
+function addLaboTask(){const v=document.getElementById('taskInput').value.trim();if(!v)return;if(!L.tasks)L.tasks=[];L.tasks.push({id:'lt_'+Date.now(),text:v,done:false,auto:false,cat:selectedCat});document.getElementById('taskInput').value='';selectedCat='general';document.querySelectorAll('.task-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat==='general'));closeM('mTask');saveL();renderLaboTasks();toast('Tâche ajoutée');}
+
+function renderLaboHistoTaches(){
+  const el=document.getElementById('lHistoTachesList');if(!el)return;
+  if(!L.histoTaches||!L.histoTaches.length){el.innerHTML='';return;}
+  const byCat={};L.histoTaches.forEach(h=>{const c=h.cat||'general';if(!byCat[c])byCat[c]=[];byCat[c].push(h);});
+  el.innerHTML=Object.entries(byCat).map(([cat,items])=>`<div style="margin-bottom:16px"><div class="tgroup-lbl">${CAT_LABELS[cat]||cat}</div>${items.slice(0,20).map(h=>`<div class="task-histo-entry"><span class="task-cat-badge cat-${h.cat}" style="flex-shrink:0">${h.date.slice(5)}</span><span class="task-histo-text">${h.text}</span><span class="task-histo-time">${h.time}</span></div>`).join('')}</div>`).join('');
+}
+
+function renderLaboHisto(){
+  const el=document.getElementById('lHistoList');const fEl=document.getElementById('lHistoFilters');if(!el)return;
+  const entries=laboHistoFilter==='all'?L.history:L.history.filter(h=>h.pid===laboHistoFilter);
+  const pids=[...new Set((L.history||[]).map(h=>h.pid))];
+  if(fEl)fEl.innerHTML=`<button class="hf-btn ${laboHistoFilter==='all'?'active':''}" onclick="setLaboHistoFilter('all')">Tous</button>${pids.map(pid=>{const p=L.products.find(x=>x.id===pid);if(!p)return'';return`<button class="hf-btn ${laboHistoFilter===pid?'active':''}" onclick="setLaboHistoFilter('${pid}')">${p.emoji} ${p.name}</button>`;}).join('')}`;
+  if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-icon">📈</div>Aucun historique encore.</div>';return;}
+  const byDate={};entries.forEach(h=>{if(!byDate[h.date])byDate[h.date]=[];byDate[h.date].push(h);});
+  const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${h.emoji}</span><div class="histo-info"><div class="histo-name">${h.name}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div></div>`).join('')}</div>`).join('');
+}
+function setLaboHistoFilter(pid){laboHistoFilter=pid;renderLaboHisto();}
+
+let laboCalYear=new Date().getFullYear(),laboCalMonth=new Date().getMonth(),laboCalSel=today();
+function renderLaboCalendrier(){
+  const el=document.getElementById('lCalendrContent');if(!el)return;
+  const firstDay=new Date(laboCalYear,laboCalMonth,1);const lastDay=new Date(laboCalYear,laboCalMonth+1,0);
+  const startDow=(firstDay.getDay()+6)%7;
+  const monthName=firstDay.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+  const eventDays=new Set();(L.history||[]).forEach(h=>{if(h.date.startsWith(laboCalYear+'-'+(String(laboCalMonth+1).padStart(2,'0'))))eventDays.add(h.date);});
+  let daysHtml=['L','M','M','J','V','S','D'].map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+  for(let i=0;i<startDow;i++)daysHtml+='<div></div>';
+  for(let d=1;d<=lastDay.getDate();d++){
+    const ds=`${laboCalYear}-${String(laboCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isT=ds===today(),hasEv=eventDays.has(ds),isSel=ds===laboCalSel;
+    const cls=[isT?'today':'',hasEv?'has-event':'',isSel&&!isT?'sel-day':''].filter(Boolean).join(' ');
+    daysHtml+=`<div class="cal-day ${cls}" onclick="laboCalSel='${ds}';renderLaboCalendrier()"><span>${d}</span></div>`;
+  }
+  const histoSel=(L.history||[]).filter(h=>h.date===laboCalSel);
+  const selLabel=new Date(laboCalSel).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  el.innerHTML=`
+    <div class="cal-header">
+      <button class="cal-nav" onclick="laboCalMonth--;if(laboCalMonth<0){laboCalMonth=11;laboCalYear--;}renderLaboCalendrier()">‹</button>
+      <div class="cal-month">${monthName}</div>
+      <button class="cal-nav" onclick="laboCalMonth++;if(laboCalMonth>11){laboCalMonth=0;laboCalYear++;}renderLaboCalendrier()">›</button>
+    </div>
+    <div class="cal-grid">${daysHtml}</div>
+    <div class="cal-events">
+      <div class="cal-event-title">${selLabel}</div>
+      ${!histoSel.length?'<div style="font-size:13px;color:var(--brown-light)">Aucun événement ce jour.</div>':''}
+      ${histoSel.map(h=>`<div class="cal-event-item"><div class="cal-event-dot" style="background:${h.type==='sortie'?'var(--orange)':'var(--green)'}"></div><div class="cal-event-text">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'} : ${h.emoji} ${h.name} (${h.qty})</div></div>`).join('')}
+    </div>`;
+}
+
+function renderLaboSettings(){
+  const el=document.getElementById('lSettingsList');if(!el)return;
+  if(!L.products.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">⚙️</div>Aucun produit pâtisserie.</div>';
+    el.innerHTML+=`<button class="thermo-add-btn" onclick="openLaboAddProduct()" style="margin-top:10px">+ Ajouter un produit</button>`;
+    return;
+  }
+  el.innerHTML=L.products.map((p,i)=>`<div class="pcard-set"><div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0"><button class="move-btn" onclick="moveLaboProd('${p.id}',-1)" ${i===0?'disabled':''}>↑</button><button class="move-btn" onclick="moveLaboProd('${p.id}',+1)" ${i===L.products.length-1?'disabled':''}>↓</button></div><span style="font-size:20px">${p.emoji}</span><div class="pcard-set-info"><div class="pcard-set-name">${p.name}</div><div class="pcard-set-sub">Stock : ${p.stockReel}u · Seuil : ${p.seuil}u · Base/j : ${p.base||0}u</div></div><button class="edit-prod-btn" onclick="openLaboEditProduct('${p.id}')">✏️</button><button class="sdel" onclick="delLaboProduct('${p.id}')">Suppr.</button></div>`).join('');
+  el.innerHTML+=`<button class="thermo-add-btn" onclick="openLaboAddProduct()" style="margin-top:10px">+ Ajouter un produit</button>`;
+}
+
+let editLaboProdId=null;
+function openLaboAddProduct(){editLaboProdId=null;window._laboProdMode=true;document.getElementById('mProductTitle').textContent='Nouveau produit pâtisserie';document.getElementById('mProductBtn').textContent='Créer';document.getElementById('np-stock-group').style.display='block';['np-name','np-emoji','np-seuil','np-base','np-stock'].forEach(id=>document.getElementById(id).value='');openM('mProduct');}
+function openLaboEditProduct(id){const p=L.products.find(x=>x.id===id);if(!p)return;editLaboProdId=id;window._laboProdMode=true;document.getElementById('mProductTitle').textContent='✏️ Modifier '+p.name;document.getElementById('mProductBtn').textContent='Enregistrer';document.getElementById('np-name').value=p.name;document.getElementById('np-emoji').value=p.emoji;document.getElementById('np-seuil').value=p.seuil;document.getElementById('np-base').value=p.base||0;document.getElementById('np-stock-group').style.display='none';openM('mProduct');}
+function delLaboProduct(id){L.products=L.products.filter(p=>p.id!==id);stopLaboFlip(id);saveL();renderLaboSettings();renderLaboStock();toast('Produit supprimé');}
+
+function saveProduct(){
+  if(window._laboProdMode){
+    window._laboProdMode=false;
+    const name=document.getElementById('np-name').value.trim();const emoji=document.getElementById('np-emoji').value.trim()||'🍰';const seuil=parseInt(document.getElementById('np-seuil').value)||10;const base=parseInt(document.getElementById('np-base').value)||0;
+    if(!name)return;
+    if(editLaboProdId){const p=L.products.find(x=>x.id===editLaboProdId);if(p){p.name=name;p.emoji=emoji;p.seuil=seuil;p.base=base;}editLaboProdId=null;toast('Produit modifié ✓');}
+    else{const stock=parseInt(document.getElementById('np-stock').value)||0;L.products.push({id:'lp_'+Date.now(),name,emoji,stockReel:stock,base,commande:0,seuil});toast('Produit créé : '+name);}
+    document.getElementById('mProductTitle').textContent='Nouveau produit';document.getElementById('mProductBtn').textContent='Créer';document.getElementById('np-stock-group').style.display='block';
+    ['np-name','np-emoji','np-seuil','np-base','np-stock'].forEach(id=>document.getElementById(id).value='');clearPdfInput();closeM('mProduct');saveL();renderLaboSettings();renderLaboStock();
+  } else {
+    const name=document.getElementById('np-name').value.trim();const emoji=document.getElementById('np-emoji').value.trim()||'🍞';const seuil=parseInt(document.getElementById('np-seuil').value)||10;const base=parseInt(document.getElementById('np-base').value)||0;
+    if(!name)return;
+    if(editProductId){const p=S.products.find(x=>x.id===editProductId);if(p){p.name=name;p.emoji=emoji;p.seuil=seuil;p.base=base;}editProductId=null;toast('Produit modifié ✓');}
+    else{const stock=parseInt(document.getElementById('np-stock').value)||0;S.products.push({id:'p_'+Date.now(),name,emoji,stockReel:stock,base,commande:0,seuil,recipeUrl:pendingPdfUrl||null});toast('Produit créé : '+name);}
+    document.getElementById('mProductTitle').textContent='Nouveau produit';document.getElementById('mProductBtn').textContent='Créer';document.getElementById('np-stock-group').style.display='block';
+    ['np-name','np-emoji','np-seuil','np-base','np-stock'].forEach(id=>document.getElementById(id).value='');clearPdfInput();closeM('mProduct');save();render();
+  }
+}
+
+function fabClick(){
+  if(activeModule==='labo'){if(laboTab==='ltasks')openM('mTask');else if(laboTab==='lsettings')openLaboAddProduct();}
+  else{if(tab==='tasks')openM('mTask');else if(tab==='settings')openM('mProduct');else if(tab==='notes')openM('mBoulanger');}
+}
+
+function addTask(){
+  if(activeModule==='labo'){addLaboTask();return;}
+  const v=document.getElementById('taskInput').value.trim();if(!v)return;
+  S.tasks.push({id:'t_'+Date.now(),text:v,done:false,auto:false,cat:selectedCat});
+  document.getElementById('taskInput').value='';selectedCat='general';
+  document.querySelectorAll('.task-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat==='general'));
+  closeM('mTask');save();renderTasks();toast('Tâche ajoutée');
+}
+
+// ══════════════════════════════════════
 
 function sw(t){
   tab=t;
@@ -1123,12 +1634,6 @@ function swB(t){
   if(t==='cmd-fournisseur')renderCmdFournisseur();
   if(t==='cmd-clients')renderCmdClients();
   if(t==='stats')renderHebdo();
-}
-
-function fabClick(){
-  if(tab==='tasks')openM('mTask');
-  else if(tab==='settings')openM('mProduct');
-  else if(tab==='notes')openM('mBoulanger');
 }
 
 function render(){
@@ -1215,18 +1720,6 @@ function openCorrect(id){
   };
   openM('mCorrect');
 }
-function saveCorrect(){
-  const p=S.products.find(x=>x.id===correctId);if(!p)return;
-  const ajout=Math.max(0,parseInt(document.getElementById('mc-stock').value)||0);
-  p.seuil=Math.max(0,parseInt(document.getElementById('mc-seuil').value)||5);
-  if(ajout>0){
-    p.stockReel=p.stockReel+ajout;
-    addHist('recharge',p,ajout);
-  }
-  closeM('mCorrect');save();refresh(p);genAutoTasks();
-  toast(ajout>0?'+ '+ajout+' ajouté au stock ✓':'Seuil mis à jour ✓');
-}
-
 function renderMagasin(){
   const ok=S.lastDate===today();
   document.getElementById('dayTxt').textContent=ok?'Journée en cours ✓':'En attente…';
@@ -1330,16 +1823,6 @@ function selectCat(btn, cat) {
   btn.classList.add('active');
 }
 
-function addTask(){
-  const v=document.getElementById('taskInput').value.trim();
-  if(!v)return;
-  S.tasks.push({id:'t_'+Date.now(), text:v, done:false, auto:false, cat:selectedCat});
-  document.getElementById('taskInput').value='';
-  // Reset catégorie
-  selectedCat='general';
-  document.querySelectorAll('.task-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat==='general'));
-  closeM('mTask');save();renderTasks();toast('Tâche ajoutée');
-}
 function toggleTask(id){
   const t=S.tasks.find(t=>t.id===id);
   if(!t) return;
@@ -1414,34 +1897,6 @@ function openEditProduct(id) {
   // Cacher stock initial en mode édition
   document.getElementById('np-stock-group').style.display = 'none';
   openM('mProduct');
-}
-
-function saveProduct() {
-  const name  = document.getElementById('np-name').value.trim();
-  const emoji = document.getElementById('np-emoji').value.trim()||'🍞';
-  const seuil = parseInt(document.getElementById('np-seuil').value)||10;
-  const base  = parseInt(document.getElementById('np-base').value)||0;
-  if(!name) return;
-
-  if(editProductId) {
-    // Mode édition
-    const p = S.products.find(x=>x.id===editProductId);
-    if(p){ p.name=name; p.emoji=emoji; p.seuil=seuil; p.base=base; }
-    editProductId = null;
-    toast('Produit modifié ✓');
-  } else {
-    // Mode création
-    const stock = parseInt(document.getElementById('np-stock').value)||0;
-    S.products.push({id:'p_'+Date.now(), name, emoji, stockReel:stock, base, commande:0, seuil, recipeUrl:pendingPdfUrl||null});
-    toast('Produit créé : '+name);
-  }
-  // Reset modal
-  document.getElementById('mProductTitle').textContent = 'Nouveau produit';
-  document.getElementById('mProductBtn').textContent = 'Créer';
-  document.getElementById('np-stock-group').style.display = 'block';
-  ['np-name','np-emoji','np-seuil','np-base','np-stock'].forEach(id=>document.getElementById(id).value='');
-  clearPdfInput();
-  closeM('mProduct'); save(); render();
 }
 
 function delProduct(id){S.products=S.products.filter(p=>p.id!==id);stopFlip(id);save();render();toast('Produit supprimé');}
@@ -1671,6 +2126,7 @@ function renderMatieres() {
             <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock('${m.id}',+1)">+</button>
           </div>
           <button style="font-size:9px;background:var(--brown);color:var(--ocre-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;white-space:nowrap" onclick="useMatiere('${m.id}')">Utiliser</button>
+          <button class="edit-ico" onclick="openEditMatiere('${m.id}')">✏️</button>
           <button class="sdel" style="font-size:11px;padding:3px 7px" onclick="delMatiere('${m.id}')">Suppr.</button>
         </div>
       </div>
@@ -1745,21 +2201,6 @@ function setMat(id, val) {
   if(m){ m.stock = Math.max(0, parseFloat(val)||0); save(); }
 }
 
-function addMatiere() {
-  const name  = document.getElementById('mat-name').value.trim();
-  const emoji = document.getElementById('mat-emoji').value.trim()||'📦';
-  const unit  = document.getElementById('mat-unit').value;
-  const stock = parseFloat(document.getElementById('mat-stock').value)||0;
-  const seuil = parseFloat(document.getElementById('mat-seuil').value)||5;
-  const conso = parseFloat(document.getElementById('mat-conso').value)||0;
-  const dlc   = document.getElementById('mat-dlc').value||'';
-  if(!name) return;
-  if(!S.matieres) S.matieres = [];
-  S.matieres.push({id:'m_'+Date.now(), name, emoji, unit, stock, seuil, conso, dlc});
-  ['mat-name','mat-emoji','mat-stock','mat-seuil','mat-conso','mat-dlc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  closeM('mMatiere'); save(); renderMatieres();
-  toast('Matière ajoutée : '+name);
-}
 
 function delMatiere(id) {
   S.matieres = (S.matieres||[]).filter(m=>m.id!==id);
@@ -1873,7 +2314,14 @@ function renderCmdClients() {
   const today_d = new Date(); today_d.setHours(0,0,0,0);
   const tomorrow = new Date(today_d); tomorrow.setDate(tomorrow.getDate()+1);
 
-  let html = `<button class="mat-add-btn" onclick="openM('mCmdClient')">+ Nouvelle commande client</button>`;
+  let html = `
+    <button class="mat-add-btn" onclick="openM('mCmdClient')">+ Nouvelle commande client</button>
+    ${S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length>1 ?
+      `<button onclick="lancerTournee()" style="width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Lancer la tournée optimisée (${S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length} arrêts)</button>`
+      : S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length===1 ?
+      `<button onclick="lancerTournee()" style="width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Naviguer vers ce client</button>`
+      : ''
+    }`;
 
   if(!S.cmdClients.length) {
     html += '<div class="empty"><div class="empty-icon">🧁</div>Aucune commande client.</div>';
@@ -1901,8 +2349,10 @@ function renderCmdClients() {
         <span class="cmd-client-badge ${badgeCls}">${badgeTxt}</span>
       </div>
       ${c.detail ? `<div class="cmd-client-detail">${c.detail}</div>` : ''}
+      ${c.adresse ? `<div class="cmd-client-date">📍 ${c.adresse}</div>` : ''}
       <div class="cmd-client-date">📅 ${dateStr}${c.heure?' à '+c.heure:''}</div>
       <div class="cmd-client-actions">
+        <button class="cmd-action-btn" style="background:var(--cream);color:var(--brown-mid)" onclick="openEditCmd('${c.id}')">✏️</button>
         ${c.status!=='sent'&&c.status!=='validated' ? `<button class="cmd-action-btn btn-send" onclick="sendCmdToFournil('${c.id}')">📤 Envoyer au fournil</button>` : ''}
         ${c.status==='sent' ? `<button class="cmd-action-btn btn-validate" onclick="validateCmd('${c.id}')">✓ Marquer validé</button>` : ''}
         ${c.status==='validated' ? `<div style="font-size:12px;color:var(--green);font-weight:500;flex:1">✓ Traité par le fournil</div>` : ''}
@@ -1914,15 +2364,167 @@ function renderCmdClients() {
   el.innerHTML = html;
 }
 
+// ── ÉDITION MATIÈRE PREMIÈRE ──
+let editMatiereId = null;
+
+function openEditMatiere(id) {
+  const m = (S.matieres||[]).find(x=>x.id===id);
+  if(!m) return;
+  editMatiereId = id;
+  document.getElementById('mMatiereTitle').textContent = '✏️ Modifier ' + m.name;
+  document.getElementById('mMatiereBtn').textContent = 'Enregistrer';
+  document.getElementById('mat-name').value = m.name;
+  document.getElementById('mat-emoji').value = m.emoji||'';
+  document.getElementById('mat-unit').value = m.unit||'kg';
+  document.getElementById('mat-seuil').value = m.seuil||0;
+  document.getElementById('mat-conso').value = m.conso||0;
+  document.getElementById('mat-dlc').value = m.dlc||'';
+  // Cacher stock en mode édition
+  const sg = document.getElementById('mat-stock-group');
+  if(sg) sg.style.display = 'none';
+  openM('mMatiere');
+}
+
+function saveMatiere() {
+  const name  = document.getElementById('mat-name').value.trim();
+  const emoji = document.getElementById('mat-emoji').value.trim()||'📦';
+  const unit  = document.getElementById('mat-unit').value;
+  const seuil = parseFloat(document.getElementById('mat-seuil').value)||5;
+  const conso = parseFloat(document.getElementById('mat-conso').value)||0;
+  const dlc   = document.getElementById('mat-dlc').value||'';
+  if(!name) return;
+
+  if(editMatiereId) {
+    const m = (S.matieres||[]).find(x=>x.id===editMatiereId);
+    if(m) { m.name=name; m.emoji=emoji; m.unit=unit; m.seuil=seuil; m.conso=conso; m.dlc=dlc; }
+    editMatiereId = null;
+    toast('Matière modifiée ✓');
+  } else {
+    const stock = parseFloat(document.getElementById('mat-stock').value)||0;
+    if(!S.matieres) S.matieres=[];
+    S.matieres.push({id:'m_'+Date.now(), name, emoji, unit, stock, seuil, conso, dlc});
+    toast('Matière ajoutée : '+name);
+  }
+  // Reset modal
+  document.getElementById('mMatiereTitle').textContent = 'Nouvelle matière première';
+  document.getElementById('mMatiereBtn').textContent = 'Ajouter';
+  const sg = document.getElementById('mat-stock-group');
+  if(sg) sg.style.display = 'block';
+  ['mat-name','mat-emoji','mat-stock','mat-seuil','mat-conso','mat-dlc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  closeM('mMatiere'); save(); renderMatieres();
+}
+
+// ── ÉDITION COMMANDE CLIENT ──
+let editCmdId = null;
+
+function openEditCmd(id) {
+  const c = (S.cmdClients||[]).find(x=>x.id===id);
+  if(!c) return;
+  editCmdId = id;
+  document.getElementById('ec-nom').value = c.nom||'';
+  document.getElementById('ec-adresse').value = c.adresse||'';
+  document.getElementById('ec-date').value = c.date||'';
+  document.getElementById('ec-heure').value = c.heure||'';
+  document.getElementById('ec-detail').value = c.detail||'';
+  openM('mEditCmd');
+}
+
+function saveEditCmd() {
+  const c = (S.cmdClients||[]).find(x=>x.id===editCmdId);
+  if(!c) return;
+  c.nom     = document.getElementById('ec-nom').value.trim();
+  c.adresse = document.getElementById('ec-adresse').value.trim();
+  c.date    = document.getElementById('ec-date').value;
+  c.heure   = document.getElementById('ec-heure').value;
+  c.detail  = document.getElementById('ec-detail').value.trim();
+  editCmdId = null;
+  closeM('mEditCmd'); save(); renderCmdClients();
+  toast('Commande modifiée ✓');
+}
+
+// ── SEUILS CHARGE ──
+function openSeuilsModal() {
+  const {low, mid} = S.seuilsCharge||{low:30,mid:80};
+  document.getElementById('seuil-low').value = low;
+  document.getElementById('seuil-mid').value = mid;
+  openM('mSeuils');
+}
+
+function saveSeuils() {
+  const low = parseInt(document.getElementById('seuil-low').value)||30;
+  const mid = parseInt(document.getElementById('seuil-mid').value)||80;
+  S.seuilsCharge = {low, mid};
+  closeM('mSeuils'); save(); renderCalendrier();
+  toast('Seuils mis à jour ✓');
+}
+
+// ── EXPORT COMMANDES FOURNISSEUR ──
+function exportCmdFournisseur() {
+  if(!S.matieres||!S.matieres.length) { toast('Aucune matière à exporter'); return; }
+  const commandes = S.matieres.filter(m=>(m.conso||0)>0).map(m=>({
+    ...m, besoin: Math.max(0, Math.ceil((m.conso||0)-(m.stock||0)))
+  })).filter(m=>m.besoin>0);
+
+  const date = new Date().toLocaleDateString('fr-FR');
+  let txt = `COMMANDE FOURNISSEUR — ${date}\n`;
+  txt += '='.repeat(35) + '\n\n';
+  if(!commandes.length) {
+    txt += 'Aucune commande nécessaire cette semaine.\n';
+  } else {
+    commandes.forEach(m => {
+      txt += `• ${m.emoji||''} ${m.name} : ${m.besoin} ${m.unit}\n`;
+      txt += `  (Stock : ${m.stock||0} | Conso/sem : ${m.conso})\n`;
+    });
+  }
+  txt += '\n' + '='.repeat(35) + '\n';
+  txt += `Total lignes : ${commandes.length}\n`;
+
+  // Copier dans le presse-papier
+  navigator.clipboard.writeText(txt).then(()=>{
+    toast('Liste copiée ! Colle-la dans un SMS ou email.');
+  }).catch(()=>{
+    // Fallback — ouvrir dans une nouvelle fenêtre
+    const w = window.open('','_blank');
+    if(w) { w.document.write('<pre>'+txt+'</pre>'); }
+  });
+}
+
+// ── AJOUTER BOUTON EDIT DANS RENDERMATIÈRES ──
+function addMatiere() { editMatiereId=null; saveMatiere(); }
+
+function lancerTournee() {
+  const adresses = (S.cmdClients||[])
+    .filter(c => c.adresse && c.status !== 'validated')
+    .sort((a,b) => (a.heure||'').localeCompare(b.heure||''))
+    .map(c => encodeURIComponent(c.adresse));
+
+  if(!adresses.length) { toast('Aucune adresse renseignée'); return; }
+
+  // Point de départ = boulangerie (ou position actuelle)
+  // Google Maps optimise automatiquement l'ordre avec &optimize=true sur les waypoints
+  let url;
+  if(adresses.length === 1) {
+    url = `https://www.google.com/maps/dir/?api=1&destination=${adresses[0]}&travelmode=driving`;
+  } else {
+    const dest = adresses[adresses.length-1];
+    const waypoints = adresses.slice(0,-1).join('|');
+    url = `https://www.google.com/maps/dir/?api=1&destination=${dest}&waypoints=${waypoints}&optimize=true&travelmode=driving`;
+  }
+
+  window.open(url, '_blank');
+  toast('Ouverture de Google Maps…');
+}
+
 function addCmdClient() {
-  const nom    = document.getElementById('cc-nom').value.trim();
-  const date   = document.getElementById('cc-date').value;
-  const heure  = document.getElementById('cc-heure').value;
-  const detail = document.getElementById('cc-detail').value.trim();
+  const nom     = document.getElementById('cc-nom').value.trim();
+  const adresse = document.getElementById('cc-adresse').value.trim();
+  const date    = document.getElementById('cc-date').value;
+  const heure   = document.getElementById('cc-heure').value;
+  const detail  = document.getElementById('cc-detail').value.trim();
   if(!nom) return;
   if(!S.cmdClients) S.cmdClients = [];
-  S.cmdClients.push({ id:'cc_'+Date.now(), nom, date, heure, detail, status:'pending', createdAt:today() });
-  ['cc-nom','cc-date','cc-heure','cc-detail'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  S.cmdClients.push({ id:'cc_'+Date.now(), nom, adresse, date, heure, detail, status:'pending', createdAt:today() });
+  ['cc-nom','cc-adresse','cc-date','cc-heure','cc-detail'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
   closeM('mCmdClient'); save(); renderCmdClients();
   toast('Commande créée');
 }
@@ -1970,7 +2572,8 @@ function renderCmdFournisseur() {
     ...m, besoin: Math.max(0, Math.ceil((m.conso||0)-(m.stock||0)))
   })).filter(m=>m.besoin>0);
 
-  let html = '';
+  let html = `
+    <button class="mat-add-btn" onclick="exportCmdFournisseur()" style="background:var(--green);margin-bottom:8px">📋 Copier la liste de commande</button>`;
   if(!commandes.length) {
     html = '<div class="empty"><div class="empty-icon">✅</div>Tout est en stock !<br>Aucune commande nécessaire.</div>';
   } else {
@@ -2017,6 +2620,29 @@ function renderCalendrier() {
   (S.cmdClients||[]).forEach(c=>{ if(c.date&&c.date.startsWith(calYear+'-'+(String(calMonth+1).padStart(2,'0')))) cmdDays.add(c.date); });
   Object.keys(S.journal||{}).forEach(d=>{ if(d.startsWith(calYear+'-'+(String(calMonth+1).padStart(2,'0')))) eventDays.add(d); });
 
+  // Calcul charge de travail par jour (nombre de pièces dans le détail des commandes)
+  const chargeParJour = {};
+  (S.cmdClients||[]).forEach(c=>{
+    if(!c.date || c.status==='validated') return;
+    // Extraire les quantités du détail (ex: "20 croissants, 10 pains")
+    let total = 0;
+    if(c.detail) {
+      const nums = c.detail.match(/\d+/g);
+      if(nums) nums.forEach(n => total += parseInt(n));
+    }
+    if(total === 0) total = 10; // Si pas de quantité précisée, on compte 10 par défaut
+    chargeParJour[c.date] = (chargeParJour[c.date]||0) + total;
+  });
+
+  const getChargeCls = (date) => {
+    const q = chargeParJour[date]||0;
+    const {low, mid} = S.seuilsCharge||{low:30,mid:80};
+    if(q === 0) return '';
+    if(q < low) return 'charge-low';
+    if(q < mid) return 'charge-mid';
+    return 'charge-high';
+  };
+
   let daysHtml = ['L','M','M','J','V','S','D'].map(d=>`<div class="cal-day-name">${d}</div>`).join('');
   // Jours vides avant
   for(let i=0;i<startDow;i++) daysHtml += '<div></div>';
@@ -2027,8 +2653,10 @@ function renderCalendrier() {
     const hasEv   = eventDays.has(dateStr);
     const hasCmd  = cmdDays.has(dateStr);
     const isSel   = dateStr===calSelectedDate;
-    const cls     = [isToday?'today':'', hasCmd?'has-cmd':hasEv?'has-event':'', isSel&&!isToday?'has-event':''].filter(Boolean).join(' ');
-    daysHtml += `<div class="cal-day ${cls}" onclick="calSelectDate('${dateStr}')" style="${isSel&&!isToday?'background:var(--ocre-pale);':''}"><span>${d}</span></div>`;
+    const chargeCls = getChargeCls(dateStr);
+    const cls = [isToday?'today':'', chargeCls, hasCmd&&!chargeCls?'has-cmd':hasEv&&!chargeCls?'has-event':'', isSel&&!isToday?'sel-day':''].filter(Boolean).join(' ');
+    const chargeQ = chargeParJour[dateStr]||0;
+    daysHtml += `<div class="cal-day ${cls}" onclick="calSelectDate('${dateStr}')"><span>${d}</span>${chargeQ>0?`<span style="font-size:8px;font-weight:700;line-height:1">${chargeQ}</span>`:''}</div>`;
   }
 
   // Événements du jour sélectionné
@@ -2045,6 +2673,12 @@ function renderCalendrier() {
       <button class="cal-nav" onclick="calNav(-1)">‹</button>
       <div class="cal-month">${monthName}</div>
       <button class="cal-nav" onclick="calNav(+1)">›</button>
+    </div>
+    <div class="cal-legend">
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#C8E0C0"></div>Léger (&lt;${S.seuilsCharge?.low||30})</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#FAD8A0"></div>Chargé (${S.seuilsCharge?.low||30}-${S.seuilsCharge?.mid||80})</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#F0A8A0"></div>Surcharge (&gt;${S.seuilsCharge?.mid||80})</div>
+      <button onclick="openSeuilsModal()" style="background:none;border:1px solid rgba(196,154,108,0.3);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--brown-light);cursor:pointer;margin-left:auto">⚙️ Seuils</button>
     </div>
     <div class="cal-grid">${daysHtml}</div>
     <div class="cal-events">
@@ -2231,6 +2865,8 @@ function renderNotes(){
       </div>
       <textarea class="notes-input" id="noteText" placeholder="Laisser un message à l'équipe…"></textarea>
       <button class="notes-send-btn" onclick="sendNote()">Envoyer 💬</button>
+      <button class="vocal-btn" id="vocalBtn" onclick="toggleVocal()">🎙️ Journal vocal (30s)</button>
+      <div class="vocal-timer" id="vocalTimer" style="display:none"></div>
     </div>
     <div class="tgroup-lbl">Messages de l'équipe</div>
     ${(S.notes||[]).length===0?'<div class="empty" style="padding:20px"><div class="empty-icon">💬</div>Aucun message.</div>':''}
@@ -2239,15 +2875,132 @@ function renderNotes(){
         <div class="note-meta">
           <span class="note-author">👤 ${n.author}</span>
           <div style="display:flex;align-items:center;gap:6px">
+            ${n.isVocal?'<span class="note-vocal-badge">🎙️ Vocal</span>':''}
             <span class="note-time">${n.time}</span>
             <button class="note-del" onclick="delNote('${n.id}')">×</button>
           </div>
         </div>
-        <div class="note-text">${n.text}</div>
+        ${n.text&&!n.isVocal?`<div class="note-text">${n.text}</div>`:''}
+        ${n.audioUrl?`<audio class="note-audio" controls src="${n.audioUrl}"></audio>`:''}
+        ${n.isVocal&&!n.transcription?`<button class="transcribe-btn" onclick="transcribeNote('${n.id}')">📝 Retranscrire</button>`:''}
+        ${n.transcription?`<div class="note-transcription">📝 "${n.transcription}"</div>`:''}
       </div>`).join('')}`;
   const fn=document.getElementById('notesFree');
   if(fn) fn.value=S.freeNotes||'';
   updateNotesBubble();
+}
+
+// ── JOURNAL VOCAL ──
+let mediaRecorder = null;
+let audioChunks = [];
+let vocalTimer = null;
+let vocalSeconds = 0;
+let isRecording = false;
+
+async function toggleVocal() {
+  if(isRecording) {
+    stopVocal();
+  } else {
+    startVocal();
+  }
+}
+
+async function startVocal() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(audioChunks, { type: 'audio/webm' });
+      const reader = new FileReader();
+      reader.onload = e => saveVocalNote(e.target.result);
+      reader.readAsDataURL(blob);
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.start();
+    isRecording = true;
+    vocalSeconds = 30;
+
+    const btn = document.getElementById('vocalBtn');
+    const timer = document.getElementById('vocalTimer');
+    if(btn) { btn.textContent = '⏹️ Arrêter'; btn.classList.add('recording'); }
+    if(timer) timer.style.display = 'block';
+
+    vocalTimer = setInterval(() => {
+      vocalSeconds--;
+      const t = document.getElementById('vocalTimer');
+      if(t) t.textContent = `⏱️ ${vocalSeconds}s restantes`;
+      if(vocalSeconds <= 0) stopVocal();
+    }, 1000);
+  } catch(e) {
+    toast('Micro non disponible — vérifie les permissions');
+  }
+}
+
+function stopVocal() {
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  clearInterval(vocalTimer);
+  isRecording = false;
+  const btn = document.getElementById('vocalBtn');
+  const timer = document.getElementById('vocalTimer');
+  if(btn) { btn.textContent = '🎙️ Journal vocal (30s)'; btn.classList.remove('recording'); }
+  if(timer) timer.style.display = 'none';
+}
+
+function saveVocalNote(audioUrl) {
+  const author = document.getElementById('noteAuthor')?.value || 'Anonyme';
+  if(!S.notes) S.notes = [];
+  const now = new Date();
+  S.notes.unshift({
+    id: 'v_' + Date.now(),
+    author,
+    text: '',
+    audioUrl,
+    isVocal: true,
+    transcription: null,
+    time: now.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' ' +
+          now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})
+  });
+  save(); renderNotes();
+  toast('Message vocal enregistré ✓');
+}
+
+function transcribeNote(id) {
+  const note = (S.notes||[]).find(n=>n.id===id);
+  if(!note || !note.audioUrl) return;
+
+  // Utiliser Web Speech API pour retranscrire
+  if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    toast('Transcription non disponible sur ce navigateur');
+    return;
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SR();
+  recognition.lang = 'fr-FR';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  // On joue l'audio et on écoute en même temps
+  const audio = new Audio(note.audioUrl);
+  toast('Lecture en cours pour transcription…');
+
+  recognition.onresult = e => {
+    const text = e.results[0][0].transcript;
+    note.transcription = text;
+    save(); renderNotes();
+    toast('Transcription terminée ✓');
+  };
+
+  recognition.onerror = () => {
+    // Fallback — transcription manuelle simulée
+    note.transcription = '(transcription non disponible — parlez directement après avoir appuyé sur Retranscrire)';
+    save(); renderNotes();
+  };
+
+  audio.play().catch(() => {});
+  recognition.start();
 }
 
 function sendNote(){
@@ -2281,18 +3034,6 @@ function addBoulanger(){
   closeM('mBoulanger');save();renderNotes();toast(name+' ajouté(e)');
 }
 
-function renderHisto(){
-  const entries=histoFilter==='all'?S.history:S.history.filter(h=>h.pid===histoFilter);
-  const pids=[...new Set(S.history.map(h=>h.pid))];
-  document.getElementById('histoFilters').innerHTML=`<button class="hf-btn ${histoFilter==='all'?'active':''}" onclick="setHistoFilter('all')">Tous</button>${pids.map(pid=>{const p=S.products.find(x=>x.id===pid);if(!p)return'';return`<button class="hf-btn ${histoFilter===pid?'active':''}" onclick="setHistoFilter('${pid}')">${p.emoji} ${p.name}</button>`;}).join('')}`;
-  const el=document.getElementById('histoList');
-  if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-icon">📈</div>Aucun historique encore.<br>Les sorties et rechargements<br>apparaîtront ici.</div>';return;}
-  const byDate={};
-  entries.forEach(h=>{if(!byDate[h.date])byDate[h.date]=[];byDate[h.date].push(h);});
-  const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-  el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${h.emoji}</span><div class="histo-info"><div class="histo-name">${h.name}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div></div>`).join('')}</div>`).join('');
-}
-function setHistoFilter(pid){histoFilter=pid;renderHisto();}
 
 async function loadMeteo(){
   if(meteoLoaded) return;
