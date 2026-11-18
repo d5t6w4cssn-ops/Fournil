@@ -238,11 +238,11 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .ov-pill { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 12px 14px; }
 .ov-num { font-family: var(--serif); font-weight: 400; font-size: 28px; color: var(--ink); }
 .ov-lbl { font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--muted); }
-.scard, .mcard, .mat-card {
+.scard, .mcard {
   background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
   padding: 14px 14px 14px 19px; margin-bottom: 12px;
 }
-.scard::before, .mcard::before, .mat-card::before { width: 5px; border-radius: 0; }
+.scard::before, .mcard::before { width: 5px; border-radius: 0; }
 .scard::before { background: var(--ok); }
 .scard.low::before { background: var(--accent); }
 .scard.empty::before { background: var(--err); }
@@ -400,20 +400,9 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 #laboModule .sn-lbl { white-space: nowrap; }
 
 /* ========== Bureau : matières premières et commandes fournisseurs ========== */
-.mat-card::before { background: var(--ok); }
-.mat-card.low::before { background: var(--accent); }
-.mat-card.empty::before, .mat-card.dlc-soon::before { background: var(--err); }
-.mat-name { font-size: 16px; font-weight: 600; }
-.mat-dlc-badge { font-size: 11px; padding: 3px 9px; }
 .dlc-ok { background: var(--ok-bg); color: var(--ok); }
 .dlc-soon { background: var(--accent-soft); color: var(--accent-deep); }
 .dlc-exp { background: var(--err-bg); color: var(--err); }
-.mat-stock-val { font-family: var(--serif); font-weight: 400; font-size: 26px; color: var(--ink); }
-.mat-unit { font-size: 13px; color: var(--muted); }
-.mat-ctrl { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; height: 46px; min-width: 0; }
-.mat-btn { width: 44px; height: 44px; color: var(--ink); }
-.mat-btn:active { background: var(--accent-soft); }
-.mat-in { height: 44px; min-width: 0; width: 100%; font-family: var(--serif); font-weight: 400; font-size: 19px; color: var(--ink); }
 
 /* ========== Tournée : commandes clients et livraisons ========== */
 .cmd-client-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 14px 14px 19px; margin-bottom: 12px; }
@@ -438,9 +427,7 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 /* ========== Journal et statistiques ========== */
 .journal-date-nav { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
 .journal-nav-btn { border: 1px solid var(--line); background: var(--cream); color: var(--ink); border-radius: 12px; min-width: 44px; min-height: 44px; }
-.journal-date-label, .journal-date-title { font-family: var(--serif); font-weight: 400; color: var(--ink); }
 .journal-prod-row { border-bottom: 1px solid var(--line2); }
-.journal-ctrl { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; }
 .journal-btn { width: 44px; height: 44px; color: var(--ink); }
 .journal-btn:active { background: var(--accent-soft); }
 .journal-input { height: 44px; font-family: var(--serif); font-weight: 400; font-size: 19px; color: var(--ink); }
