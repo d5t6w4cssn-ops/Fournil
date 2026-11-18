@@ -13,6 +13,7 @@ const [RACINE, SORTIE, SUFFIXE = 'capture'] = process.argv.slice(2).map((v, i) =
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
 
 const TOUS_ECRANS = [
+  ['00-connexion', 'showLogin()'],
   ['01-accueil', ''],
   ['02-recettes', "openModule('fournil');sw('recettes')"],
   ['03-recettes-calcul', "openModule('fournil');sw('recettes');document.querySelector('#tab-recettes [data-tab=calculator]')?.click()"],
@@ -29,6 +30,7 @@ const TOUS_ECRANS = [
   ['14-tournee', "openModule('bureau');swB('cmd-clients')"],
   ['15-journal', "openModule('bureau');swB('journal')"],
   ['16-stats', "openModule('bureau');swB('stats')"],
+  ['17-menu-plus', "openModule('fournil');sw('stock');const b=document.querySelector('.nav-plus');if(b&&b.offsetParent)b.click()"],
 ];
 // CAPTURES_FILTRE=recettes : seulement les écrans dont le nom correspond.
 const ECRANS = TOUS_ECRANS.filter(([n]) => !process.env.CAPTURES_FILTRE || new RegExp(process.env.CAPTURES_FILTRE).test(n));

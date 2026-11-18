@@ -519,21 +519,18 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
 </button>
 
-<div id="loginScreen" style="display:none;min-height:100svh;background:var(--ink);flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;">
-  <div style="width:100%;max-width:320px;">
-    <div style="text-align:center;margin-bottom:28px;">
-      <div class="home-logo" style="font-size:28px;">🥐 Fournil</div>
-      <div style="font-size:12px;color:rgba(196,154,108,0.6);margin-top:6px;">Connexion requise</div>
+<div id="loginScreen" class="login-screen" style="display:none">
+  <div class="login-carte">
+    <div class="login-tete">
+      <div class="login-marque">🥐 Fournil</div>
+      <p class="login-sous-titre">Connecte-toi pour retrouver ton fournil.</p>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <input id="loginEmail" type="email" autocomplete="username" placeholder="Email"
-        style="background:var(--paper);border:1px solid rgba(196,154,108,0.25);border-radius:8px;padding:12px 14px;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;">
-      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Mot de passe"
-        style="background:var(--paper);border:1px solid rgba(196,154,108,0.25);border-radius:8px;padding:12px 14px;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;">
-      <div id="loginError" style="font-size:12px;color:#FF8C60;min-height:16px;"></div>
-      <button id="loginBtn" onclick="doLogin()"
-        style="background:var(--ocre);color:var(--ink);border:none;border-radius:8px;padding:12px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;">Se connecter</button>
-    </div>
+    <label class="login-label" for="loginEmail">Adresse e-mail</label>
+    <input id="loginEmail" class="login-champ" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false">
+    <label class="login-label" for="loginPassword">Mot de passe</label>
+    <input id="loginPassword" class="login-champ" type="password" autocomplete="current-password">
+    <div id="loginError" class="login-erreur" role="alert"></div>
+    <button id="loginBtn" class="login-bouton" onclick="doLogin()">Se connecter</button>
   </div>
 </div>
 
