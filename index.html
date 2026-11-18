@@ -2666,10 +2666,10 @@ function renderCalendrier() {
       <button class="cal-nav" onclick="calNav(+1)">›</button>
     </div>
     <div class="cal-legend">
-      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#C8E0C0"></div>Léger (&lt;${S.seuilsCharge?.low||30})</div>
-      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#FAD8A0"></div>Chargé (${S.seuilsCharge?.low||30}-${S.seuilsCharge?.mid||80})</div>
-      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#F0A8A0"></div>Surcharge (&gt;${S.seuilsCharge?.mid||80})</div>
-      <button onclick="openSeuilsModal()" style="background:none;border:1px solid rgba(196,154,108,0.3);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--brown-light);cursor:pointer;margin-left:auto">⚙️ Seuils</button>
+      <div class="cal-legend-item"><div class="cal-legend-dot charge-low"></div>Léger (&lt;${S.seuilsCharge?.low||30})</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot charge-mid"></div>Chargé (${S.seuilsCharge?.low||30}-${S.seuilsCharge?.mid||80})</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot charge-high"></div>Surcharge (&gt;${S.seuilsCharge?.mid||80})</div>
+      <button onclick="openSeuilsModal()" class="cal-seuils-btn" style="background:none;border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--brown-light);cursor:pointer;margin-left:auto">⚙️ Seuils</button>
     </div>
     <div class="cal-grid">${daysHtml}</div>
     <div class="cal-events">

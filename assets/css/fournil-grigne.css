@@ -337,3 +337,43 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .note-transcription { background: var(--cream); color: var(--muted); font-size: 14px; }
 .notes-free { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; color: var(--ink); font-size: 15px; }
 .titem .move-btn { min-width: 34px; min-height: 34px; }
+
+/* ========== Historique et calendrier (Fournil et Labo) ========== */
+.histo-filters { gap: 8px; }
+.hf-btn { background: var(--paper); border: 1px solid var(--line); border-radius: 999px; min-height: 40px; padding: 6px 14px; font-size: 14px; color: var(--ink); }
+.hf-btn.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.histo-day-title { font-size: 12px; color: var(--muted); letter-spacing: .08em; }
+.histo-entry { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: none; padding: 10px 14px; }
+.histo-entry.sortie::before { background: var(--accent); }
+.histo-entry.recharge::before { background: var(--ok); }
+.histo-name { font-size: 15px; }
+.histo-type { font-size: 11px; color: var(--muted); }
+.histo-qty { font-family: var(--serif); font-weight: 400; font-size: 22px; }
+.histo-entry.sortie .histo-qty { color: var(--accent-deep); }
+.histo-entry.recharge .histo-qty { color: var(--ok); }
+.histo-clear-btn, .cal-nav, .cal-seuils-btn { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 12px; min-height: 40px; }
+.histo-del-btn { color: var(--muted); }
+.cal-month { font-family: var(--serif); font-weight: 400; font-size: 24px; color: var(--ink); }
+.cal-day-name { font-size: 11px; color: var(--muted); }
+.cal-day { border-radius: 12px; font-size: 14px; min-height: 40px; }
+.cal-day.today { background: var(--ink); color: var(--cream); }
+.cal-day.today.has-event::after { background: var(--cream); }
+.cal-day.has-event::after { background: var(--accent); }
+.cal-day.has-cmd::after { background: var(--err); }
+.cal-day.sel-day { outline-color: var(--accent); }
+.cal-day.charge-low,  .cal-legend-dot.charge-low  { background: var(--ok-bg); color: var(--ok); }
+.cal-day.charge-mid,  .cal-legend-dot.charge-mid  { background: var(--accent-soft); color: var(--accent-deep); }
+.cal-day.charge-high, .cal-legend-dot.charge-high { background: var(--err-bg); color: var(--err); }
+.cal-legend-dot.charge-low  { border: 1px solid var(--ok); }
+.cal-legend-dot.charge-mid  { border: 1px solid var(--accent); }
+.cal-legend-dot.charge-high { border: 1px solid var(--err); }
+.cal-day.charge-low:active, .cal-day.charge-mid:active, .cal-day.charge-high:active { filter: brightness(.95); }
+.cal-legend-item { font-size: 13px; color: var(--muted); }
+.cal-events, .hebdo-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.cal-event-title { font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--ink); }
+.cal-event-item, .hebdo-prod-row { border-bottom: 1px solid var(--line2); }
+.cal-event-text { font-size: 14px; }
+.hebdo-prod-name { font-size: 14px; }
+.hebdo-prod-qty { font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--accent-deep); }
+.cal-day.charge-mid  { box-shadow: inset 0 0 0 1px var(--accent-line); }
+.cal-day.charge-high { box-shadow: inset 0 0 0 2px var(--err); font-weight: 700; }
