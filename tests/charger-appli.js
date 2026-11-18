@@ -6,12 +6,13 @@ const path = require('node:path');
 const { JSDOM, VirtualConsole } = require('jsdom');
 const { createFakeFirebase } = require('./fake-firebase.js');
 
-const HTML = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+const HTML = fs.readFileSync(process.env.FOURNIL_HTML || path.join(__dirname, '..', 'index.html'), 'utf8');
 const pause = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 
-async function chargerAppli({ recettes } = {}) {
+async function chargerAppli({ recettes, etat } = {}) {
   const initial = {};
   if (recettes) initial['boulangerie/recettes'] = { recipes: JSON.stringify(recettes) };
+  if (etat) initial['boulangerie/state'] = { state: JSON.stringify(etat) };
   const fake = createFakeFirebase(initial);
   const erreurs = [];
   const telechargements = [];
@@ -28,12 +29,7 @@ async function chargerAppli({ recettes } = {}) {
     virtualConsole: vc,
     beforeParse(window) {
       window.firebase = fake.firebase;
-      window.pdfjsLib = { GlobalWorkerOptions: {} };
-      const mem = new Map();
-      window.storage = {
-        get: async (k) => (mem.has(k) ? { value: mem.get(k) } : null),
-        set: async (k, v) => { mem.set(k, v); },
-      };
+      // Pas de window.storage : il n'existe pas en production non plus.
       window.fetch = (u) => { reseau.push(String(u)); return Promise.reject(new Error('réseau bloqué en test')); };
       window.alert = () => {};
       window.scrollTo = () => {};

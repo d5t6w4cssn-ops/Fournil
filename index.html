@@ -561,29 +561,6 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .toast { position: fixed; top: 68px; left: 50%; transform: translateX(-50%) translateY(-8px); background: var(--ink); color: var(--ocre-light); padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 500; z-index: 400; opacity: 0; transition: all 0.22s; white-space: nowrap; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* THERMOMÈTRES */
-.thermo-config-card { background: var(--paper); border-radius: var(--r); padding: 13px 14px; margin-bottom: 12px; box-shadow: var(--sh); }
-.thermo-config-title { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--brown-mid); margin-bottom: 10px; }
-.thermo-mode-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
-.thermo-mode-btn { flex: 1; padding: 7px; border: 2px solid var(--cream); background: var(--cream); border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; color: var(--brown-mid); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
-.thermo-mode-btn.active { border-color: var(--ocre); background: var(--ocre-pale); color: var(--brown); }
-.thermo-panel { display: none; }
-.thermo-panel.active { display: block; }
-.thermo-card { background: var(--paper); border-radius: var(--r); padding: 13px 14px; margin-bottom: 9px; box-shadow: var(--sh); display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; }
-.thermo-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--green); border-radius: 3px 0 0 3px; }
-.thermo-card.warn::before { background: var(--orange); }
-.thermo-card.err::before { background: var(--red); }
-.thermo-icon { font-size: 28px; flex-shrink: 0; }
-.thermo-info { flex: 1; }
-.thermo-name { font-weight: 500; font-size: 14px; }
-.thermo-loc { font-size: 11px; color: var(--brown-light); margin-top: 1px; }
-.thermo-vals { text-align: right; flex-shrink: 0; }
-.thermo-temp-val { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--brown); line-height: 1; }
-.thermo-hum-val { font-size: 11px; color: var(--brown-light); margin-top: 2px; }
-.thermo-badge { font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; margin-top: 3px; display: inline-block; }
-.thermo-badge.ok { background: var(--green-light); color: var(--green); }
-.thermo-badge.warn { background: var(--orange-light); color: var(--orange); }
-.thermo-badge.err { background: var(--red-light); color: var(--red); }
 .thermo-add-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 10px; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 4px; }
 
 /* NOTES */
@@ -723,7 +700,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
         <div style="font-size:13px;color:var(--ink);line-height:1.5">Vue mensuelle avec code couleur de charge : 🟢 léger, 🟠 chargé, 🔴 surcharge selon le nombre de pièces commandées. Appuie sur ⚙️ Seuils pour personnaliser les limites. Les commandes à livrer le lendemain apparaissent en rouge pour anticiper la production.</div></div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">⚙️ Produits</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Ajoute, modifie (✏️) ou supprime des produits. Configure aussi les thermomètres connectés. Boutons ↑ ↓ pour réordonner.</div></div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">Ajoute, modifie (✏️) ou supprime des produits. Boutons ↑ ↓ pour réordonner.</div></div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">💬 Notes d'équipe</div>
         <div style="font-size:13px;color:var(--ink);line-height:1.5">La bulle marron en bas à droite ouvre les notes. Messages texte signés + zone de notes libres. Bouton 🎙️ <b>Journal vocal</b> : enregistre jusqu'à 30s, le message audio est conservé et écoutable. Bouton <b>Retranscrire</b> pour convertir en texte.</div></div>
@@ -851,7 +828,6 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     <div id="fournilModule" style="display:none">
       <div class="section active" id="tab-stock">
         <div id="meteoCard"></div>
-        <div id="thermoCards"></div>
         <div class="ov-strip" id="ovStrip"></div>
         <div class="sec-title">Inventaire congélateur</div>
         <div id="stockList"></div>
@@ -1080,31 +1056,6 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
   <iframe class="pdf-frame" id="pdfFrame" src=""></iframe>
 </div>
 
-<!-- Modal ajout thermomètre -->
-<div class="overlay" id="mThermo">
-  <div class="modal">
-    <div class="modal-title">Ajouter un thermomètre</div>
-    <div class="mgroup" style="margin-bottom:8px"><label>Nom / Emplacement</label><input class="minput" id="th-name" placeholder="Ex: Chambre froide" style="margin-bottom:0"></div>
-    <div class="thermo-mode-tabs" style="margin-bottom:10px">
-      <button class="thermo-mode-btn active" id="th-mode-tuya" onclick="setThMode('tuya')">☁️ Tuya API</button>
-      <button class="thermo-mode-btn" id="th-mode-ip" onclick="setThMode('ip')">🌐 IP Locale</button>
-    </div>
-    <div class="thermo-panel active" id="th-panel-tuya">
-      <div class="mgroup"><label>Client ID Tuya</label><input class="minput" id="th-clientid" placeholder="xxxxxxxxxx" style="margin-bottom:6px"></div>
-      <div class="mgroup"><label>Client Secret</label><input class="minput" id="th-secret" placeholder="xxxxxxxxxx" style="margin-bottom:6px"></div>
-      <div class="mgroup"><label>Device ID</label><input class="minput" id="th-deviceid" placeholder="ID de l'appareil Tuya" style="margin-bottom:0"></div>
-    </div>
-    <div class="thermo-panel" id="th-panel-ip">
-      <div class="mgroup"><label>Adresse IP locale</label><input class="minput" id="th-ip" placeholder="Ex: 192.168.1.42" style="margin-bottom:0"></div>
-    </div>
-    <div class="mgroup" style="margin-top:10px"><label>Alerte si température > (°C)</label><input class="minput" id="th-maxtemp" type="number" placeholder="Ex: 5" style="margin-bottom:0"></div>
-    <div class="mactions" style="margin-top:10px">
-      <button class="mbtn mbtn-c" onclick="closeM('mThermo')">Annuler</button>
-      <button class="mbtn mbtn-p" onclick="addThermo()">Ajouter</button>
-    </div>
-  </div>
-</div>
-
 <!-- Modal ajout boulanger -->
 <div class="overlay" id="mBoulanger">
   <div class="modal">
@@ -1120,7 +1071,6 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <!-- Modal matière première -->
 <div class="overlay" id="mMatiere">
   <div class="modal">
@@ -1231,12 +1181,17 @@ const DEFAULTS = [
   {id:'pain_blanc',name:'Pain blanc',emoji:'🌾',stockReel:0,base:0,commande:0,seuil:25},
 ];
 
-let S={products:[],tasks:[],lastDate:null,history:[],thermos:[],notes:[],boulangers:[],freeNotes:'',thermoMode:'tuya',journal:{}};
+let S={products:[],tasks:[],lastDate:null,history:[],thermos:[],notes:[],boulangers:[],freeNotes:'',journal:{}};
 let L={products:[],tasks:[],lastDate:null,history:[],histoTaches:[]}; // State Labo séparé
-let flips={},tab='stock',activeModule=null,correctId=null,dbt={},histoFilter='all',meteoLoaded=false,pendingPdfUrl=null,thermoTimers={};
+let flips={},tab='stock',activeModule=null,correctId=null,dbt={},histoFilter='all',meteoLoaded=false,pendingPdfUrl=null;
 let laboTab='lstock',laboHistoFilter='all',laboDbt={},laboFlips={};
 
 const today=()=>new Date().toISOString().slice(0,10);
+// Échappement à l'affichage : tout texte venu des données passe par esc() avant
+// d'entrer dans du HTML ; un argument de onclick="f(…)" passe par escJ() (chaîne
+// JavaScript sûre, elle-même échappée pour l'attribut).
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escJ(v){return esc(JSON.stringify(String(v??'')));}
 const dispo=p=>Math.max(0,p.stockReel-(p.base||0)-(p.commande||0));
 const sorti=p=>(p.base||0)+(p.commande||0);
 const status=p=>{const d=dispo(p);return d<=0?'empty':d<=p.seuil?'low':'ok';};
@@ -1268,7 +1223,6 @@ function initFirebase() {
           S = JSON.parse(remote);
           normalizeState();
           if (activeModule === 'fournil') render();
-          if (tab === 'thermos') renderThermos();
           if (tab === 'notes') renderNotes();
         }
       }
@@ -1333,7 +1287,7 @@ function normalizeState() {
   });
   if (!S.tasks)      S.tasks = [];
   if (!S.history)    S.history = [];
-  if (!S.thermos)    S.thermos = [];
+  if (!S.thermos)    S.thermos = []; // ancienne fonction thermomètres : donnée gardée telle quelle
   if (!S.notes)      S.notes = [];
   if (!S.boulangers) S.boulangers = [];
   if (!S.freeNotes)  S.freeNotes = '';
@@ -1474,7 +1428,6 @@ async function actualiserApp() {
 
       if (activeModule === 'fournil') render();
       if (activeModule === 'labo') renderLabo();
-      if (tab === 'thermos') renderThermos();
       if (tab === 'notes') renderNotes();
       updateSyncIndicator(true);
       toast('Actualisé ✓');
@@ -1544,13 +1497,13 @@ function renderLaboStock(){
   if(!L.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">📦</div>Ajoutez vos produits<br>dans l\'onglet Produits.</div>';return;}
   el.innerHTML=L.products.map((p,i)=>{
     const s=lstatus(p),d=ldispo(p),so=lsorti(p);
-    return`<div class="scard ${s}" id="lpc-${p.id}">
-      <div class="flip-box" id="lflip-${p.id}">
-        <div class="flip-face ff-s"><div class="fn" id="lfn-s-${p.id}">${d}</div><div class="fl">❄️ congelo</div></div>
-        <div class="flip-face ff-d"><div class="fn neg" id="lfn-d-${p.id}">${so>0?'−'+so:'—'}</div><div class="fl">🌡️ sorti</div></div>
+    return`<div class="scard ${s}" id="lpc-${esc(p.id)}">
+      <div class="flip-box" id="lflip-${esc(p.id)}">
+        <div class="flip-face ff-s"><div class="fn" id="lfn-s-${esc(p.id)}">${d}</div><div class="fl">❄️ congelo</div></div>
+        <div class="flip-face ff-d"><div class="fn neg" id="lfn-d-${esc(p.id)}">${so>0?'−'+so:'—'}</div><div class="fl">🌡️ sorti</div></div>
       </div>
       <div class="scard-info">
-        <div class="scard-name"><span class="scard-emoji">${p.emoji}</span>${p.name}</div>
+        <div class="scard-name"><span class="scard-emoji">${esc(p.emoji)}</span>${esc(p.name)}</div>
         <div class="scard-nums">
           <div class="scard-num-block"><div class="sn-val">${d}</div><div class="sn-lbl">❄️ Congelo</div></div>
           <div class="scard-num-block"><div class="sn-val" style="${so>0?'color:var(--orange)':''}">${so>0?so:'—'}</div><div class="sn-lbl">🌡️ Sorti</div></div>
@@ -1558,10 +1511,10 @@ function renderLaboStock(){
       </div>
       <div class="scard-actions">
         ${badge(s)}
-        <button class="edit-ico" onclick="openLaboCorrect('${p.id}')">✏️</button>
+        <button class="edit-ico" onclick="openLaboCorrect(${escJ(p.id)})">✏️</button>
         <div style="display:flex;gap:3px">
-          <button class="move-btn" onclick="moveLaboProd('${p.id}',-1);renderLaboStock()" ${i===0?'disabled':''}>↑</button>
-          <button class="move-btn" onclick="moveLaboProd('${p.id}',+1);renderLaboStock()" ${i===L.products.length-1?'disabled':''}>↓</button>
+          <button class="move-btn" onclick="moveLaboProd(${escJ(p.id)},-1);renderLaboStock()" ${i===0?'disabled':''}>↑</button>
+          <button class="move-btn" onclick="moveLaboProd(${escJ(p.id)},+1);renderLaboStock()" ${i===L.products.length-1?'disabled':''}>↓</button>
         </div>
       </div>
     </div>`;
@@ -1625,19 +1578,19 @@ function renderLaboMagasin(){
   el.innerHTML=L.products.map(p=>{
     const so=lsorti(p),d=ldispo(p);
     return`<div class="mcard">
-      <div class="mcard-top"><div class="mcard-name"><span>${p.emoji}</span>${p.name}</div><div class="mcard-stock">Congelo : <b>${d}</b></div></div>
-      <div class="mcard-carousel"><div class="mcard-slides" id="lslides-${p.id}">
+      <div class="mcard-top"><div class="mcard-name"><span>${esc(p.emoji)}</span>${esc(p.name)}</div><div class="mcard-stock">Congelo : <b>${d}</b></div></div>
+      <div class="mcard-carousel"><div class="mcard-slides" id="lslides-${esc(p.id)}">
         <div class="mcard-slide"><div class="mctrl-lbl">📦 Base / jour</div>
           <div class="mcontrols" style="margin-top:4px"><div class="mctrl-group" style="flex:1"><div class="mctrl">
-            <button class="mc-btn" onclick="ladjM('base','${p.id}',-1)">−</button>
-            <input class="mc-in" id="lbase-${p.id}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="lonChange('base','${p.id}',this.value)">
-            <button class="mc-btn" onclick="ladjM('base','${p.id}',+1)">+</button>
+            <button class="mc-btn" onclick="ladjM('base',${escJ(p.id)},-1)">−</button>
+            <input class="mc-in" id="lbase-${esc(p.id)}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="lonChange('base',${escJ(p.id)},this.value)">
+            <button class="mc-btn" onclick="ladjM('base',${escJ(p.id)},+1)">+</button>
           </div></div><div class="mtotal-pill"><div class="mtotal-val">${so}</div><div class="mtotal-lbl">Total</div></div></div></div>
         <div class="mcard-slide"><div class="mctrl-lbl">➕ Commande du jour</div>
           <div class="mcontrols" style="margin-top:4px"><div class="mctrl-group" style="flex:1"><div class="mctrl">
-            <button class="mc-btn" onclick="ladjM('commande','${p.id}',-1)">−</button>
-            <input class="mc-in" id="lcommande-${p.id}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="lonChange('commande','${p.id}',this.value)">
-            <button class="mc-btn" onclick="ladjM('commande','${p.id}',+1)">+</button>
+            <button class="mc-btn" onclick="ladjM('commande',${escJ(p.id)},-1)">−</button>
+            <input class="mc-in" id="lcommande-${esc(p.id)}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="lonChange('commande',${escJ(p.id)},this.value)">
+            <button class="mc-btn" onclick="ladjM('commande',${escJ(p.id)},+1)">+</button>
           </div></div><div class="mtotal-pill"><div class="mtotal-val">${so}</div><div class="mtotal-lbl">Total</div></div></div></div>
       </div>
       <div class="mcard-dots"><div class="mcard-dot active"></div><div class="mcard-dot"></div></div></div>
@@ -1686,9 +1639,9 @@ function renderLaboTasks(){
 }
 
 function laboTHTML(t,idx,total){
-  const catBadge=t.cat&&!t.auto?`<span class="task-cat-badge cat-${t.cat}">${CAT_LABELS[t.cat]||t.cat}</span>`:'';
-  const moveBtns=!t.auto?`<div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0"><button class="move-btn" onclick="moveLaboTask('${t.id}',-1)" ${idx===0?'disabled':''}>↑</button><button class="move-btn" onclick="moveLaboTask('${t.id}',+1)" ${idx===total-1?'disabled':''}>↓</button></div>`:'';
-  return`<div class="titem ${t.done?'done':''}">${moveBtns}<div class="tchk" onclick="toggleLaboTask('${t.id}')"></div><div class="ttext" onclick="toggleLaboTask('${t.id}')">${t.text}</div>${t.auto?'<span class="tauto">Auto</span>':''}${catBadge}<button class="tdel" onclick="delLaboTask('${t.id}')">×</button></div>`;
+  const catBadge=t.cat&&!t.auto?`<span class="task-cat-badge cat-${esc(t.cat)}">${esc(CAT_LABELS[t.cat]||t.cat)}</span>`:'';
+  const moveBtns=!t.auto?`<div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0"><button class="move-btn" onclick="moveLaboTask(${escJ(t.id)},-1)" ${idx===0?'disabled':''}>↑</button><button class="move-btn" onclick="moveLaboTask(${escJ(t.id)},+1)" ${idx===total-1?'disabled':''}>↓</button></div>`:'';
+  return`<div class="titem ${t.done?'done':''}">${moveBtns}<div class="tchk" onclick="toggleLaboTask(${escJ(t.id)})"></div><div class="ttext" onclick="toggleLaboTask(${escJ(t.id)})">${esc(t.text)}</div>${t.auto?'<span class="tauto">Auto</span>':''}${catBadge}<button class="tdel" onclick="delLaboTask(${escJ(t.id)})">×</button></div>`;
 }
 
 function moveLaboTask(id,dir){const manual=L.tasks.filter(t=>!t.auto);if(moveItem(manual,id,dir)){const auto=L.tasks.filter(t=>t.auto);L.tasks=[...auto,...manual];saveL();renderLaboTasks();}}
@@ -1706,18 +1659,18 @@ function renderLaboHistoTaches(){
   const el=document.getElementById('lHistoTachesList');if(!el)return;
   if(!L.histoTaches||!L.histoTaches.length){el.innerHTML='';return;}
   const byCat={};L.histoTaches.forEach(h=>{const c=h.cat||'general';if(!byCat[c])byCat[c]=[];byCat[c].push(h);});
-  el.innerHTML=Object.entries(byCat).map(([cat,items])=>`<div style="margin-bottom:16px"><div class="tgroup-lbl">${CAT_LABELS[cat]||cat}</div>${items.slice(0,20).map(h=>`<div class="task-histo-entry"><span class="task-cat-badge cat-${h.cat}" style="flex-shrink:0">${h.date.slice(5)}</span><span class="task-histo-text">${h.text}</span><span class="task-histo-time">${h.time}</span></div>`).join('')}</div>`).join('');
+  el.innerHTML=Object.entries(byCat).map(([cat,items])=>`<div style="margin-bottom:16px"><div class="tgroup-lbl">${esc(CAT_LABELS[cat]||cat)}</div>${items.slice(0,20).map(h=>`<div class="task-histo-entry"><span class="task-cat-badge cat-${esc(h.cat)}" style="flex-shrink:0">${h.date.slice(5)}</span><span class="task-histo-text">${esc(h.text)}</span><span class="task-histo-time">${esc(h.time)}</span></div>`).join('')}</div>`).join('');
 }
 
 function renderLaboHisto(){
   const el=document.getElementById('lHistoList');const fEl=document.getElementById('lHistoFilters');if(!el)return;
   const entries=laboHistoFilter==='all'?L.history:L.history.filter(h=>h.pid===laboHistoFilter);
   const pids=[...new Set((L.history||[]).map(h=>h.pid))];
-  if(fEl)fEl.innerHTML=`<button class="hf-btn ${laboHistoFilter==='all'?'active':''}" onclick="setLaboHistoFilter('all')">Tous</button>${pids.map(pid=>{const p=L.products.find(x=>x.id===pid);if(!p)return'';return`<button class="hf-btn ${laboHistoFilter===pid?'active':''}" onclick="setLaboHistoFilter('${pid}')">${p.emoji} ${p.name}</button>`;}).join('')}`;
+  if(fEl)fEl.innerHTML=`<button class="hf-btn ${laboHistoFilter==='all'?'active':''}" onclick="setLaboHistoFilter('all')">Tous</button>${pids.map(pid=>{const p=L.products.find(x=>x.id===pid);if(!p)return'';return`<button class="hf-btn ${laboHistoFilter===pid?'active':''}" onclick="setLaboHistoFilter(${escJ(pid)})">${esc(p.emoji)} ${esc(p.name)}</button>`;}).join('')}`;
   if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-icon">📈</div>Aucun historique encore.</div>';return;}
   const byDate={};entries.forEach(h=>{if(!byDate[h.date])byDate[h.date]=[];byDate[h.date].push(h);});
   const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-  el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${h.emoji}</span><div class="histo-info"><div class="histo-name">${h.name}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div></div>`).join('')}</div>`).join('');
+  el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div></div>`).join('')}</div>`).join('');
 }
 function setLaboHistoFilter(pid){laboHistoFilter=pid;renderLaboHisto();}
 
@@ -1734,7 +1687,7 @@ function renderLaboCalendrier(){
     const ds=`${laboCalYear}-${String(laboCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isT=ds===today(),hasEv=eventDays.has(ds),isSel=ds===laboCalSel;
     const cls=[isT?'today':'',hasEv?'has-event':'',isSel&&!isT?'sel-day':''].filter(Boolean).join(' ');
-    daysHtml+=`<div class="cal-day ${cls}" onclick="laboCalSel='${ds}';renderLaboCalendrier()"><span>${d}</span></div>`;
+    daysHtml+=`<div class="cal-day ${cls}" onclick="laboCalSel=${escJ(ds)};renderLaboCalendrier()"><span>${d}</span></div>`;
   }
   const histoSel=(L.history||[]).filter(h=>h.date===laboCalSel);
   const selLabel=new Date(laboCalSel).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
@@ -1748,7 +1701,7 @@ function renderLaboCalendrier(){
     <div class="cal-events">
       <div class="cal-event-title">${selLabel}</div>
       ${!histoSel.length?'<div style="font-size:13px;color:var(--brown-light)">Aucun événement ce jour.</div>':''}
-      ${histoSel.map(h=>`<div class="cal-event-item"><div class="cal-event-dot" style="background:${h.type==='sortie'?'var(--orange)':'var(--green)'}"></div><div class="cal-event-text">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'} : ${h.emoji} ${h.name} (${h.qty})</div></div>`).join('')}
+      ${histoSel.map(h=>`<div class="cal-event-item"><div class="cal-event-dot" style="background:${h.type==='sortie'?'var(--orange)':'var(--green)'}"></div><div class="cal-event-text">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'} : ${esc(h.emoji)} ${esc(h.name)} (${h.qty})</div></div>`).join('')}
     </div>`;
 }
 
@@ -1759,7 +1712,7 @@ function renderLaboSettings(){
     el.innerHTML+=`<button class="thermo-add-btn" onclick="openLaboAddProduct()" style="margin-top:10px">+ Ajouter un produit</button>`;
     return;
   }
-  el.innerHTML=L.products.map((p,i)=>`<div class="pcard-set"><div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0"><button class="move-btn" onclick="moveLaboProd('${p.id}',-1)" ${i===0?'disabled':''}>↑</button><button class="move-btn" onclick="moveLaboProd('${p.id}',+1)" ${i===L.products.length-1?'disabled':''}>↓</button></div><span style="font-size:20px">${p.emoji}</span><div class="pcard-set-info"><div class="pcard-set-name">${p.name}</div><div class="pcard-set-sub">Stock : ${p.stockReel}u · Seuil : ${p.seuil}u · Base/j : ${p.base||0}u</div></div><button class="edit-prod-btn" onclick="openLaboEditProduct('${p.id}')">✏️</button><button class="sdel" onclick="delLaboProduct('${p.id}')">Suppr.</button></div>`).join('');
+  el.innerHTML=L.products.map((p,i)=>`<div class="pcard-set"><div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0"><button class="move-btn" onclick="moveLaboProd(${escJ(p.id)},-1)" ${i===0?'disabled':''}>↑</button><button class="move-btn" onclick="moveLaboProd(${escJ(p.id)},+1)" ${i===L.products.length-1?'disabled':''}>↓</button></div><span style="font-size:20px">${esc(p.emoji)}</span><div class="pcard-set-info"><div class="pcard-set-name">${esc(p.name)}</div><div class="pcard-set-sub">Stock : ${p.stockReel}u · Seuil : ${p.seuil}u · Base/j : ${p.base||0}u</div></div><button class="edit-prod-btn" onclick="openLaboEditProduct(${escJ(p.id)})">✏️</button><button class="sdel" onclick="delLaboProduct(${escJ(p.id)})">Suppr.</button></div>`).join('');
   el.innerHTML+=`<button class="thermo-add-btn" onclick="openLaboAddProduct()" style="margin-top:10px">+ Ajouter un produit</button>`;
 }
 
@@ -1846,29 +1799,28 @@ function renderStock(){
   document.getElementById('ovStrip').innerHTML=`
     <div class="ov-pill"><div class="ov-icon">❄️</div><div><div class="ov-num">${tD}</div><div class="ov-lbl">Disponible</div></div></div>
     <div class="ov-pill"><div class="ov-icon">🌡️</div><div><div class="ov-num" style="color:var(--orange)">${tS}</div><div class="ov-lbl">Sorti ce jour</div></div></div>`;
-  renderThermoCards();
   const el=document.getElementById('stockList');
   if(!S.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">📦</div>Ajoutez vos produits<br>dans l\'onglet Produits.</div>';return;}
   el.innerHTML=S.products.map((p,i)=>{
     const s=status(p),d=dispo(p),so=sorti(p);
-    return`<div class="scard ${s}" id="pc-${p.id}">
-      <div class="flip-box" id="flip-${p.id}">
-        <div class="flip-face ff-s"><div class="fn" id="fn-s-${p.id}">${d}</div><div class="fl">❄️ congelo</div></div>
-        <div class="flip-face ff-d"><div class="fn neg" id="fn-d-${p.id}">${so>0?'−'+so:'—'}</div><div class="fl">🌡️ sorti</div></div>
+    return`<div class="scard ${s}" id="pc-${esc(p.id)}">
+      <div class="flip-box" id="flip-${esc(p.id)}">
+        <div class="flip-face ff-s"><div class="fn" id="fn-s-${esc(p.id)}">${d}</div><div class="fl">❄️ congelo</div></div>
+        <div class="flip-face ff-d"><div class="fn neg" id="fn-d-${esc(p.id)}">${so>0?'−'+so:'—'}</div><div class="fl">🌡️ sorti</div></div>
       </div>
       <div class="scard-info">
-        <div class="scard-name"><span class="scard-emoji">${p.emoji}</span>${p.name}</div>
+        <div class="scard-name"><span class="scard-emoji">${esc(p.emoji)}</span>${esc(p.name)}</div>
         <div class="scard-nums">
-          <div class="scard-num-block"><div class="sn-val" id="sv-d-${p.id}">${d}</div><div class="sn-lbl">❄️ Congelo</div></div>
-          <div class="scard-num-block"><div class="sn-val" id="sv-s-${p.id}" style="${so>0?'color:var(--orange)':''}">${so>0?so:'—'}</div><div class="sn-lbl">🌡️ Sorti</div></div>
+          <div class="scard-num-block"><div class="sn-val" id="sv-d-${esc(p.id)}">${d}</div><div class="sn-lbl">❄️ Congelo</div></div>
+          <div class="scard-num-block"><div class="sn-val" id="sv-s-${esc(p.id)}" style="${so>0?'color:var(--orange)':''}">${so>0?so:'—'}</div><div class="sn-lbl">🌡️ Sorti</div></div>
         </div>
       </div>
       <div class="scard-actions">
         ${badge(s)}
-        <button class="edit-ico" onclick="openCorrect('${p.id}')">✏️</button>
+        <button class="edit-ico" onclick="openCorrect(${escJ(p.id)})">✏️</button>
         <div style="display:flex;gap:3px">
-          <button class="move-btn" onclick="moveProduct('${p.id}',-1);renderStock()" ${i===0?'disabled':''}>↑</button>
-          <button class="move-btn" onclick="moveProduct('${p.id}',+1);renderStock()" ${i===S.products.length-1?'disabled':''}>↓</button>
+          <button class="move-btn" onclick="moveProduct(${escJ(p.id)},-1);renderStock()" ${i===0?'disabled':''}>↑</button>
+          <button class="move-btn" onclick="moveProduct(${escJ(p.id)},+1);renderStock()" ${i===S.products.length-1?'disabled':''}>↓</button>
         </div>
       </div>
     </div>`;
@@ -1930,36 +1882,36 @@ function renderMagasin(){
     const so=sorti(p),d=dispo(p),over=so>p.stockReel;
     return`<div class="mcard">
       <div class="mcard-top">
-        <div class="mcard-name"><span>${p.emoji}</span>${p.name}</div>
-        <div class="mcard-stock">Congelo : <b id="ms-${p.id}">${d}</b></div>
+        <div class="mcard-name"><span>${esc(p.emoji)}</span>${esc(p.name)}</div>
+        <div class="mcard-stock">Congelo : <b id="ms-${esc(p.id)}">${d}</b></div>
       </div>
-      <div class="mcard-carousel"><div class="mcard-slides" id="slides-${p.id}">
+      <div class="mcard-carousel"><div class="mcard-slides" id="slides-${esc(p.id)}">
         <div class="mcard-slide">
           <div class="mctrl-lbl">📦 Base / jour</div>
           <div class="mcontrols" style="margin-top:4px">
             <div class="mctrl-group" style="flex:1"><div class="mctrl">
-              <button class="mc-btn" onclick="adj('base','${p.id}',-1)">−</button>
-              <input class="mc-in" id="base-${p.id}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="onChange('base','${p.id}',this.value)">
-              <button class="mc-btn" onclick="adj('base','${p.id}',+1)">+</button>
+              <button class="mc-btn" onclick="adj('base',${escJ(p.id)},-1)">−</button>
+              <input class="mc-in" id="base-${esc(p.id)}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="onChange('base',${escJ(p.id)},this.value)">
+              <button class="mc-btn" onclick="adj('base',${escJ(p.id)},+1)">+</button>
             </div></div>
-            <div class="mtotal-pill"><div class="mtotal-val" id="mt-${p.id}">${so}</div><div class="mtotal-lbl">Total</div></div>
+            <div class="mtotal-pill"><div class="mtotal-val" id="mt-${esc(p.id)}">${so}</div><div class="mtotal-lbl">Total</div></div>
           </div>
         </div>
         <div class="mcard-slide">
           <div class="mctrl-lbl">➕ Commande du jour</div>
           <div class="mcontrols" style="margin-top:4px">
             <div class="mctrl-group" style="flex:1"><div class="mctrl">
-              <button class="mc-btn" onclick="adj('commande','${p.id}',-1)">−</button>
-              <input class="mc-in" id="commande-${p.id}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="onChange('commande','${p.id}',this.value)">
-              <button class="mc-btn" onclick="adj('commande','${p.id}',+1)">+</button>
+              <button class="mc-btn" onclick="adj('commande',${escJ(p.id)},-1)">−</button>
+              <input class="mc-in" id="commande-${esc(p.id)}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="onChange('commande',${escJ(p.id)},this.value)">
+              <button class="mc-btn" onclick="adj('commande',${escJ(p.id)},+1)">+</button>
             </div></div>
-            <div class="mtotal-pill"><div class="mtotal-val" id="mt2-${p.id}">${so}</div><div class="mtotal-lbl">Total</div></div>
+            <div class="mtotal-pill"><div class="mtotal-val" id="mt2-${esc(p.id)}">${so}</div><div class="mtotal-lbl">Total</div></div>
           </div>
         </div>
       </div>
-      <div class="mcard-dots"><div class="mcard-dot active" id="dot0-${p.id}"></div><div class="mcard-dot" id="dot1-${p.id}"></div></div>
+      <div class="mcard-dots"><div class="mcard-dot active" id="dot0-${esc(p.id)}"></div><div class="mcard-dot" id="dot1-${esc(p.id)}"></div></div>
       </div>
-      <div class="mwarn" id="mw-${p.id}" style="display:${over?'block':'none'}">⚠️ Dépasse le stock (${p.stockReel}u)</div>
+      <div class="mwarn" id="mw-${esc(p.id)}" style="display:${over?'block':'none'}">⚠️ Dépasse le stock (${p.stockReel}u)</div>
     </div>`;
   }).join('');
   S.products.forEach(p=>initSwipe(p.id));
@@ -1997,19 +1949,19 @@ function renderTasks(){
 
 function tHTML(t, idx, total){
   let rb='';
-  if(t.auto&&t.pid){const p=S.products.find(x=>x.id===t.pid);if(p?.recipeUrl)rb=`<button class="recipe-btn" onclick="openRecipe('${p.id}')">📄</button>`;}
-  const catBadge=t.cat&&!t.auto&&!t.fromGestion?`<span class="task-cat-badge cat-${t.cat}">${CAT_LABELS[t.cat]||t.cat}</span>`:'';
+  if(t.auto&&t.pid){const p=S.products.find(x=>x.id===t.pid);if(p?.recipeUrl)rb=`<button class="recipe-btn" onclick="openRecipe(${escJ(p.id)})">📄</button>`;}
+  const catBadge=t.cat&&!t.auto&&!t.fromGestion?`<span class="task-cat-badge cat-${esc(t.cat)}">${esc(CAT_LABELS[t.cat]||t.cat)}</span>`:'';
   const gestionBadge=t.fromGestion?`<span class="from-gestion">📋 Gestion</span>`:'';
   const moveBtns=!t.auto?`<div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
-    <button class="move-btn" onclick="moveTask('${t.id}',-1)" ${idx===0?'disabled':''}>↑</button>
-    <button class="move-btn" onclick="moveTask('${t.id}',+1)" ${idx===total-1?'disabled':''}>↓</button>
+    <button class="move-btn" onclick="moveTask(${escJ(t.id)},-1)" ${idx===0?'disabled':''}>↑</button>
+    <button class="move-btn" onclick="moveTask(${escJ(t.id)},+1)" ${idx===total-1?'disabled':''}>↓</button>
   </div>`:'';
-  return`<div class="titem ${t.done?'done':''}" id="titem-${t.id}">
+  return`<div class="titem ${t.done?'done':''}" id="titem-${esc(t.id)}">
     ${moveBtns}
-    <div class="tchk" onclick="toggleTask('${t.id}')"></div>
-    <div class="ttext" onclick="toggleTask('${t.id}')">${t.text}</div>
+    <div class="tchk" onclick="toggleTask(${escJ(t.id)})"></div>
+    <div class="ttext" onclick="toggleTask(${escJ(t.id)})">${esc(t.text)}</div>
     ${t.auto?'<span class="tauto">Auto</span>':''}${catBadge}${gestionBadge}${rb}
-    <button class="tdel" onclick="delTask('${t.id}')">×</button>
+    <button class="tdel" onclick="delTask(${escJ(t.id)})">×</button>
   </div>`;
 }
 
@@ -2051,33 +2003,20 @@ function renderSettings(){
   const el=document.getElementById('settingsList');
   if(!S.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">⚙️</div>Aucun produit.</div>';return;}
   el.innerHTML=S.products.map((p,i)=>`
-    <div class="pcard-set" id="pset-${p.id}">
+    <div class="pcard-set" id="pset-${esc(p.id)}">
       <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
-        <button class="move-btn" onclick="moveProduct('${p.id}',-1)" ${i===0?'disabled':''}>↑</button>
-        <button class="move-btn" onclick="moveProduct('${p.id}',+1)" ${i===S.products.length-1?'disabled':''}>↓</button>
+        <button class="move-btn" onclick="moveProduct(${escJ(p.id)},-1)" ${i===0?'disabled':''}>↑</button>
+        <button class="move-btn" onclick="moveProduct(${escJ(p.id)},+1)" ${i===S.products.length-1?'disabled':''}>↓</button>
       </div>
-      <span style="font-size:20px">${p.emoji}</span>
+      <span style="font-size:20px">${esc(p.emoji)}</span>
       <div class="pcard-set-info">
-        <div class="pcard-set-name">${p.name}</div>
+        <div class="pcard-set-name">${esc(p.name)}</div>
         <div class="pcard-set-sub">Stock : ${p.stockReel}u · Seuil : ${p.seuil}u · Base/j : ${p.base||0}u</div>
       </div>
-      <button class="edit-prod-btn" onclick="openEditProduct('${p.id}')">✏️</button>
-      <button class="sdel" onclick="delProduct('${p.id}')">Suppr.</button>
+      <button class="edit-prod-btn" onclick="openEditProduct(${escJ(p.id)})">✏️</button>
+      <button class="sdel" onclick="delProduct(${escJ(p.id)})">Suppr.</button>
     </div>`).join('');
 
-  // Config thermomètres
-  el.innerHTML += `
-    <div class="sec-title" style="margin-top:20px;margin-bottom:10px">🌡️ Thermomètres</div>
-    ${(S.thermos||[]).map(t=>`
-      <div class="pcard-set">
-        <span style="font-size:20px">🌡️</span>
-        <div class="pcard-set-info">
-          <div class="pcard-set-name">${t.name}</div>
-          <div class="pcard-set-sub">${t.mode==='tuya'?'☁️ Tuya API':'🌐 IP : '+t.ip} · Alerte : ${t.maxTemp||'—'}°C</div>
-        </div>
-        <button class="sdel" onclick="delThermo('${t.id}')">Suppr.</button>
-      </div>`).join('')}
-    <button class="thermo-add-btn" onclick="openM('mThermo')" style="margin-top:8px">+ Ajouter un thermomètre</button>`;
 }
 
 // ── ÉDITION PRODUIT ──
@@ -2118,28 +2057,6 @@ function updateNotesBubble(){
   if(badge){badge.style.display=count>0?'flex':'none';badge.textContent=count>9?'9+':count;}
 }
 
-// ── THERMOS DANS STOCK ──
-function renderThermoCards(){
-  const el=document.getElementById('thermoCards');
-  if(!el||!S.thermos||!S.thermos.length){if(el)el.innerHTML='';return;}
-  el.innerHTML=S.thermos.map(t=>{
-    const hasData=t.temp!==null&&t.temp!==undefined;
-    const over=t.maxTemp&&t.temp>t.maxTemp;
-    const cls=!hasData?'err':over?'warn':'';
-    return`<div class="thermo-card ${cls}" style="margin-bottom:9px">
-      <div class="thermo-icon">${over?'🔴':'🌡️'}</div>
-      <div class="thermo-info">
-        <div class="thermo-name">${t.name}</div>
-        <div class="thermo-loc">${t.mode==='tuya'?'☁️ Tuya':'🌐 IP locale'}</div>
-      </div>
-      <div class="thermo-vals">
-        <div class="thermo-temp-val">${hasData?Math.round(t.temp*10)/10+'°C':'—'}</div>
-        <div class="thermo-hum-val">💧 ${hasData?(t.hum+'%'):'—'}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
 // ── GPS MÉMORISÉ ──
 let cachedPosition = null;
 function getPosition(){
@@ -2171,22 +2088,22 @@ function renderJournal() {
 
   el.innerHTML = `
     <div class="journal-date-nav">
-      <button class="journal-nav-btn" onclick="journalDate='${prevStr}';renderJournal()">‹</button>
+      <button class="journal-nav-btn" onclick="journalDate=${escJ(prevStr)};renderJournal()">‹</button>
       <div class="journal-date-lbl">${isToday ? "📋 Aujourd'hui" : dateLabel}</div>
-      <button class="journal-nav-btn" onclick="journalDate='${nextStr}';renderJournal()" ${canNext?'':'disabled style="opacity:0.3"'}>›</button>
+      <button class="journal-nav-btn" onclick="journalDate=${escJ(nextStr)};renderJournal()" ${canNext?'':'disabled style="opacity:0.3"'}>›</button>
     </div>
     <div class="journal-card">
       <div class="journal-section-title">📦 Production du jour</div>
       ${S.products.map(p => {
         const qty = entry.produits?.[p.id] || 0;
         return `<div class="journal-prod-row">
-          <span style="font-size:16px">${p.emoji}</span>
-          <span class="journal-prod-name">${p.name}</span>
+          <span style="font-size:16px">${esc(p.emoji)}</span>
+          <span class="journal-prod-name">${esc(p.name)}</span>
           <div class="journal-prod-ctrl">
-            <button class="journal-btn" onclick="adjJournal('${p.id}',-1)">−</button>
-            <input class="journal-input" id="jprod-${p.id}" type="number" min="0"
-              value="${qty}" inputmode="numeric" onchange="setJournal('${p.id}',this.value)">
-            <button class="journal-btn" onclick="adjJournal('${p.id}',+1)">+</button>
+            <button class="journal-btn" onclick="adjJournal(${escJ(p.id)},-1)">−</button>
+            <input class="journal-input" id="jprod-${esc(p.id)}" type="number" min="0"
+              value="${qty}" inputmode="numeric" onchange="setJournal(${escJ(p.id)},this.value)">
+            <button class="journal-btn" onclick="adjJournal(${escJ(p.id)},+1)">+</button>
           </div>
         </div>`;
       }).join('')}
@@ -2194,7 +2111,7 @@ function renderJournal() {
     <div class="journal-card">
       <div class="journal-section-title">📝 Observations</div>
       <textarea class="journal-obs" id="journalObs"
-        placeholder="Ex: Pousse longue ce matin, four à 200°C, livraison farine reçue…">${entry.obs||''}</textarea>
+        placeholder="Ex: Pousse longue ce matin, four à 200°C, livraison farine reçue…">${esc(entry.obs||'')}</textarea>
       <button class="journal-save-btn" onclick="saveJournalEntry()">💾 Enregistrer</button>
     </div>
     ${Object.keys(S.journal).filter(d=>d!==journalDate).length > 0 ? `
@@ -2205,11 +2122,11 @@ function renderJournal() {
         .slice(0,7)
         .map(([d, e]) => {
           const dl = new Date(d).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
-          const prods = Object.entries(e.produits||{}).filter(([,q])=>q>0).map(([id,q])=>{const p=S.products.find(x=>x.id===id);return p?`${p.emoji} ${p.name} : <b>${q}</b>`:''}).filter(Boolean).join(' · ');
+          const prods = Object.entries(e.produits||{}).filter(([,q])=>q>0).map(([id,q])=>{const p=S.products.find(x=>x.id===id);return p?`${esc(p.emoji)} ${esc(p.name)} : <b>${q}</b>`:''}).filter(Boolean).join(' · ');
           return `<div class="journal-history-entry">
             <div class="journal-history-date">${dl}</div>
             ${prods?`<div style="font-size:12px;color:var(--brown-mid);margin-top:3px">${prods}</div>`:''}
-            ${e.obs?`<div class="journal-history-obs">"${e.obs}"</div>`:''}
+            ${e.obs?`<div class="journal-history-obs">"${esc(e.obs)}"</div>`:''}
           </div>`;
         }).join('')}` : ''}`;
 }
@@ -2238,14 +2155,14 @@ function saveJournalEntry() {
 function renderHisto(){
   const entries=histoFilter==='all'?S.history:S.history.filter(h=>h.pid===histoFilter);
   const pids=[...new Set(S.history.map(h=>h.pid))];
-  document.getElementById('histoFilters').innerHTML=`<button class="hf-btn ${histoFilter==='all'?'active':''}" onclick="setHistoFilter('all')">Tous</button>${pids.map(pid=>{const p=S.products.find(x=>x.id===pid);if(!p)return'';return`<button class="hf-btn ${histoFilter===pid?'active':''}" onclick="setHistoFilter('${pid}')">${p.emoji} ${p.name}</button>`;}).join('')}`;
+  document.getElementById('histoFilters').innerHTML=`<button class="hf-btn ${histoFilter==='all'?'active':''}" onclick="setHistoFilter('all')">Tous</button>${pids.map(pid=>{const p=S.products.find(x=>x.id===pid);if(!p)return'';return`<button class="hf-btn ${histoFilter===pid?'active':''}" onclick="setHistoFilter(${escJ(pid)})">${esc(p.emoji)} ${esc(p.name)}</button>`;}).join('')}`;
   const el=document.getElementById('histoList');
   if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-icon">📈</div>Aucun historique encore.<br>Les sorties et rechargements<br>apparaîtront ici.</div>';return;}
   const byDate={};
   entries.forEach(h=>{if(!byDate[h.date])byDate[h.date]=[];byDate[h.date].push(h);});
   const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
   const clearBtn=`<button class="histo-clear-btn" onclick="clearHisto()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg> Tout effacer</button>`;
-  el.innerHTML=clearBtn+Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${h.emoji}</span><div class="histo-info"><div class="histo-name">${h.name}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div><button class="histo-del-btn" aria-label="Supprimer" onclick="delHistoEntry('${h.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg></button></div>`).join('')}</div>`).join('');
+  el.innerHTML=clearBtn+Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div><button class="histo-del-btn" aria-label="Supprimer" onclick="delHistoEntry(${escJ(h.id)})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg></button></div>`).join('')}</div>`).join('');
 }
 function setHistoFilter(pid){histoFilter=pid;renderHisto();}
 function delHistoEntry(id){
@@ -2299,32 +2216,32 @@ function renderMatieres() {
 
     const consoStr = consoNum > 0 ? `−${consoNum}` : '—';
 
-    return `<div class="scard ${cls||dlcCls}" id="mpc-${m.id}" style="margin-bottom:9px">
-      <div class="flip-box" id="mflip-${m.id}">
+    return `<div class="scard ${cls||dlcCls}" id="mpc-${esc(m.id)}" style="margin-bottom:9px">
+      <div class="flip-box" id="mflip-${esc(m.id)}">
         <div class="flip-face ff-s">
-          <div class="fn" id="mfn-s-${m.id}" style="font-size:24px">${stockNum}</div>
-          <div class="fl">${m.unit||'unités'}</div>
+          <div class="fn" id="mfn-s-${esc(m.id)}" style="font-size:24px">${stockNum}</div>
+          <div class="fl">${esc(m.unit||'unités')}</div>
         </div>
         <div class="flip-face ff-d">
-          <div class="fn neg" id="mfn-d-${m.id}" style="font-size:24px">${consoStr}</div>
+          <div class="fn neg" id="mfn-d-${esc(m.id)}" style="font-size:24px">${consoStr}</div>
           <div class="fl">utilisé</div>
         </div>
       </div>
       <div class="scard-info">
         <div class="scard-name">
-          <span class="scard-emoji">${m.emoji||'📦'}</span>${m.name}
+          <span class="scard-emoji">${esc(m.emoji||'📦')}</span>${esc(m.name)}
         </div>
         <div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap">
           ${dlcBadge}
-          <span class="mat-dlc-badge" style="background:var(--cream);color:var(--brown-light)">seuil : ${seuilNum} ${m.unit||''}</span>
+          <span class="mat-dlc-badge" style="background:var(--cream);color:var(--brown-light)">seuil : ${seuilNum} ${esc(m.unit||'')}</span>
         </div>
         <div class="scard-nums">
           <div class="scard-num-block">
-            <div class="sn-val" id="msv-s-${m.id}">${stockNum}</div>
+            <div class="sn-val" id="msv-s-${esc(m.id)}">${stockNum}</div>
             <div class="sn-lbl">📦 Stock</div>
           </div>
           <div class="scard-num-block">
-            <div class="sn-val" id="msv-d-${m.id}" style="${consoNum>0?'color:var(--orange)':''}">${consoNum>0?consoNum:'—'}</div>
+            <div class="sn-val" id="msv-d-${esc(m.id)}" style="${consoNum>0?'color:var(--orange)':''}">${consoNum>0?consoNum:'—'}</div>
             <div class="sn-lbl">📉 Utilisé</div>
           </div>
         </div>
@@ -2332,17 +2249,17 @@ function renderMatieres() {
       <div class="scard-actions">
         <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
           <div style="display:flex;gap:3px">
-            <button class="move-btn" onclick="moveMatiere('${m.id}',-1)" ${idx===0?'disabled':''}>↑</button>
-            <button class="move-btn" onclick="moveMatiere('${m.id}',+1)" ${idx===(S.matieres.length-1)?'disabled':''}>↓</button>
+            <button class="move-btn" onclick="moveMatiere(${escJ(m.id)},-1)" ${idx===0?'disabled':''}>↑</button>
+            <button class="move-btn" onclick="moveMatiere(${escJ(m.id)},+1)" ${idx===(S.matieres.length-1)?'disabled':''}>↓</button>
           </div>
           <div style="display:flex;align-items:center;background:var(--cream);border-radius:8px;overflow:hidden;height:32px">
-            <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock('${m.id}',-1)">−</button>
-            <input style="width:40px;height:32px;border:none;background:none;text-align:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--ink)" type="number" min="0" id="mat-val-${m.id}" value="0" inputmode="numeric">
-            <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock('${m.id}',+1)">+</button>
+            <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock(${escJ(m.id)},-1)">−</button>
+            <input style="width:40px;height:32px;border:none;background:none;text-align:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--ink)" type="number" min="0" id="mat-val-${esc(m.id)}" value="0" inputmode="numeric">
+            <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock(${escJ(m.id)},+1)">+</button>
           </div>
-          <button style="font-size:9px;background:var(--brown);color:var(--ocre-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;white-space:nowrap" onclick="useMatiere('${m.id}')">Utiliser</button>
-          <button class="edit-ico" onclick="openEditMatiere('${m.id}')">✏️</button>
-          <button class="sdel" style="font-size:11px;padding:3px 7px" onclick="delMatiere('${m.id}')">Suppr.</button>
+          <button style="font-size:9px;background:var(--brown);color:var(--ocre-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;white-space:nowrap" onclick="useMatiere(${escJ(m.id)})">Utiliser</button>
+          <button class="edit-ico" onclick="openEditMatiere(${escJ(m.id)})">✏️</button>
+          <button class="sdel" style="font-size:11px;padding:3px 7px" onclick="delMatiere(${escJ(m.id)})">Suppr.</button>
         </div>
       </div>
     </div>`;
@@ -2450,7 +2367,7 @@ function renderHebdo() {
       <div class="journal-section-title">📊 Semaine du ${weekLabel}</div>
       ${S.products.map(p=>`
         <div class="hebdo-prod-row">
-          <div class="hebdo-prod-name"><span>${p.emoji}</span>${p.name}</div>
+          <div class="hebdo-prod-name"><span>${esc(p.emoji)}</span>${esc(p.name)}</div>
           <div style="display:flex;gap:14px;align-items:center">
             <div style="text-align:center">
               <div class="hebdo-prod-qty" style="color:var(--orange)">${sorties[p.id]||0}</div>
@@ -2502,21 +2419,21 @@ function renderCmdClients() {
     return `<div class="cmd-client-card ${cls}">
       <div class="cmd-client-header">
         <div style="display:flex;gap:4px;flex-shrink:0">
-          <button class="move-btn" onclick="moveCmdClient('${c.id}',-1)" ${idx===0?'disabled':''}>↑</button>
-          <button class="move-btn" onclick="moveCmdClient('${c.id}',+1)" ${idx===sorted.length-1?'disabled':''}>↓</button>
+          <button class="move-btn" onclick="moveCmdClient(${escJ(c.id)},-1)" ${idx===0?'disabled':''}>↑</button>
+          <button class="move-btn" onclick="moveCmdClient(${escJ(c.id)},+1)" ${idx===sorted.length-1?'disabled':''}>↓</button>
         </div>
-        <span class="cmd-client-name">${c.nom}</span>
+        <span class="cmd-client-name">${esc(c.nom)}</span>
         <span class="cmd-client-badge ${badgeCls}">${badgeTxt}</span>
       </div>
-      ${c.detail ? `<div class="cmd-client-detail">${c.detail}</div>` : ''}
-      ${c.adresse ? `<div class="cmd-client-date">📍 ${c.adresse}</div>` : ''}
-      <div class="cmd-client-date">📅 ${dateStr}${c.heure?' à '+c.heure:''}</div>
+      ${c.detail ? `<div class="cmd-client-detail">${esc(c.detail)}</div>` : ''}
+      ${c.adresse ? `<div class="cmd-client-date">📍 ${esc(c.adresse)}</div>` : ''}
+      <div class="cmd-client-date">📅 ${dateStr}${c.heure?' à '+esc(c.heure):''}</div>
       <div class="cmd-client-actions">
-        <button class="cmd-action-btn" style="background:var(--cream);color:var(--brown-mid)" onclick="openEditCmd('${c.id}')">✏️</button>
-        ${c.status!=='sent'&&c.status!=='validated' ? `<button class="cmd-action-btn btn-send" onclick="sendCmdToFournil('${c.id}')">📤 Envoyer au fournil</button>` : ''}
-        ${c.status==='sent' ? `<button class="cmd-action-btn btn-validate" onclick="validateCmd('${c.id}')">✓ Marquer validé</button>` : ''}
+        <button class="cmd-action-btn" style="background:var(--cream);color:var(--brown-mid)" onclick="openEditCmd(${escJ(c.id)})">✏️</button>
+        ${c.status!=='sent'&&c.status!=='validated' ? `<button class="cmd-action-btn btn-send" onclick="sendCmdToFournil(${escJ(c.id)})">📤 Envoyer au fournil</button>` : ''}
+        ${c.status==='sent' ? `<button class="cmd-action-btn btn-validate" onclick="validateCmd(${escJ(c.id)})">✓ Marquer validé</button>` : ''}
         ${c.status==='validated' ? `<div style="font-size:12px;color:var(--green);font-weight:500;flex:1">✓ Traité par le fournil</div>` : ''}
-        <button class="cmd-action-btn btn-del-cmd" onclick="delCmdClient('${c.id}')">×</button>
+        <button class="cmd-action-btn btn-del-cmd" onclick="delCmdClient(${escJ(c.id)})">×</button>
       </div>
     </div>`;
   }).join('');
@@ -2738,10 +2655,10 @@ function renderCmdFournisseur() {
       <div class="journal-section-title">📋 À commander cette semaine</div>
       ${commandes.map(m=>`
         <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(196,154,108,0.1)">
-          <div><div style="font-weight:500;font-size:14px">${m.emoji||'📦'} ${m.name}</div>
+          <div><div style="font-weight:500;font-size:14px">${esc(m.emoji||'📦')} ${esc(m.name)}</div>
           <div style="font-size:11px;color:var(--brown-light)">Stock : ${m.stock||0} · Conso : ${m.conso}/sem</div></div>
           <div style="text-align:right"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--brown)">→ ${m.besoin}</div>
-          <div style="font-size:10px;color:var(--brown-light)">${m.unit}</div></div>
+          <div style="font-size:10px;color:var(--brown-light)">${esc(m.unit)}</div></div>
         </div>`).join('')}
     </div>`;
   }
@@ -2749,8 +2666,8 @@ function renderCmdFournisseur() {
   html += `<div class="tgroup-lbl">Toutes les matières</div>
     ${S.matieres.map(m=>`
       <div style="background:var(--paper);border-radius:10px;padding:9px 12px;margin-bottom:5px;box-shadow:var(--sh);display:flex;align-items:center;justify-content:space-between">
-        <div><div style="font-weight:500;font-size:13px">${m.emoji||'📦'} ${m.name}</div>
-        <div style="font-size:11px;color:var(--brown-light)">${m.stock||0} ${m.unit}</div></div>
+        <div><div style="font-weight:500;font-size:13px">${esc(m.emoji||'📦')} ${esc(m.name)}</div>
+        <div style="font-size:11px;color:var(--brown-light)">${m.stock||0} ${esc(m.unit)}</div></div>
         <div style="font-size:12px;color:${(m.stock||0)<=(m.seuil||0)?'var(--red)':'var(--green)'}">${(m.stock||0)<=(m.seuil||0)?'⚠️ Faible':'✓ OK'}</div>
       </div>`).join('')}`;
   el.innerHTML = html;
@@ -2813,7 +2730,7 @@ function renderCalendrier() {
     const chargeCls = getChargeCls(dateStr);
     const cls = [isToday?'today':'', chargeCls, hasCmd&&!chargeCls?'has-cmd':hasEv&&!chargeCls?'has-event':'', isSel&&!isToday?'sel-day':''].filter(Boolean).join(' ');
     const chargeQ = chargeParJour[dateStr]||0;
-    daysHtml += `<div class="cal-day ${cls}" onclick="calSelectDate('${dateStr}')"><span>${d}</span>${chargeQ>0?`<span style="font-size:8px;font-weight:700;line-height:1">${chargeQ}</span>`:''}</div>`;
+    daysHtml += `<div class="cal-day ${cls}" onclick="calSelectDate(${escJ(dateStr)})"><span>${d}</span>${chargeQ>0?`<span style="font-size:8px;font-weight:700;line-height:1">${chargeQ}</span>`:''}</div>`;
   }
 
   // Événements du jour sélectionné
@@ -2844,17 +2761,17 @@ function renderCalendrier() {
       ${cmdsTomorrow.map(c=>`
         <div class="cal-event-item">
           <div class="cal-event-dot" style="background:var(--red)"></div>
-          <div class="cal-event-text">⚠️ À préparer demain : <b>${c.nom}</b>${c.detail?' — '+c.detail:''}</div>
+          <div class="cal-event-text">⚠️ À préparer demain : <b>${esc(c.nom)}</b>${c.detail?' — '+esc(c.detail):''}</div>
         </div>`).join('')}
       ${cmdsSel.map(c=>`
         <div class="cal-event-item">
           <div class="cal-event-dot" style="background:var(--ocre)"></div>
-          <div class="cal-event-text">🧁 Livraison : <b>${c.nom}</b>${c.detail?' — '+c.detail:''}</div>
+          <div class="cal-event-text">🧁 Livraison : <b>${esc(c.nom)}</b>${c.detail?' — '+esc(c.detail):''}</div>
         </div>`).join('')}
       ${histoSel.map(h=>`
         <div class="cal-event-item">
           <div class="cal-event-dot" style="background:${h.type==='sortie'?'var(--orange)':'var(--green)'}"></div>
-          <div class="cal-event-text">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'} : ${h.emoji} ${h.name} (${h.qty})</div>
+          <div class="cal-event-text">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'} : ${esc(h.emoji)} ${esc(h.name)} (${h.qty})</div>
         </div>`).join('')}
     </div>`;
 }
@@ -2904,94 +2821,6 @@ function moveCmdClient(id, dir) {
   if(moveItem(S.cmdClients||[], id, dir)) { save(); renderCmdClients(); }
 }
 
-// ── THERMOMÈTRES ──
-let thermoModeEdit='tuya';
-function setThMode(mode){
-  thermoModeEdit=mode;
-  document.querySelectorAll('.thermo-mode-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('th-mode-'+mode).classList.add('active');
-  document.querySelectorAll('.thermo-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('th-panel-'+mode).classList.add('active');
-}
-
-function addThermo(){
-  const name=document.getElementById('th-name').value.trim();
-  if(!name)return;
-  const t={id:'th_'+Date.now(),name,mode:thermoModeEdit,temp:null,hum:null,lastFetch:null,maxTemp:parseFloat(document.getElementById('th-maxtemp').value)||null};
-  if(thermoModeEdit==='tuya'){
-    t.clientId=document.getElementById('th-clientid').value.trim();
-    t.secret=document.getElementById('th-secret').value.trim();
-    t.deviceId=document.getElementById('th-deviceid').value.trim();
-  }else{
-    t.ip=document.getElementById('th-ip').value.trim();
-  }
-  S.thermos.push(t);
-  ['th-name','th-clientid','th-secret','th-deviceid','th-ip','th-maxtemp'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  closeM('mThermo');save();renderThermos();
-  fetchThermo(t);
-  toast('Thermomètre ajouté');
-}
-
-function delThermo(id){S.thermos=S.thermos.filter(t=>t.id!==id);if(thermoTimers[id]){clearInterval(thermoTimers[id]);delete thermoTimers[id];}save();renderThermos();}
-
-function renderThermos(){
-  const cfg=document.getElementById('thermoConfig');
-  const list=document.getElementById('thermoList');
-  cfg.innerHTML=`
-    <div class="thermo-config-card">
-      <div class="thermo-config-title">🌡️ Sondes connectées</div>
-      <button class="thermo-add-btn" onclick="openM('mThermo')">+ Ajouter un thermomètre</button>
-    </div>`;
-  if(!S.thermos.length){list.innerHTML='<div class="thermo-empty">Aucune sonde configurée.<br>Ajoutez votre premier thermomètre Tuya ou IP.</div>';return;}
-  list.innerHTML=S.thermos.map(t=>{
-    const hasData=t.temp!==null;
-    const overTemp=t.maxTemp&&t.temp>t.maxTemp;
-    const cls=!hasData?'err':overTemp?'warn':'';
-    const tempStr=hasData?Math.round(t.temp*10)/10+'°C':'—';
-    const humStr=hasData?(t.hum+'%'):'—';
-    const badgeCls=!hasData?'err':overTemp?'warn':'ok';
-    const badgeTxt=!hasData?'Hors ligne':overTemp?'⚠️ Alerte':'OK';
-    return`<div class="thermo-card ${cls}">
-      <div class="thermo-icon">${overTemp?'🔴':'🌡️'}</div>
-      <div class="thermo-info">
-        <div class="thermo-name">${t.name}</div>
-        <div class="thermo-loc">${t.mode==='tuya'?'☁️ Tuya':'🌐 IP '+t.ip}</div>
-        <span class="thermo-badge ${badgeCls}">${badgeTxt}</span>
-      </div>
-      <div class="thermo-vals">
-        <div class="thermo-temp-val">${tempStr}</div>
-        <div class="thermo-hum-val">💧 ${humStr}</div>
-        <button style="background:none;border:none;color:var(--brown-light);font-size:12px;cursor:pointer;margin-top:4px" onclick="delThermo('${t.id}')">Suppr.</button>
-      </div>
-    </div>`;
-  }).join('');
-  // Lancer le polling si pas déjà actif
-  S.thermos.forEach(t=>{if(!thermoTimers[t.id]){fetchThermo(t);thermoTimers[t.id]=setInterval(()=>fetchThermo(t),30000);}});
-}
-
-async function fetchThermo(t){
-  try{
-    if(t.mode==='ip'){
-      // Appel direct à l'IP locale (doit exposer /data en JSON {temp, hum})
-      const res=await fetch(`http://${t.ip}/data`,{signal:AbortSignal.timeout(5000)});
-      const d=await res.json();
-      t.temp=d.temp??d.temperature??null;
-      t.hum=d.hum??d.humidity??null;
-    }else{
-      // Tuya Cloud API v2.0
-      const ts=Date.now();
-      const str=t.clientId+ts;
-      // Note: signature HMAC-SHA256 impossible sans crypto côté navigateur standard
-      // On simule la structure et on retourne null si pas de clé
-      // Pour une vraie intégration, un proxy backend est nécessaire
-      t.temp=null; t.hum=null;
-    }
-    t.lastFetch=new Date().toISOString();
-    save();
-    if(tab==='thermos')renderThermos();
-  }catch{t.temp=null;t.hum=null;if(tab==='thermos')renderThermos();}
-}
-
 // ── NOTES ÉQUIPE ──
 function renderNotes(){
   const el=document.getElementById('notesList');
@@ -3016,17 +2845,17 @@ function renderNotes(){
     ${(S.notes||[]).map(n=>`
       <div class="note-msg">
         <div class="note-meta">
-          <span class="note-author">👤 ${n.author}</span>
+          <span class="note-author">👤 ${esc(n.author)}</span>
           <div style="display:flex;align-items:center;gap:6px">
             ${n.isVocal?'<span class="note-vocal-badge">🎙️ Vocal</span>':''}
-            <span class="note-time">${n.time}</span>
-            <button class="note-del" onclick="delNote('${n.id}')">×</button>
+            <span class="note-time">${esc(n.time)}</span>
+            <button class="note-del" onclick="delNote(${escJ(n.id)})">×</button>
           </div>
         </div>
-        ${n.text&&!n.isVocal?`<div class="note-text">${n.text}</div>`:''}
-        ${n.audioUrl?`<audio class="note-audio" controls src="${n.audioUrl}"></audio>`:''}
-        ${n.isVocal&&!n.transcription?`<button class="transcribe-btn" onclick="transcribeNote('${n.id}')">📝 Retranscrire</button>`:''}
-        ${n.transcription?`<div class="note-transcription">📝 "${n.transcription}"</div>`:''}
+        ${n.text&&!n.isVocal?`<div class="note-text">${esc(n.text)}</div>`:''}
+        ${n.audioUrl?`<audio class="note-audio" controls src="${esc(n.audioUrl)}"></audio>`:''}
+        ${n.isVocal&&!n.transcription?`<button class="transcribe-btn" onclick="transcribeNote(${escJ(n.id)})">📝 Retranscrire</button>`:''}
+        ${n.transcription?`<div class="note-transcription">📝 "${esc(n.transcription)}"</div>`:''}
       </div>`).join('')}`;
   const fn=document.getElementById('notesFree');
   if(fn) fn.value=S.freeNotes||'';
@@ -3253,7 +3082,10 @@ function setSlide(id,idx){
 
 function onPdfSelect(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingPdfUrl=e.target.result;const l=document.getElementById('pdfSelectedName');l.textContent='✓ '+f.name;l.style.display='block';};r.readAsDataURL(f);}
 function clearPdfInput(){pendingPdfUrl=null;document.getElementById('np-pdf').value='';const l=document.getElementById('pdfSelectedName');l.textContent='';l.style.display='none';}
-function openRecipe(id){const p=S.products.find(x=>x.id===id);if(!p?.recipeUrl)return;document.getElementById('pdfViewerTitle').textContent=p.emoji+' '+p.name+' — Recette';document.getElementById('pdfFrame').src=p.recipeUrl;document.getElementById('pdfViewer').classList.add('open');}
+function openRecipe(id){const p=S.products.find(x=>x.id===id);if(!p?.recipeUrl)return;
+  // Seul un PDF enregistré depuis l'appareil est accepté (pas de « javascript: » venu des données).
+  if(!/^data:application\/pdf[;,]/i.test(String(p.recipeUrl)))return;
+  document.getElementById('pdfViewerTitle').textContent=p.emoji+' '+p.name+' — Recette';document.getElementById('pdfFrame').src=p.recipeUrl;document.getElementById('pdfViewer').classList.add('open');}
 function closePdfViewer(){document.getElementById('pdfViewer').classList.remove('open');document.getElementById('pdfFrame').src='';}
 
 // ── RÉAPPROVISIONNEMENT depuis tâche auto ──
@@ -3309,12 +3141,12 @@ function renderHistoTaches() {
   });
   el.innerHTML=Object.entries(byCat).map(([cat,items])=>`
     <div style="margin-bottom:16px">
-      <div class="tgroup-lbl">${CAT_LABELS[cat]||cat}</div>
+      <div class="tgroup-lbl">${esc(CAT_LABELS[cat]||cat)}</div>
       ${items.slice(0,20).map(h=>`
         <div class="task-histo-entry">
-          <span class="task-cat-badge cat-${h.cat}" style="flex-shrink:0">${h.date.slice(5)}</span>
-          <span class="task-histo-text">${h.text}</span>
-          <span class="task-histo-time">${h.time}</span>
+          <span class="task-cat-badge cat-${esc(h.cat)}" style="flex-shrink:0">${h.date.slice(5)}</span>
+          <span class="task-histo-text">${esc(h.text)}</span>
+          <span class="task-histo-time">${esc(h.time)}</span>
         </div>`).join('')}
     </div>`).join('');
 }
@@ -3400,7 +3232,26 @@ if (initFirebaseApp()) {
 // aux variables/fonctions globales du Fournil (ex: render(), save()).
 // ══════════════════════════════════════
 (function(){
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  // PDF.js 3.11.174, hébergé dans vendor/pdfjs (fichiers officiels, identiques à ceux du
+  // CDN utilisé avant). Chargé seulement au premier import d'un PDF, une seule fois.
+  let pdfjsLoading = null;
+  function loadPdfJs(){
+    if(window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if(!pdfjsLoading){
+      pdfjsLoading = new Promise((resolve, reject)=>{
+        const s = document.createElement('script');
+        s.src = 'vendor/pdfjs/pdf.min.js';
+        s.onload = ()=>{
+          if(!window.pdfjsLib){ pdfjsLoading = null; reject(new Error('PDF.js absent')); return; }
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs/pdf.worker.min.js';
+          resolve(window.pdfjsLib);
+        };
+        s.onerror = ()=>{ pdfjsLoading = null; s.remove(); reject(new Error('PDF.js introuvable')); };
+        document.head.appendChild(s);
+      });
+    }
+    return pdfjsLoading;
+  }
 
   const STORAGE_KEY = "fournil-recettes-v1";
   const HISTORY_KEY = "fournil-recettes-calc-history-v1";
@@ -3514,8 +3365,9 @@ if (initFirebaseApp()) {
   }
 
   async function extractPdfText(file){
+    const pdfjs = await loadPdfJs();
     const buf = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+    const pdf = await pdfjs.getDocument({data: buf}).promise;
     let allLines = [];
     for(let p=1; p<=pdf.numPages; p++){
       const page = await pdf.getPage(p);
