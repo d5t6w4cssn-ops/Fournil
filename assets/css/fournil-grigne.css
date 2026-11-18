@@ -232,3 +232,58 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .thermo-add-btn, .mat-add-btn { background: var(--ink); color: var(--cream); border-radius: 14px; min-height: 52px; font-size: 15px; font-weight: 600; }
 #helpOverlay { background: var(--backdrop) !important; }
 #helpOverlay > div { background: var(--paper) !important; color: var(--ink); max-width: 620px !important; }
+
+/* ========== Module Stock : stock congélateur, magasin, météo ========== */
+.ov-strip { gap: 10px; }
+.ov-pill { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 12px 14px; }
+.ov-num { font-family: var(--serif); font-weight: 400; font-size: 28px; color: var(--ink); }
+.ov-lbl { font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--muted); }
+.scard, .mcard, .mat-card {
+  background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 14px 14px 14px 19px; margin-bottom: 12px;
+}
+.scard::before, .mcard::before, .mat-card::before { width: 5px; border-radius: 0; }
+.scard::before { background: var(--ok); }
+.scard.low::before { background: var(--accent); }
+.scard.empty::before { background: var(--err); }
+.flip-box { background: var(--ink); border-radius: 14px; }
+.fn { font-family: var(--serif); font-weight: 400; color: var(--cream); }
+.fn.neg, .ff-d .fl { color: var(--accent-line); }
+.ff-s .fl { color: var(--cream); opacity: .85; }
+.fl { font-size: 10px; }
+.scard-name { font-size: 17px; font-weight: 600; }
+.scard-num-block { background: var(--cream); border-radius: 10px; padding: 6px 8px; }
+.sn-val { font-family: var(--serif); font-weight: 400; font-size: 20px; }
+.sn-lbl, .fl { letter-spacing: .06em; }
+.sn-lbl { font-size: 10px; color: var(--muted); }
+.badge { font-size: 11px; padding: 3px 9px; }
+.edit-ico, .move-btn, .recipe-btn, .edit-prod-btn {
+  border: 1px solid var(--line); background: var(--cream); color: var(--ink); border-radius: 10px; min-width: 40px; min-height: 40px;
+}
+.meteo-card { background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: var(--radius); color: var(--ink); }
+.meteo-temp { font-family: var(--serif); font-weight: 400; color: var(--ink); }
+.meteo-desc, .meteo-city, .meteo-det, .meteo-loading { color: var(--muted); }
+.meteo-det b { color: var(--ink); }
+.meteo-suggestion { color: var(--accent); font-style: normal; }
+.day-pill { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: none; }
+.day-pill-txt { font-size: 14px; color: var(--ink); }
+.day-pill-sub { font-size: 12px; color: var(--muted); }
+.mcard::before { background: var(--accent); }
+.mcard-name { font-size: 16px; font-weight: 600; }
+.mcard-stock { font-size: 13px; color: var(--muted); }
+.mcard-stock b { font-family: var(--serif); font-weight: 400; font-size: 17px; color: var(--ink); }
+.mctrl { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; height: 48px; }
+.mc-btn { width: 44px; height: 46px; color: var(--ink); }
+.mc-btn:active { background: var(--accent-soft); }
+.mc-in { height: 46px; font-family: var(--serif); font-weight: 400; font-size: 22px; color: var(--ink); }
+.mctrl-lbl { font-size: 11px; color: var(--muted); }
+.mtotal-pill { background: var(--ink); border-radius: 12px; }
+.mtotal-val { font-family: var(--serif); font-weight: 400; color: var(--cream); }
+.mtotal-lbl { color: var(--accent-line); }
+.mcard-dot { background: var(--line); }
+.mcard-dot.active { background: var(--accent); }
+.mwarn { color: var(--err); font-size: 12px; }
+.mcontrols { gap: 10px; }
+.mctrl-group { min-width: 0; }
+.mctrl { min-width: 0; }
+.mc-in { min-width: 0; width: 100%; }
