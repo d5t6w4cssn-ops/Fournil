@@ -394,3 +394,7 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .pdf-upload-lbl { font-size: 14px; color: var(--muted); }
 .pdf-upload-lbl b { color: var(--accent-deep); }
 .pdf-selected { color: var(--ok); font-size: 13px; }
+
+/* ========== Labo ========== */
+#laboTabs .tab { text-transform: none; letter-spacing: 0; font-size: 13px; }
+#laboModule .sn-lbl { white-space: nowrap; }
