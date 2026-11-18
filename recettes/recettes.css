@@ -1,0 +1,739 @@
+/* Fichier GÉNÉRÉ par tools/importer-grigne.mjs : ne pas le modifier à la main.
+   base.css et app.css de Grigne (recettes/src/css), chaque règle limitée à #tab-recettes,
+   puis les ajustements propres à Fournil (recettes/adaptation/fournil.css). */
+/* Grigne — base commune (application et pages légales).
+   Palette « farine / charbon / croûte », en clair et en sombre. Ombres douces et
+   dégradés discrets permis quand ils servent la lecture (voir CLAUDE.md). */
+:root #tab-recettes {
+  /* fonds */
+  --cream: #F5F0E6;        /* fond de page */
+  --paper: #FFFCF6;        /* cartes, champs */
+  --surface-2: #EDE6D8;    /* boutons doux, segments */
+  --row-alt: #F0EADD;
+  --total-bg: #E9E1D0;
+  /* texte */
+  --ink: #26211C;
+  --ink-hover: #3A332C;
+  --muted: #5C5348;
+  --muted2: #685E51;
+  --faint: #766C5F;
+  /* croûte */
+  --accent: #8F4F26;
+  --accent-deep: #6E3A1B;
+  --accent-soft: #F3E6D8;
+  --accent-line: #E6D3C0;
+  --on-accent: #FFFCF6;
+  /* états */
+  --err: #A3301A;
+  --err-bg: #F1E1D5;
+  --ok: #46602C;
+  --ok-bg: #E8EBD8;
+  /* filets */
+  --line: #D9D0BE;
+  --line2: #E4DCCB;
+  /* tampon et décor */
+  --stamp: #8F4F26;
+  --stamp-bg: #FFFCF6; /* opaque : le tampon passe devant la bande et le texte */
+  --wave: #8F4F26;
+  --backdrop: rgba(38, 33, 28, .55);
+  --shadow: 0 1px 2px rgba(38, 33, 28, .06), 0 10px 28px -16px rgba(38, 33, 28, .28);
+  --shadow-up: 0 -8px 24px -18px rgba(38, 33, 28, .35);
+  --radius: 18px;
+  --serif: 'Grigne Espace fine', 'Young Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Grigne Espace fine', 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+/* Thème sombre : suit le téléphone, sauf choix contraire mémorisé (data-theme). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #tab-recettes {
+    --cream: #17130F; --paper: #26211C; --surface-2: #322B24; --row-alt: #211C17; --total-bg: #2E2620;
+    --ink: #F5F0E6; --ink-hover: #E4DACB; --muted: #C9BEAC; --muted2: #BDB19F; --faint: #A89C8A;
+    --accent: #E2A577; --accent-deep: #EDBF98; --accent-soft: #3A2C21; --accent-line: #4E3A2A; --on-accent: #1E1914;
+    --err: #F08A72; --err-bg: #3A221B; --ok: #A9C98A; --ok-bg: #26301C;
+    --line: #43392F; --line2: #382F27;
+    --stamp: #E8B48A; --stamp-bg: #26211C; --wave: #B98762; --backdrop: rgba(0, 0, 0, .62);
+    --shadow: 0 10px 28px -18px rgba(0, 0, 0, .8); --shadow-up: none;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] #tab-recettes {
+  --cream: #17130F; --paper: #26211C; --surface-2: #322B24; --row-alt: #211C17; --total-bg: #2E2620;
+  --ink: #F5F0E6; --ink-hover: #E4DACB; --muted: #C9BEAC; --muted2: #BDB19F; --faint: #A89C8A;
+  --accent: #E2A577; --accent-deep: #EDBF98; --accent-soft: #3A2C21; --accent-line: #4E3A2A; --on-accent: #1E1914;
+  --err: #F08A72; --err-bg: #3A221B; --ok: #A9C98A; --ok-bg: #26301C;
+  --line: #43392F; --line2: #382F27;
+  --stamp: #E8B48A; --stamp-bg: #26211C; --wave: #B98762; --backdrop: rgba(0, 0, 0, .62);
+  --shadow: 0 10px 28px -18px rgba(0, 0, 0, .8); --shadow-up: none;
+  color-scheme: dark;
+}
+
+#tab-recettes *, #tab-recettes *::before, #tab-recettes *::after { box-sizing: border-box; }
+#tab-recettes [hidden] { display: none !important; }
+
+html #tab-recettes { -webkit-text-size-adjust: 100%; background: var(--cream); }
+#tab-recettes {
+  margin: 0; background: var(--cream); color: var(--ink);
+  font-family: var(--sans); font-variant-numeric: lining-nums tabular-nums; line-height: 1.45;
+  min-height: 100vh; display: flex; flex-direction: column;
+}
+
+#tab-recettes .page { flex: 1; width: 100%; max-width: 620px; margin: 0 auto; padding: 28px 18px 40px; }
+
+#tab-recettes .sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+#tab-recettes .skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--ink); color: var(--cream);
+  padding: 10px 14px; border-radius: 8px; font-size: 14px; text-decoration: none;
+}
+#tab-recettes .skip-link:focus { top: 12px; }
+
+#tab-recettes a { color: var(--accent); text-underline-offset: 3px; }
+#tab-recettes a:focus-visible, #tab-recettes button:focus-visible, #tab-recettes input:focus-visible, #tab-recettes select:focus-visible, #tab-recettes textarea:focus-visible, #tab-recettes [role=button]:focus-visible, #tab-recettes summary:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+#tab-recettes .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+#tab-recettes .brand svg { display: block; flex-shrink: 0; color: var(--accent); }
+#tab-recettes .brand svg g[fill="#8F4F26"] { fill: var(--accent); }
+#tab-recettes .brand span { font-family: var(--serif); font-size: 20px; letter-spacing: 0.01em; }
+#tab-recettes .brand a { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
+
+/* barre du haut et bouton clair / sombre (application et pages légales) */
+#tab-recettes .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+#tab-recettes .topbar .brand { margin: 0; min-height: 48px; }
+#tab-recettes .topbar .brand span { font-size: 22px; }
+#tab-recettes .topbar-end { display: flex; align-items: center; gap: 10px; min-width: 0; }
+#tab-recettes .theme-btn { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; padding: 0; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; }
+#tab-recettes .theme-btn svg { grid-area: 1 / 1; }
+#tab-recettes .theme-btn[aria-pressed="true"] .ic-moon, #tab-recettes .theme-btn[aria-pressed="false"] .ic-sun { display: none; }
+#tab-recettes .theme-btn:hover { border-color: var(--faint); }
+#tab-recettes .read-btn span { font-family: var(--serif); font-size: 17px; line-height: 1; }
+#tab-recettes .theme-btn[aria-pressed="true"].read-btn { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+
+/* Lecture facile : OpenDyslexic partout, lettres, mots et lignes un peu plus espacés */
+:root[data-lecture="facile"] #tab-recettes {
+  --serif: 'Grigne Espace fine', 'OpenDyslexic', Georgia, serif;
+  --sans: 'Grigne Espace fine', 'OpenDyslexic', system-ui, sans-serif;
+}
+/* OpenDyslexic est dessinée très large (espace de 0,85 em contre 0,26 em pour Hanken Grotesk) :
+   les lettres gardent son espacement à elle, l'espace entre les mots est un peu resserré (environ 0,55 em,
+   soit deux fois l'espace habituel), les lignes plus aérées. Les petites capitales perdent leur écart
+   supplémentaire ; le texte en arc du tampon garde le sien. */
+:root[data-lecture="facile"] #tab-recettes { letter-spacing: 0; word-spacing: -.3em; line-height: 1.6; }
+:root[data-lecture="facile"] #tab-recettes :not(svg, svg *) { letter-spacing: inherit; }
+:root[data-lecture="facile"] #tab-recettes h1, :root[data-lecture="facile"] #tab-recettes h2, :root[data-lecture="facile"] #tab-recettes h3 { line-height: 1.25; }
+
+#tab-recettes .site-footer { border-top: 1px solid var(--line); padding: 18px; font-size: 13px; color: var(--muted2); }
+#tab-recettes .site-footer nav { max-width: 620px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+#tab-recettes .site-footer a { color: var(--muted); display: inline-block; padding: 4px 0; }
+#tab-recettes .site-footer a:hover { color: var(--ink); }
+
+/* Grigne — composants de l'application.
+   Direction « Fournil » : gros boutons, gros chiffres, barre d'onglets au pouce,
+   et le tampon « Total pâte » comme signature. */
+
+/* =========================================================================
+   Structure : en-tête, onglets, zone compte
+   ========================================================================= */
+#tab-recettes .site-header { margin-bottom: 26px; }
+
+#tab-recettes .sync-status { display: inline-flex; align-items: center; gap: 7px; min-width: 0; font-size: 13px; color: var(--muted); }
+#tab-recettes .sync-status:empty { display: none; }
+@media (max-width: 479px) {
+  #tab-recettes .topbar-end { gap: 6px; }
+  #tab-recettes .topbar .theme-btn { width: 42px; height: 42px; }
+  /* tout va bien : le point vert suffit (le texte reste lu par les lecteurs d'écran) */
+  #tab-recettes .sync-status[data-state="synced"], #tab-recettes .sync-status[data-state="syncing"] { font-size: 0; gap: 0; }
+  #tab-recettes .sync-status[data-state="synced"]::before, #tab-recettes .sync-status[data-state="syncing"]::before { width: 10px; height: 10px; }
+  /* un problème : le message complet passe sur sa propre ligne */
+  #tab-recettes .topbar-end { flex-wrap: wrap; justify-content: flex-end; }
+  #tab-recettes .sync-status[data-state="offline"], #tab-recettes .sync-status[data-state="error"], #tab-recettes .sync-status[data-state="toolarge"] { order: 9; flex-basis: 100%; justify-content: flex-end; text-align: right; }
+}
+#tab-recettes .sync-status::before { content: ""; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+#tab-recettes .sync-status[data-state="syncing"]::before { background: var(--faint); }
+#tab-recettes .sync-status[data-state="offline"]::before { background: var(--accent); }
+#tab-recettes .sync-status[data-state="error"], #tab-recettes .sync-status[data-state="toolarge"] { color: var(--err); }
+#tab-recettes .sync-status[data-state="error"]::before, #tab-recettes .sync-status[data-state="toolarge"]::before { background: var(--err); }
+
+
+#tab-recettes .hero { margin-top: 22px; }
+#tab-recettes h1 { font-family: var(--serif); font-weight: 400; font-size: 34px; line-height: 1.12; letter-spacing: -0.01em; margin: 0; max-width: 14ch; }
+#tab-recettes .sub, #tab-recettes .intro { font-size: 15px; color: var(--muted); margin: 14px 0 0; max-width: 44ch; }
+#tab-recettes .intro { margin: 0 0 18px; max-width: none; }
+#tab-recettes .link-btn { background: none; border: none; padding: 6px 0; min-height: 32px; font: inherit; font-size: 14px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+/* Une fois connecté : l'accroche reste pour les lecteurs d'écran, l'écran va aux outils. */
+#tab-recettes .page:has(#appArea:not([hidden])) .hero {
+  position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap;
+}
+#tab-recettes .page:has(#appArea:not([hidden])) .site-header { margin-bottom: 14px; }
+#tab-recettes .page:has(#appArea:not([hidden])) { padding-top: 12px; }
+
+/* zone compte, sous le contenu */
+#tab-recettes .account-zone { margin-top: 36px; padding-top: 18px; border-top: 1px dashed var(--line); display: grid; gap: 4px; }
+#tab-recettes .account-zone:not(:has(> :not([hidden]))) { display: none; }
+#tab-recettes .account-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 16px; font-size: 14px; color: var(--muted); }
+#tab-recettes .account-email { overflow-wrap: anywhere; }
+#tab-recettes .header-links { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+
+/* onglets : barre fixe en bas (mobile), barre latérale (ordinateur) */
+#tab-recettes .tabs {
+  position: fixed; z-index: 20; left: 0; right: 0; bottom: 0;
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px;
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  background: var(--paper); border-top: 1px solid var(--line); box-shadow: var(--shadow-up);
+}
+#tab-recettes .tabs [role=tab] {
+  display: grid; justify-items: center; align-content: center; gap: 3px; min-width: 0; min-height: 58px; padding: 6px 2px;
+  border: 0; border-radius: 14px; background: none; font: inherit; font-size: 12px; font-weight: 600; line-height: 1.15;
+  color: var(--muted); cursor: pointer;
+}
+#tab-recettes .tabs [role=tab] svg { flex-shrink: 0; }
+#tab-recettes .tabs [role=tab]:hover { color: var(--ink); }
+#tab-recettes .tabs [role=tab][aria-selected=true] { color: var(--ink); background: var(--surface-2); }
+#tab-recettes .tabs [role=tab][aria-selected=true] svg { color: var(--accent); }
+#tab-recettes .tab-long { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+#tab-recettes .tab-short { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-lecture="facile"] #tab-recettes .tabs { gap: 0; padding-inline: 2px; }
+:root[data-lecture="facile"] #tab-recettes .tabs [role=tab] { padding-inline: 0; font-size: 10px; }
+:root[data-lecture="facile"] #tab-recettes .tab-short { letter-spacing: -.04em; }
+#tab-recettes .tabpanel:focus { outline: none; }
+/* le tampon déborde de sa carte, jamais de l'écran : la coupe se fait au bord de .page,
+   dont la marge intérieure (18 à 40 px) laisse au tampon la place de dépasser de sa carte */
+#tab-recettes .page { overflow-x: clip; }
+
+/* rien ne passe sous la barre du bas */
+#tab-recettes:has(#appArea:not([hidden])) { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+html:has(#appArea:not([hidden])) #tab-recettes { scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+
+/* =========================================================================
+   Boutons et champs communs
+   ========================================================================= */
+#tab-recettes .btn-dark { background: var(--ink); color: var(--cream); border: 1px solid var(--ink); border-radius: 14px; padding: 11px 18px; min-height: 48px; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+#tab-recettes .btn-dark:hover { background: var(--ink-hover); }
+#tab-recettes .btn-dark--wide { width: 100%; }
+#tab-recettes .btn-link { background: none; border: none; color: var(--accent); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 6px 0; min-height: 36px; }
+#tab-recettes .btn-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+#tab-recettes .btn-ghost { background: none; border: none; color: var(--muted2); font: inherit; font-size: 14px; cursor: pointer; padding: 10px 8px; min-height: 44px; }
+#tab-recettes .btn-ghost:hover { color: var(--ink); }
+#tab-recettes .btn-danger { background: none; border: 1px solid var(--err); color: var(--err); border-radius: 14px; padding: 11px 18px; min-height: 48px; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; }
+#tab-recettes .btn-danger:hover { background: var(--err-bg); }
+#tab-recettes .icon-btn { background: none; border: none; cursor: pointer; color: var(--muted2); padding: 9px; min-width: 36px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; font: inherit; font-size: 18px; line-height: 1; border-radius: 10px; }
+#tab-recettes .icon-btn:hover { color: var(--ink); background: var(--surface-2); }
+#tab-recettes .icon-btn.rm:hover, #tab-recettes .icon-btn.del-btn:hover { color: var(--err); }
+
+/* champs (16 px : évite le zoom automatique sur iPhone) */
+#tab-recettes input[type=text], #tab-recettes input[type=number], #tab-recettes input[type=email], #tab-recettes input[type=password], #tab-recettes select, #tab-recettes textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--paper); border: 1px solid var(--faint); border-radius: 10px; padding: 9px 11px; min-height: 44px; }
+#tab-recettes input[type=text]:focus, #tab-recettes input[type=number]:focus, #tab-recettes input[type=email]:focus, #tab-recettes input[type=password]:focus, #tab-recettes select:focus, #tab-recettes textarea:focus { border-color: var(--ink); }
+#tab-recettes input::placeholder, #tab-recettes textarea::placeholder { color: var(--faint); opacity: 1; }
+#tab-recettes input[type=text], #tab-recettes input[type=number], #tab-recettes input[type=email], #tab-recettes input[type=password], #tab-recettes select { min-width: 0; max-width: 100%; }
+#tab-recettes .auth-screen input { width: 100%; }
+#tab-recettes textarea { width: 100%; resize: vertical; min-height: 0; }
+#tab-recettes .field-label, #tab-recettes .section-title { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted2); margin: 0 0 7px; }
+#tab-recettes .section-title { margin-bottom: 10px; }
+
+/* =========================================================================
+   Calculateur
+   ========================================================================= */
+#tab-recettes .calc { display: grid; grid-template-columns: minmax(0, 1fr); }
+#tab-recettes .calc-controls { display: grid; gap: 10px; align-content: start; }
+
+/* sélecteur de recette : l'étiquette dans le cadre */
+#tab-recettes .picker { position: relative; display: grid; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); }
+#tab-recettes .picker:focus-within { border-color: var(--ink); }
+#tab-recettes .picker-k { position: absolute; left: 17px; top: 9px; font-size: 13px; color: var(--muted); pointer-events: none; }
+#tab-recettes select.picker-v { appearance: none; -webkit-appearance: none; width: 100%; min-height: 64px; padding: 28px 46px 9px 16px; border: 0; border-radius: var(--radius); background: transparent; font-family: var(--serif); font-size: 20px; line-height: 1.2; text-overflow: ellipsis; cursor: pointer; }
+#tab-recettes select.picker-v:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#tab-recettes .picker-chevron { position: absolute; right: 14px; top: 50%; margin-top: -12px; color: var(--muted); pointer-events: none; }
+#tab-recettes .notes-btn { justify-self: start; }
+#tab-recettes .notes-display { font-size: 14px; color: var(--muted); white-space: pre-line; background: var(--row-alt); border-radius: 12px; padding: 10px 12px; margin-top: 10px; }
+#tab-recettes .notes-display--calc { margin: -4px 0 0; }
+
+/* modes : trois gros boutons */
+#tab-recettes .modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+#tab-recettes .modes label { position: relative; display: grid; cursor: pointer; }
+#tab-recettes .modes input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+#tab-recettes .modes span { display: grid; place-items: center; min-height: 56px; padding: 6px 8px; border: 2px solid var(--line); border-radius: 14px; background: var(--paper); font-size: 14px; font-weight: 600; line-height: 1.2; text-align: center; color: var(--muted); }
+#tab-recettes .modes input:checked + span { border-color: var(--ink); background: var(--ink); color: var(--cream); }
+#tab-recettes .modes input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+#tab-recettes .modes label:hover input:not(:checked):not(:disabled) + span { border-color: var(--faint); color: var(--ink); }
+#tab-recettes .modes label.disabled { cursor: not-allowed; }
+#tab-recettes .modes label.disabled span { border-style: dashed; color: var(--faint); background: transparent; }
+#tab-recettes .modes input:disabled { cursor: not-allowed; }
+
+/* poids voulu : − [valeur] + */
+#tab-recettes .stepper { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; gap: 8px; padding: 10px; border: 1px solid var(--line); border-radius: 20px; background: var(--paper); }
+#tab-recettes .step { display: grid; place-items: center; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 16px; background: var(--surface-2); color: var(--ink); cursor: pointer; }
+#tab-recettes .step:hover { background: var(--line2); }
+#tab-recettes .stepper-mid { display: grid; justify-items: center; gap: 2px; min-width: 0; }
+#tab-recettes .stepper-k { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: center; }
+#tab-recettes .stepper-val { display: flex; align-items: baseline; justify-content: center; gap: 2px; max-width: 100%; }
+#tab-recettes .stepper-val input { width: 4.2ch; min-width: 0; min-height: 0; padding: 0 2px; border: 0; border-bottom: 2px solid var(--line); border-radius: 0; background: none; text-align: center; font-family: var(--serif); font-size: 40px; line-height: 1.15; -moz-appearance: textfield; appearance: textfield; }
+#tab-recettes .stepper-val input::-webkit-inner-spin-button, #tab-recettes .stepper-val input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+#tab-recettes .stepper-val input:focus { outline: none; border-bottom-color: var(--accent); }
+#tab-recettes .stepper-val input:focus-visible { outline: none; }
+#tab-recettes .stepper-val select { min-height: 36px; padding: 2px 4px; border: 0; background: none; font-size: 18px; font-weight: 600; color: var(--muted); cursor: pointer; }
+
+/* pièces × poids : une petite carte par type de pièce */
+#tab-recettes .pieces-wrap { display: grid; gap: 8px; }
+#tab-recettes .piece { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 10px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); }
+#tab-recettes .piece .piece-type { grid-column: 1 / 4; }
+#tab-recettes .piece .rm { grid-column: 4; grid-row: 1; }
+#tab-recettes .piece .piece-nb { grid-column: 1; grid-row: 2; }
+#tab-recettes .piece .times { grid-column: 2; grid-row: 2; }
+#tab-recettes .piece .piece-w { grid-column: 3; grid-row: 2; }
+#tab-recettes .piece input { width: 100%; background: var(--cream); }
+#tab-recettes .times { color: var(--muted2); font-size: 14px; }
+#tab-recettes .piece .times { font-size: 16px; }
+
+/* trait ondulé, dessiné à la main */
+#tab-recettes .wave { display: block; width: 72%; height: 12px; margin: 6px auto 22px; color: var(--wave); }
+#tab-recettes .wave--soft { width: 40%; opacity: .65; margin: 30px auto 18px; }
+
+/* la carte résultat */
+#tab-recettes .result-card { position: relative; margin-top: 10px; padding: 18px 16px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); }
+#tab-recettes .result-k { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+#tab-recettes .result-title { margin: 4px 104px 10px 0; font-family: var(--serif); font-weight: 400; font-size: 30px; line-height: 1.08; overflow-wrap: anywhere; }
+#tab-recettes .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; padding: 0; list-style: none; }
+#tab-recettes .chips li { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line2); background: var(--cream); font-size: 13px; color: var(--muted); }
+
+#tab-recettes .weigh { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+#tab-recettes .weigh li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--cream); border: 1px solid var(--line2); }
+#tab-recettes .weigh .n { min-width: 0; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
+#tab-recettes .weigh .q { font-family: var(--serif); font-size: 28px; line-height: 1.1; white-space: nowrap; }
+#tab-recettes .weigh small { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--muted); }
+#tab-recettes .weigh .lead { align-items: flex-end; padding: 14px 16px 16px; border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+#tab-recettes .weigh .lead .n { font-size: 19px; font-weight: 600; }
+#tab-recettes .weigh .lead .q { font-size: 46px; line-height: 1; }
+#tab-recettes .weigh .lead small { color: inherit; font-size: 20px; }
+#tab-recettes .lead-k { display: block; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+
+#tab-recettes .ref-line { margin-top: 12px; font-size: 13px; color: var(--muted2); }
+#tab-recettes .ref-line + .ref-line { margin-top: 4px; }
+#tab-recettes .ref-line--bottom { margin: 0 0 8px; }
+
+#tab-recettes .save-calc-row { display: grid; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
+#tab-recettes .save-calc-row input { width: 100%; min-height: 50px; border-color: var(--line); background: var(--cream); }
+#tab-recettes .save-calc-row .btn-dark { min-height: 54px; }
+
+/* le tampon « Total pâte » : posé à la main sur le coin de la carte */
+#tab-recettes .tampon {
+  --size: 124px;
+  position: absolute; z-index: 2; top: -30px; right: -8px; width: var(--size); height: var(--size);
+  color: var(--stamp); transform: rotate(-8deg);
+}
+/* l'usure ne touche que l'encre : le disque de fond reste plein et cache ce qu'il recouvre */
+/* l'usure : franche sur les anneaux, légère sur le texte en arc, aucune sur le chiffre central */
+#tab-recettes .tampon-anneaux { -webkit-mask: url('../assets/img/encre.svg') center / 100% 100%; mask: url('../assets/img/encre.svg') center / 100% 100%; }
+#tab-recettes .tampon-texte { -webkit-mask: url('../assets/img/encre-legere.svg') center / 100% 100%; mask: url('../assets/img/encre-legere.svg') center / 100% 100%; }
+#tab-recettes .tampon-fond { position: absolute; inset: 0; border-radius: 50%; background: var(--stamp-bg); }
+#tab-recettes .tampon svg { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; }
+#tab-recettes .tampon .anneau { fill: none; stroke: currentColor; stroke-width: 1; }
+#tab-recettes .tampon .anneau--fort { stroke-width: 3; }
+#tab-recettes .tampon text { fill: currentColor; font-family: var(--sans); font-size: 9.5px; font-weight: 600; letter-spacing: 2.2px; }
+#tab-recettes .tampon .etoile { fill: currentColor; }
+#tab-recettes .tampon-v {
+  position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; padding-top: 2px;
+  font-family: var(--serif); font-size: calc(var(--size) * .29); line-height: 1; white-space: nowrap;
+}
+#tab-recettes .tampon-v small { font-family: var(--sans); font-size: .5em; font-weight: 600; line-height: 1; color: inherit; }
+#tab-recettes .tampon--3 .tampon-v { font-size: calc(var(--size) * .25); }
+#tab-recettes .tampon--4 .tampon-v { font-size: calc(var(--size) * .2); }
+#tab-recettes .tampon--5 .tampon-v { font-size: calc(var(--size) * .17); }
+#tab-recettes .tampon--vide { opacity: .45; }
+@media (prefers-reduced-motion: no-preference) {
+  #tab-recettes .tampon { animation: tamponne .4s cubic-bezier(.2, .9, .3, 1.3) both; }
+  @keyframes tamponne { from { transform: rotate(-12deg) scale(1.08); opacity: 0; } to { transform: rotate(-8deg) scale(1); opacity: 1; } }
+  #tab-recettes .tampon--vide { animation: none; }
+}
+
+/* historique des calculs */
+#tab-recettes .history-wrap { margin-top: 8px; }
+#tab-recettes .history-list { display: grid; gap: 8px; }
+#tab-recettes .history-item.recipe-row { padding: 10px 12px 10px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+#tab-recettes .history-item .row-toggle--small { font-size: 17px; }
+#tab-recettes .history-item .calc-detail { margin-top: 8px; }
+
+#tab-recettes .save-warn { margin-top: 24px; font-size: 13px; color: var(--err); }
+
+/* =========================================================================
+   Bibliothèque et saisie de recette
+   ========================================================================= */
+/* titre d'écran */
+#tab-recettes .screen-title { margin: 0 0 4px; font-family: var(--serif); font-weight: 400; font-size: 30px; line-height: 1.1; }
+
+/* écran vide */
+#tab-recettes .empty { position: relative; overflow: hidden; margin-top: 14px; padding: 36px 22px 28px; border: 1.5px dashed var(--line); border-radius: var(--radius); background: var(--paper); text-align: center; }
+#tab-recettes .empty-badge { display: inline-grid; place-items: center; width: 76px; height: 76px; margin-bottom: 14px; border-radius: 50%; border: 2px solid var(--accent); outline: 1px solid var(--accent); outline-offset: -7px; color: var(--accent); transform: rotate(-8deg); }
+#tab-recettes .empty-title { margin: 0 0 8px; font-family: var(--serif); font-size: 22px; line-height: 1.2; color: var(--ink); }
+#tab-recettes .empty p { font-size: 15px; color: var(--muted); margin: 0 auto 20px; max-width: 36ch; }
+#tab-recettes .empty p.empty-title { color: var(--ink); margin-bottom: 8px; }
+#tab-recettes .empty-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+#tab-recettes .empty .btn-dark, #tab-recettes .empty .btn-soft { min-height: 54px; padding: 0 22px; }
+#tab-recettes .empty p.empty-hint { margin: 14px auto 0; font-size: 13px; color: var(--muted2); }
+
+/* en-tête de la liste */
+#tab-recettes .lib-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: 0 0 16px; }
+#tab-recettes .lib-count { margin: 0; font-size: 15px; color: var(--muted); }
+#tab-recettes .lib-add { min-height: 50px; }
+
+/* une carte par recette */
+#tab-recettes .recipe-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: start; }
+#tab-recettes .recipe-card.recipe-row { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 16px 14px 12px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); cursor: pointer; }
+#tab-recettes .recipe-card .recipe-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+#tab-recettes .recipe-card h3 { margin: 0; min-width: 0; font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 1.15; }
+#tab-recettes .recipe-card .row-toggle { padding: 2px 0; min-height: 36px; font: inherit; text-align: left; overflow-wrap: anywhere; }
+/* survol : souligné, et seulement avec une vraie souris (sur téléphone, un survol resterait collé après le toucher) */
+@media (hover: hover) { #tab-recettes .recipe-card .row-toggle:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; } }
+#tab-recettes .recipe-card .row-actions { display: flex; gap: 2px; flex-shrink: 0; margin: -4px -4px 0 0; }
+#tab-recettes .recipe-card .icon-btn { min-width: 40px; min-height: 40px; }
+#tab-recettes .recipe-card .meta.chips { margin: 0; }
+#tab-recettes .recipe-card .notes-display { margin: 0; }
+#tab-recettes .recipe-card .ing-display { margin: 0; padding: 10px 12px 8px; border-radius: 14px; background: var(--cream); border: 1px solid var(--line2); }
+
+#tab-recettes .recipe-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
+#tab-recettes .recipe-more { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--muted); }
+#tab-recettes .recipe-more svg { transition: transform .2s; }
+#tab-recettes .recipe-card.is-open .recipe-more svg { transform: rotate(180deg); }
+#tab-recettes .btn-soft { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--accent-line); border-radius: 12px; background: var(--accent-soft); color: var(--accent-deep); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+#tab-recettes .btn-soft:hover { border-color: var(--accent); }
+
+/* lignes héritées (historique du Calculateur) */
+#tab-recettes .recipe-row { border-bottom: 1px solid var(--line); padding: 14px 0; }
+#tab-recettes .recipe-row--stack { display: flex; flex-direction: column; align-items: stretch; cursor: pointer; }
+#tab-recettes .recipe-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+#tab-recettes .recipe-info { min-width: 0; }
+#tab-recettes .recipe-row h3, #tab-recettes .recipe-row h4 { margin: 0; font-weight: 400; }
+#tab-recettes .row-toggle { background: none; border: none; padding: 4px 0; min-height: 32px; margin: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+#tab-recettes .row-toggle--small { font-family: var(--serif); font-size: 14.5px; }
+#tab-recettes .recipe-row .meta { font-size: 13px; color: var(--muted2); margin-top: 3px; }
+#tab-recettes .row-actions { display: flex; gap: 0; flex-shrink: 0; margin: -6px -6px 0 0; }
+/* saisie de recette */
+#tab-recettes .card { position: relative; padding: 22px 18px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); }
+#tab-recettes .card::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; border-radius: var(--radius) var(--radius) 0 0; background: var(--accent); }
+#tab-recettes .card--spaced { margin: 4px 0 16px; }
+#tab-recettes .recipe-list + .card { margin-top: 16px; }
+#tab-recettes .form-title { margin: 2px 0 4px; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+#tab-recettes .name-input { width: 100%; margin-bottom: 18px; font-family: var(--serif); font-size: 26px; font-weight: 400; line-height: 1.2; background: transparent !important; border: none !important; border-bottom: 2px solid var(--line) !important; border-radius: 0 !important; padding: 4px 0 8px !important; min-height: 0 !important; }
+#tab-recettes .name-input:focus { border-bottom-color: var(--accent) !important; outline: none; }
+#tab-recettes .name-input:focus-visible { outline: none; }
+#tab-recettes .name-input[aria-invalid=true] { border-bottom-color: var(--err) !important; }
+#tab-recettes .form-section { margin: 22px 0 6px; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+#tab-recettes .form-hint { margin: 0 0 10px; font-size: 13px; color: var(--muted2); }
+
+/* import : deux tuiles */
+#tab-recettes .import-tiles { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin-bottom: 10px; }
+#tab-recettes .tile { position: relative; display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 64px; padding: 12px 14px; border: 1.5px dashed var(--line); border-radius: 14px; background: var(--cream); color: var(--ink); font: inherit; font-size: 15px; text-align: left; cursor: pointer; }
+#tab-recettes .tile:hover { border-color: var(--accent); }
+#tab-recettes .tile-icon { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-deep); }
+#tab-recettes .tile-text { display: grid; gap: 2px; min-width: 0; }
+#tab-recettes .tile strong { font-weight: 600; }
+#tab-recettes .tile .hint { font-size: 13px; color: var(--muted2); line-height: 1.35; }
+#tab-recettes .dropzone:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+#tab-recettes .dz-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 0; }
+#tab-recettes .dz-input:focus-visible { outline: none; }
+#tab-recettes .dropzone.drag { border-color: var(--accent); border-style: solid; background: var(--accent-soft); }
+#tab-recettes .dropzone .dz-title { display: block; margin: 0; }
+#tab-recettes .dropzone-status { font-size: 14px; margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; border-left: 4px solid; }
+#tab-recettes .dropzone-status.ok { background: var(--ok-bg); color: var(--ok); border-color: var(--ok); }
+#tab-recettes .dropzone-status.warn { background: var(--err-bg); color: var(--err); border-color: var(--err); }
+#tab-recettes .paste-area textarea { min-height: 140px; border-color: var(--line); background: var(--cream); }
+#tab-recettes .paste-actions { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 8px 0 14px; }
+
+/* ingrédients : une rangée par ligne, deux lignes sur petit écran */
+#tab-recettes .ing-list { display: grid; gap: 8px; }
+#tab-recettes .ing-row { display: grid; grid-template-columns: minmax(0, 1fr) 80px 68px 40px; align-items: center; gap: 6px; padding: 6px; border-radius: 14px; background: var(--cream); border: 1px solid var(--line2); }
+#tab-recettes .ing-row input, #tab-recettes .ing-row select { min-height: 44px; border-color: transparent; background: var(--paper); }
+#tab-recettes .ing-row input:focus, #tab-recettes .ing-row select:focus { border-color: var(--ink); }
+#tab-recettes .ing-row input[type=number] { text-align: right; }
+#tab-recettes .ing-row select { padding: 9px 6px; }
+#tab-recettes .ing-row .rm { min-width: 40px; min-height: 40px; }
+#tab-recettes .add-row { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; margin-top: 8px; border: 1.5px dashed var(--line); border-radius: 14px; background: none; color: var(--accent); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+#tab-recettes .add-row:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+/* pour le fournil : TB et étapes */
+#tab-recettes .tb-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 0 0 6px; }
+#tab-recettes .tb-row label { font-size: 15px; color: var(--ink); }
+#tab-recettes .suffix-field { position: relative; display: inline-flex; }
+#tab-recettes .suffix-field .tb-input { width: 110px; padding-right: 38px; text-align: right; border-color: var(--line); background: var(--cream); }
+#tab-recettes .suffix-field .suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+#tab-recettes .tb-hint { font-size: 13px; color: var(--muted2); }
+#tab-recettes .notes-area textarea { border-color: var(--line); background: var(--cream); }
+#tab-recettes .recipe-form .notes-toggle-btn { margin-top: 2px; }
+
+#tab-recettes .card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding-top: 16px; margin-top: 16px; border-top: 1px dashed var(--line); }
+#tab-recettes .card-actions .save-btn { min-height: 54px; padding: 0 26px; }
+#tab-recettes .save-error { margin: 16px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--err-bg); color: var(--err); font-size: 14px; }
+
+@media (max-width: 400px) {
+  #tab-recettes .ing-row { grid-template-columns: minmax(0, 1fr) 68px 40px; }
+  #tab-recettes .ing-row input[type=text] { grid-column: 1 / 3; }
+  #tab-recettes .ing-row .rm { grid-column: 3; grid-row: 1; }
+  #tab-recettes .ing-row input[type=number] { grid-column: 1; grid-row: 2; }
+  #tab-recettes .ing-row select { grid-column: 2 / 4; grid-row: 2; }
+}
+
+/* lignes de détail (recettes, historique) */
+#tab-recettes .ing-display, #tab-recettes .calc-detail { margin-top: 10px; }
+#tab-recettes .line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; border-top: 1px dashed var(--line2); font-size: 14px; }
+#tab-recettes .line-name { min-width: 0; overflow-wrap: anywhere; }
+#tab-recettes .line--flour .line-name { font-weight: 600; }
+#tab-recettes .line--flour .line-name::before { content: ""; display: inline-block; width: 7px; height: 7px; margin: 0 7px 1px 0; border-radius: 50%; background: var(--accent); }
+#tab-recettes .line--head { border-top: none; padding: 0 0 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted2); }
+#tab-recettes .line--total { border-top: 1.5px solid var(--ink); margin-top: 2px; padding: 8px 0 2px; font-weight: 700; }
+#tab-recettes .cols { display: flex; flex-shrink: 0; gap: 14px; }
+#tab-recettes .col { width: 72px; text-align: right; white-space: nowrap; }
+#tab-recettes .line--head .col { white-space: normal; }
+#tab-recettes .col--strong, #tab-recettes .strong { font-weight: 600; }
+#tab-recettes .line--total .col:last-child, #tab-recettes .line .col--strong { font-family: var(--serif); font-weight: 400; font-size: 16px; }
+
+/* =========================================================================
+   Outils : Levain, Hydratation, Température de base, Produit en croix
+   ========================================================================= */
+#tab-recettes .tabpanel .intro { margin: 0 0 16px; font-size: 15px; color: var(--muted); max-width: 52ch; }
+#tab-recettes .tool { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+#tab-recettes .tool-controls { display: grid; gap: 10px; align-content: start; }
+#tab-recettes .tool .result-card { margin-top: 24px; }
+#tab-recettes .modes--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* grand champ : étiquette en haut, valeur en grand, unité à droite */
+#tab-recettes .field-box { display: grid; gap: 2px; padding: 10px 14px 8px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); min-width: 0; }
+#tab-recettes .field-box:focus-within { border-color: var(--ink); box-shadow: 0 0 0 3px var(--accent-soft); }
+#tab-recettes .field-box-k { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+#tab-recettes .field-box-row { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+#tab-recettes .field-box-row input { flex: 1; width: 100%; min-width: 0; min-height: 48px; padding: 0; border: 0; border-radius: 0; background: none; font-family: var(--serif); font-size: 34px; line-height: 1.15; -moz-appearance: textfield; appearance: textfield; }
+#tab-recettes .field-box-row input::-webkit-inner-spin-button, #tab-recettes .field-box-row input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+#tab-recettes .field-box-row input:focus, #tab-recettes .field-box-row input:focus-visible { outline: none; }
+#tab-recettes .field-box-row select { min-height: 40px; padding: 2px 4px; border: 0; background: none; font-size: 18px; font-weight: 600; color: var(--muted); cursor: pointer; }
+#tab-recettes .field-box-row .suffix { font-size: 18px; font-weight: 600; color: var(--muted); }
+#tab-recettes .fields-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* levain : ratio personnalisé */
+#tab-recettes .ratio-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 6px; }
+#tab-recettes .ratio-part { display: grid; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); min-width: 0; }
+#tab-recettes .ratio-part:focus-within { border-color: var(--ink); }
+#tab-recettes .ratio-k { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+#tab-recettes .ratio-part input { width: 100%; min-height: 40px; padding: 0; border: 0; background: none; font-family: var(--serif); font-size: 28px; text-align: center; -moz-appearance: textfield; appearance: textfield; }
+#tab-recettes .ratio-part input::-webkit-inner-spin-button { -webkit-appearance: none; }
+#tab-recettes .ratio-part input:focus, #tab-recettes .ratio-part input:focus-visible { outline: none; }
+#tab-recettes .ratio-row .times { padding-bottom: 14px; font-size: 22px; }
+
+/* température de base : base − labo − farine */
+#tab-recettes .tb-eq { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 6px; }
+#tab-recettes .field-box--temp { padding: 10px 10px 6px; text-align: center; }
+#tab-recettes .field-box--temp .field-box-row { justify-content: center; }
+#tab-recettes .field-box--temp input { text-align: center; font-size: 28px; }
+#tab-recettes .field-box--temp .suffix { font-size: 14px; }
+#tab-recettes .eq-op { font-family: var(--serif); font-size: 26px; color: var(--muted); }
+
+/* produit en croix : A → B, C → ? */
+#tab-recettes .cross-grid { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px 6px; }
+#tab-recettes .cross-arrow { display: grid; place-items: center; color: var(--accent); }
+#tab-recettes .field-box--cross input { font-size: 30px; }
+#tab-recettes .field-box--ghost { border-style: dashed; background: transparent; }
+#tab-recettes .ghost-v { font-family: var(--serif); font-size: 30px; line-height: 1.6; color: var(--accent); overflow-wrap: anywhere; }
+
+/* carte résultat des outils */
+#tab-recettes .result-card--tool { min-height: 128px; }
+#tab-recettes .result-title--tool { min-height: 48px; margin-bottom: 12px; font-size: 26px; } /* le contenu passe sous le tampon */
+#tab-recettes .result-card--tool .result-title--tool:last-child { margin-bottom: 0; }
+#tab-recettes .result-wait { margin: 0; padding: 10px 12px; margin-right: 96px; border-radius: 12px; background: var(--cream); font-size: 14px; color: var(--muted); }
+#tab-recettes .result-wait--err { background: var(--err-bg); color: var(--err); }
+#tab-recettes .weigh .lead--soft { align-items: baseline; padding: 12px 14px; border-color: var(--accent-line); background: var(--accent-soft); color: var(--ink); }
+#tab-recettes .weigh .lead--soft .n { font-size: 17px; }
+#tab-recettes .weigh .lead--soft .q { font-size: 32px; color: var(--accent-deep); }
+#tab-recettes .weigh .lead--soft small { color: var(--muted); font-size: 15px; }
+
+/* =========================================================================
+   Boîtes de dialogue
+   ========================================================================= */
+#tab-recettes dialog.sheet-dialog { padding: 0; border: none; border-top: 3px solid var(--accent); border-radius: 20px 20px 0 0; background: var(--cream); color: var(--ink); width: 100%; max-width: 580px; max-height: 88vh; margin: auto auto 0; font-family: var(--sans); }
+#tab-recettes dialog.sheet-dialog[open] { display: flex; flex-direction: column; }
+#tab-recettes dialog.sheet-dialog::backdrop { background: var(--backdrop); }
+#tab-recettes .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 12px 12px 20px; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+#tab-recettes .sheet-head h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0; }
+#tab-recettes .sheet-close { background: none; border: none; color: var(--muted2); font-size: 28px; line-height: 1; cursor: pointer; padding: 4px 12px; min-width: 44px; min-height: 44px; }
+#tab-recettes .sheet-body { overflow-y: auto; padding: 18px 20px 36px; font-size: 15px; line-height: 1.55; }
+#tab-recettes .sheet-body h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 22px 0 6px; }
+#tab-recettes .sheet-body h3:first-child { margin-top: 0; }
+#tab-recettes .sheet-body p { margin: 0; }
+#tab-recettes .sheet-body .note { margin-top: 26px; padding: 12px 14px; background: var(--total-bg); border-left: 3px solid var(--accent); font-size: 14px; color: var(--muted); }
+/* guide d'utilisation */
+#tab-recettes .guide .sheet-body { padding-top: 14px; }
+#tab-recettes .guide-toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 18px; }
+#tab-recettes .guide-toc a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: 14px; font-weight: 600; text-decoration: none; }
+#tab-recettes .guide-toc a:hover { border-color: var(--accent); }
+#tab-recettes .guide section { scroll-margin-top: 12px; }
+#tab-recettes .guide .sheet-body h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-family: var(--serif); font-size: 24px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink); }
+#tab-recettes .guide-ic { flex-shrink: 0; padding: 6px; width: 36px; height: 36px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-deep); }
+#tab-recettes .guide .sheet-body h4 { margin: 14px 0 6px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+#tab-recettes .guide .sheet-body p + p { margin-top: 8px; }
+#tab-recettes .guide-first { position: relative; padding: 20px 16px 16px; border-radius: var(--radius); background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); }
+#tab-recettes .guide-first::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; border-radius: var(--radius) var(--radius) 0 0; background: var(--accent); }
+#tab-recettes .guide-steps { counter-reset: etape; list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+#tab-recettes .guide-steps li { counter-increment: etape; position: relative; padding-left: 46px; }
+#tab-recettes .guide-steps li::before { content: counter(etape); position: absolute; left: 0; top: -2px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); font-family: var(--serif); font-size: 18px; }
+#tab-recettes .guide-tool { margin-top: 28px; padding-top: 22px; border-top: 1px dashed var(--line); }
+#tab-recettes .guide-ex { padding: 12px 14px; border-radius: 14px; border: 1px solid var(--accent-line); background: var(--accent-soft); }
+#tab-recettes .guide-traps { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 6px; }
+#tab-recettes .guide-traps li { position: relative; padding-left: 26px; }
+#tab-recettes .guide-traps li::before { content: "!"; position: absolute; left: 0; top: 2px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 12px; font-weight: 700; }
+#tab-recettes .data-actions { display: grid; gap: 10px; margin-top: 16px; }
+/* nous écrire */
+#tab-recettes .contact-form { display: grid; gap: 8px; margin-top: 16px; }
+#tab-recettes .contact-subject { min-width: 0; margin: 0 0 8px; padding: 0; border: 0; }
+#tab-recettes .contact-form textarea { min-height: 140px; border-color: var(--line); border-radius: 14px; background: var(--paper); }
+#tab-recettes .contact-form textarea[aria-invalid=true] { border-color: var(--err); }
+#tab-recettes .contact-form .btn-dark { margin-top: 8px; min-height: 54px; }
+#tab-recettes .contact-status { min-height: 1.5em; margin: 12px 0 0; font-size: 14px; }
+#tab-recettes .contact-status:not(:empty) { padding: 10px 12px; border-radius: 12px; }
+#tab-recettes .contact-status[data-kind="err"] { background: var(--err-bg); color: var(--err); }
+#tab-recettes .contact-status[data-kind="ok"] { background: var(--ok-bg); color: var(--ok); }
+#tab-recettes .auth-note .link-btn { display: inline-block; min-height: 32px; padding: 4px 0; font-size: inherit; }
+#tab-recettes .data-status { min-height: 1.5em; margin-top: 14px; font-size: 14px; color: var(--ok); }
+
+@media (prefers-reduced-motion: reduce) {
+  #tab-recettes * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
+
+/* =========================================================================
+   Connexion (écrans affichés avant d'être connecté)
+   ========================================================================= */
+#tab-recettes .hero { position: relative; }
+#tab-recettes .page:not(:has(#appArea:not([hidden]))) .hero { margin-top: 26px; }
+/* mobile : le tampon est posé sur le coin de la carte de connexion, juste dessous */
+#tab-recettes .page:not(:has(#appArea:not([hidden]))) .site-header { margin-bottom: 40px; }
+#tab-recettes .page:not(:has(#appArea:not([hidden]))) h1 { font-size: 40px; line-height: 1.05; }
+#tab-recettes .tampon--hero { --size: 104px; top: auto; bottom: -96px; right: -8px; z-index: 3; transform: rotate(10deg); }
+#tab-recettes .page:has(#screenLogin:not([hidden])) .auth-screen h2, #tab-recettes .page:has(#screenFatal:not([hidden])) .auth-screen h2 { margin-right: 84px; }
+#tab-recettes .tampon--hero text { font-size: 8.6px; letter-spacing: 1.6px; }
+#tab-recettes .tampon--hero .etoile path { fill: currentColor; }
+@media (prefers-reduced-motion: no-preference) {
+  #tab-recettes .tampon--hero { animation: tamponne-hero .5s .15s cubic-bezier(.2, .9, .3, 1.3) both; }
+  @keyframes tamponne-hero { from { transform: rotate(16deg) scale(1.08); opacity: 0; } to { transform: rotate(10deg) scale(1); opacity: 1; } }
+}
+
+#tab-recettes .auth-screen { position: relative; max-width: 460px; margin-top: 8px; padding: 26px 20px 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); }
+#tab-recettes .auth-screen::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; border-radius: var(--radius) var(--radius) 0 0; background: var(--accent); }
+#tab-recettes .auth-screen h2 { font-family: var(--serif); font-weight: 400; font-size: 30px; margin: 0 0 6px; }
+#tab-recettes .auth-screen .intro { margin: 0; font-size: 15px; color: var(--muted); }
+#tab-recettes .auth-screen form { margin-top: 20px; }
+#tab-recettes .auth-screen .field-label { margin-bottom: 6px; font-size: 12px; color: var(--muted); }
+#tab-recettes .auth-screen input { min-height: 52px; border-color: var(--line); border-radius: 14px; background: var(--cream); font-size: 17px; padding: 10px 14px; }
+#tab-recettes .auth-screen input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px var(--accent-soft); }
+#tab-recettes .field-label--gap { margin-top: 16px; }
+#tab-recettes .btn-dark--gap { margin-top: 22px; min-height: 56px; font-size: 16px; }
+#tab-recettes .auth-msg { min-height: 1.5em; margin: 12px 0 4px; font-size: 14px; color: var(--err); }
+#tab-recettes .auth-msg:not(:empty) { padding: 10px 12px; border-radius: 12px; background: var(--err-bg); }
+#tab-recettes .auth-msg[data-kind="ok"] { color: var(--ok); background: var(--ok-bg); }
+#tab-recettes .auth-note { margin: 18px 0 0; padding-top: 16px; border-top: 1px dashed var(--line); font-size: 14px; color: var(--muted2); }
+#tab-recettes #screenLoading { color: var(--muted); }
+#tab-recettes #screenLoading p { margin: 0; }
+#tab-recettes #screenFatal .btn-dark { margin-top: 18px; }
+
+/* =========================================================================
+   Très petits écrans
+   ========================================================================= */
+@media (max-width: 359px) {
+  #tab-recettes .page:not(:has(#appArea:not([hidden]))) h1 { font-size: 34px; }
+  #tab-recettes .tampon--hero { --size: 92px; bottom: -88px; }
+  #tab-recettes .field-box--temp input { font-size: 22px; }
+  #tab-recettes .field-box--cross input, #tab-recettes .ghost-v { font-size: 24px; }
+  #tab-recettes .field-box-row input { font-size: 28px; }
+  #tab-recettes .result-wait { margin-right: 84px; }
+  #tab-recettes .modes span { font-size: 13px; padding: 6px 4px; }
+  #tab-recettes .stepper { grid-template-columns: 48px minmax(0, 1fr) 48px; padding: 8px; }
+  #tab-recettes .step { width: 48px; height: 48px; }
+  #tab-recettes .stepper-val input { font-size: 34px; }
+  #tab-recettes .result-title { font-size: 26px; margin-right: 92px; }
+  #tab-recettes .tampon { --size: 108px; }
+  #tab-recettes .weigh .lead .q { font-size: 38px; }
+}
+
+/* =========================================================================
+   Ordinateur : barre latérale, deux colonnes
+   ========================================================================= */
+@media (min-width: 860px) {
+  #tab-recettes:has(#appArea:not([hidden])) { padding: 0 0 0 104px; }
+  html:has(#appArea:not([hidden])) #tab-recettes { scroll-padding-bottom: 0; }
+  #tab-recettes .page:has(#appArea:not([hidden])) { max-width: 1080px; padding: 20px 40px 48px; }
+  #tab-recettes .page:has(#appArea:not([hidden])) ~ .site-footer nav { max-width: 1000px; }
+
+  #tab-recettes .tabs {
+    top: 0; right: auto; width: 104px; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 6px;
+    padding: 96px 10px 16px; border-top: 0; border-right: 1px solid var(--line); box-shadow: none;
+  }
+  #tab-recettes .tabs [role=tab] { min-height: 72px; padding: 10px 4px; font-size: 13px; }
+  #tab-recettes .tab-long { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; text-align: center; }
+  #tab-recettes .tab-short { display: none; }
+
+  #tab-recettes .screen-title { font-size: 38px; }
+  #tab-recettes .recipe-list { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  #tab-recettes .recipe-list > .card { grid-column: 1 / -1; }
+  #tab-recettes .card { padding: 28px 30px 24px; }
+  #tab-recettes .import-tiles { grid-template-columns: 1fr 1fr; }
+  #tab-recettes .recipe-form { max-width: 760px; }
+  #tab-recettes .recipe-list > .recipe-form { max-width: none; }
+  #tab-recettes .calc { grid-template-columns: minmax(0, 380px) minmax(0, 1fr); column-gap: 44px; align-items: start; }
+  #tab-recettes .calc-controls { position: sticky; top: 24px; gap: 14px; }
+  #tab-recettes .tool { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); column-gap: 44px; align-items: start; }
+  #tab-recettes .tool .result-card { margin-top: 26px; padding: 26px 30px; }
+  #tab-recettes .result-title--tool { min-height: 62px; font-size: 34px; margin-right: 150px; }
+  #tab-recettes .result-wait { margin-right: 150px; }
+  #tab-recettes .wave--sep { display: none; }
+  #tab-recettes .result-card { margin-top: 26px; padding: 26px 30px 26px; }
+  #tab-recettes .result-title { font-size: 42px; margin-right: 150px; }
+  #tab-recettes .tampon { --size: 156px; top: -44px; right: -30px; }
+  #tab-recettes .weigh .lead .q { font-size: 54px; }
+  #tab-recettes .save-calc-row { grid-template-columns: minmax(0, 1fr) auto; }
+  #tab-recettes .save-calc-row .btn-dark { padding: 0 24px; }
+  #tab-recettes dialog.sheet-dialog { margin: auto; border-radius: 20px; }
+  #tab-recettes .page:not(:has(#appArea:not([hidden]))) { max-width: 760px; }
+  #tab-recettes .page:not(:has(#appArea:not([hidden]))) h1 { font-size: 56px; max-width: 12ch; }
+  #tab-recettes .page:not(:has(#appArea:not([hidden]))) .sub { font-size: 17px; }
+  #tab-recettes .page:not(:has(#appArea:not([hidden]))) .hero { padding-right: 190px; }
+  #tab-recettes .page:not(:has(#appArea:not([hidden]))) .site-header { margin-bottom: 30px; }
+  #tab-recettes .tampon--hero { --size: 168px; top: 0; bottom: auto; right: 0; }
+  #tab-recettes .auth-screen { padding: 32px 32px 28px; }
+}
+
+/* ===== Ajustements Fournil ===== */
+/* Ajustements propres à Fournil pour les écrans de Grigne (ajoutés après leurs styles). */
+
+/* La section prend toute la largeur du contenu de Fournil, sur le fond de Grigne. */
+#tab-recettes {
+  background: var(--cream); color: var(--ink); font-family: var(--sans);
+  font-variant-numeric: lining-nums tabular-nums; line-height: 1.45;
+  margin: -14px -13px 0; padding: 14px 16px 40px; overflow-x: clip;
+}
+
+/* Dans Fournil, la barre des outils Recettes est en haut du module : la barre du bas
+   (mobile) et la barre latérale (ordinateur) sont celles de l'application. */
+#tab-recettes .tabs {
+  position: static; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+  margin: 0 0 20px; padding: 4px; width: auto;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: none;
+}
+#tab-recettes .tabs::-webkit-scrollbar { display: none; }
+#tab-recettes .tabs [role=tab] { flex: 1 0 auto; min-width: 62px; min-height: 56px; padding: 6px 8px; }
+@media (min-width: 860px) {
+  #tab-recettes { padding: 20px 28px 48px; }
+  #tab-recettes .tabs { position: static; width: auto; padding: 4px; border: 1px solid var(--line); }
+  #tab-recettes .tabs [role=tab] { min-height: 60px; padding: 8px 12px; font-size: 13px; }
+}
+
+/* Carte « Mes recettes : exporter / importer » (Fournil), sous la bibliothèque. */
+#tab-recettes .rc-echange { margin-top: 28px; }
+#tab-recettes .rc-echange h3 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin: 0 0 6px; }
+#tab-recettes .rc-echange .sub { margin: 0 0 14px; }
+#tab-recettes .rc-echange-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+#tab-recettes .rc-echange-zone:not(:empty) { margin-top: 14px; }
+#tab-recettes .rc-echange-zone .dropzone-status { margin-bottom: 10px; padding: 10px 12px; border-radius: 12px; font-size: 14px; }
+#tab-recettes .rc-echange-zone .dropzone-status.ok { background: var(--ok-bg); color: var(--ok); }
+#tab-recettes .rc-echange-zone .dropzone-status.warn { background: var(--err-bg); color: var(--err); }
+#tab-recettes .rc-echange-zone ul { margin: 0 0 12px; padding-left: 20px; font-size: 14px; color: var(--muted); max-height: 220px; overflow-y: auto; }
+#tab-recettes .rc-echange-zone li { margin: 3px 0; overflow-wrap: anywhere; }
+#tab-recettes .rc-echange-zone .muet { color: var(--faint); }

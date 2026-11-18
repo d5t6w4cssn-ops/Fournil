@@ -42,10 +42,17 @@ sans build ni dépendance à l'exécution). Le déploiement consiste à remplace
 - Données Firestore, collection `boulangerie` : `state` (Fournil), `labo`, `recettes`.
   Chaque document stocke du JSON sous forme de texte. Écoute en temps réel
   (`initFirebase` → `onSnapshot`), cache local par `localStorage` / `window.storage`.
-- **Recettes** : module isolé dans une IIFE (`<script>` vers la fin du fichier), partagé
-  entre Fournil et Labo. Document `boulangerie/recettes`, champs `recipes` et
-  `calcHistory`. Une recette : `{ id, name, ingredients: [{ id, name, qtyG }], notes, tb? }`,
-  quantités toujours en grammes. Onglets Bibliothèque, Calculateur, Température de base.
+- **Recettes** : les écrans de Grigne (Bibliothèque, Calcul, Température, Levain, Hydratation,
+  Produit en croix), partagés entre Fournil et Labo (section `#tab-recettes`).
+  - `recettes/src/` : fichiers de Grigne copiés **sans modification** (vérifié par
+    `tests/test_recettes_grigne.js`) ; `recettes/adaptation/` : ce qui est propre à Fournil
+    (`state.js` lit et écrit `boulangerie/recettes`, `pdf.js`, `echange.js`, `app.js`, `fournil.css`).
+  - `recettes/recettes.js` et `recettes/recettes.css` sont **générés** :
+    `node tools/importer-grigne.mjs` (recopie depuis `~/grigne` puis construit) ou
+    `--construire` (construit seulement). Ne jamais les modifier à la main.
+  - Format inchangé : document `boulangerie/recettes`, champs `recipes` et `calcHistory` (JSON texte).
+    Une recette : `{ id, name, ingredients: [{ id, name, qtyG }], notes, tb }`, quantités en grammes.
+    `tests/test_recettes_format.js` le vérifie ; les tests de Grigne sont repris dans `tests/grigne/`.
 - Échappement **à l'affichage** : `esc()` pour tout texte venu des données mis dans du HTML,
   `escJ()` pour un argument de `onclick="f(…)"`. `tests/test_echappement.js` piège toutes les
   données et ouvre tous les écrans : il doit toujours passer.

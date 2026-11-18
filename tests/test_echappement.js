@@ -96,11 +96,11 @@ test('aucun texte des données ne peut injecter du HTML ou du JavaScript', async
   // Recettes : bibliothèque dépliée, calculateur, historique, température de base
   await ecran('recettes/bibliotheque', () => {
     w.eval("openModule('fournil');sw('recettes')");
-    doc.querySelectorAll('#rc-library-view .recipe-row').forEach((r) => { r.click(); const n = r.querySelector('.notes-btn'); if (n) n.click(); });
+    doc.querySelectorAll('#rc-library-view .recipe-row, #rc-library-view .row-toggle, #rc-library-view .notes-btn').forEach((b) => b.click());
   });
   await ecran('recettes/modifier', () => { doc.querySelector('#rc-library-view .edit-btn').click(); });
-  for (const t of ['calculator', 'tb']) {
-    await ecran(`recettes/${t}`, () => { doc.querySelector(`#tab-recettes nav button[data-tab="${t}"]`).click(); });
+  for (const t of ['calculator', 'tb', 'levain', 'hydra', 'croix']) {
+    await ecran(`recettes/${t}`, () => { doc.querySelector(`#tab-recettes .tabs [data-tab="${t}"]`).click(); });
   }
   await ecran('recettes/calc-etapes', () => { const b = doc.querySelector('#rc-calculator-view .notes-toggle, #rc-calculator-view button[aria-label*="tape"]'); if (b) b.click(); });
 

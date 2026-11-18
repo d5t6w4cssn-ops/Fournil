@@ -12,7 +12,7 @@ const { donneesDemo } = require('../tests/donnees-demo.js');
 const [RACINE, SORTIE, SUFFIXE = 'capture'] = process.argv.slice(2).map((v, i) => (i < 2 ? path.resolve(v) : v));
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
 
-const ECRANS = [
+const TOUS_ECRANS = [
   ['01-accueil', ''],
   ['02-recettes', "openModule('fournil');sw('recettes')"],
   ['03-recettes-calcul', "openModule('fournil');sw('recettes');document.querySelector('#tab-recettes [data-tab=calculator]')?.click()"],
@@ -30,6 +30,8 @@ const ECRANS = [
   ['15-journal', "openModule('bureau');swB('journal')"],
   ['16-stats', "openModule('bureau');swB('stats')"],
 ];
+// CAPTURES_FILTRE=recettes : seulement les écrans dont le nom correspond.
+const ECRANS = TOUS_ECRANS.filter(([n]) => !process.env.CAPTURES_FILTRE || new RegExp(process.env.CAPTURES_FILTRE).test(n));
 const VARIANTES = [
   ['mobile', { width: 390, height: 844 }],
   ['ordinateur', { width: 1280, height: 860 }],

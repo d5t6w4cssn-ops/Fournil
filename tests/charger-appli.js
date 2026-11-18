@@ -1,12 +1,27 @@
-// Charge index.html dans jsdom avec le faux Firebase. Les <script src> externes
-// (Firebase, PDF.js) ne sont pas téléchargés et fetch est bloqué : aucun accès réseau.
+// Charge index.html dans jsdom avec le faux Firebase. Seuls les fichiers du projet
+// (recettes/recettes.js…) sont chargés, depuis le disque ; tout le reste (Firebase,
+// polices, CDN) est bloqué et fetch aussi : aucun accès réseau.
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
-const { JSDOM, VirtualConsole } = require('jsdom');
+const { JSDOM, VirtualConsole, ResourceLoader } = require('jsdom');
 const { createFakeFirebase } = require('./fake-firebase.js');
 
-const HTML = fs.readFileSync(process.env.FOURNIL_HTML || path.join(__dirname, '..', 'index.html'), 'utf8');
+const FICHIER_HTML = process.env.FOURNIL_HTML || path.join(__dirname, '..', 'index.html');
+const HTML = fs.readFileSync(FICHIER_HTML, 'utf8');
+const RACINE = path.join(__dirname, '..');
+const ORIGINE = 'https://fournil.test/';
+
+// Sert les fichiers du projet (scripts seulement) ; refuse tout le reste.
+class ChargeurLocal extends ResourceLoader {
+  fetch(url, options) {
+    if (url.startsWith(ORIGINE) && options.element && options.element.localName === 'script') {
+      const fichier = path.join(RACINE, decodeURIComponent(new URL(url).pathname));
+      if (fichier.startsWith(RACINE) && fs.existsSync(fichier)) return Promise.resolve(fs.readFileSync(fichier));
+    }
+    return null;
+  }
+}
 const pause = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 
 async function chargerAppli({ recettes, etat } = {}) {
@@ -23,8 +38,9 @@ async function chargerAppli({ recettes, etat } = {}) {
   vc.on('error', (...a) => erreurs.push(a.join(' ')));
 
   const dom = new JSDOM(HTML, {
-    url: 'https://fournil.test/',
+    url: ORIGINE,
     runScripts: 'dangerously',
+    resources: new ChargeurLocal(),
     pretendToBeVisual: true,
     virtualConsole: vc,
     beforeParse(window) {
@@ -32,6 +48,8 @@ async function chargerAppli({ recettes, etat } = {}) {
       // Pas de window.storage : il n'existe pas en production non plus.
       window.fetch = (u) => { reseau.push(String(u)); return Promise.reject(new Error('réseau bloqué en test')); };
       window.alert = () => {};
+      // CSS.escape existe dans tous les navigateurs, pas dans jsdom.
+      if (!window.CSS) window.CSS = { escape: (v) => String(v).replace(/[^a-zA-Z0-9_-]/g, (c) => `\\${c}`) };
       window.scrollTo = () => {};
       window.matchMedia = () => ({ matches: false, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {} });
       const blobs = new Map();
@@ -47,7 +65,7 @@ async function chargerAppli({ recettes, etat } = {}) {
   await pause(20);
 
   const lib = () => window.document.getElementById('rc-library-view');
-  const carte = () => lib().querySelector('.rc-echange');
+  const carte = () => window.document.querySelector('#tab-recettes .rc-echange');
   const zone = () => carte().querySelector('.rc-echange-zone');
   const lireBlob = (blob) => new Promise((res, rej) => {
     const fr = new window.FileReader();

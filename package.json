@@ -3,7 +3,7 @@
   "private": true,
   "description": "Tests de Fournil (jsdom + faux Firebase). Rien ici n'est utilisé par l'application.",
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/test_*.js"
+    "test": "node --test --test-concurrency=1 tests/test_*.js tests/grigne/*.test.mjs"
   },
   "devDependencies": {
     "jsdom": "^25.0.1",
