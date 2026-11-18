@@ -287,3 +287,53 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .mctrl-group { min-width: 0; }
 .mctrl { min-width: 0; }
 .mc-in { min-width: 0; width: 100%; }
+
+/* ========== Module Tâches : tâches, catégories, historique des tâches, notes d'équipe ========== */
+.tgroup-lbl { font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--muted); margin: 18px 0 8px; }
+.titem {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow);
+  padding: 12px 14px; margin-bottom: 8px; min-height: 56px; gap: 12px;
+}
+.titem.done { opacity: .55; }
+.tchk { width: 28px; height: 28px; border: 2px solid var(--muted2); }
+.titem.done .tchk { background: var(--ok); border-color: var(--ok); }
+.tchk::after { color: var(--paper); font-size: 15px; }
+.ttext { font-size: 15px; line-height: 1.4; }
+.titem.done .ttext { color: var(--muted); }
+.tauto { background: var(--accent-soft); color: var(--accent-deep); font-size: 11px; }
+.tdel { color: var(--muted); opacity: .7; min-width: 40px; min-height: 40px; font-size: 22px; }
+.tdel:hover { opacity: 1; color: var(--err); }
+.task-cat-btn { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; min-height: 44px; font-size: 14px; color: var(--ink); }
+.task-cat-btn.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-deep); }
+.task-cat-badge { font-size: 11px; padding: 2px 8px; }
+.cat-general     { background: var(--accent-soft); color: var(--accent-deep); }
+.cat-nettoyage   { background: var(--surface-2); color: var(--ink); }
+.cat-production  { background: var(--ok-bg); color: var(--ok); }
+.cat-maintenance { background: var(--line2); color: var(--ink); }
+.cat-livraison   { background: var(--accent-line); color: var(--accent-deep); }
+.cat-autre       { background: var(--cream); color: var(--muted); border: 1px solid var(--line); }
+.from-gestion { background: var(--surface-2); color: var(--ink); font-size: 11px; }
+.task-histo-entry { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: none; padding: 10px 14px; }
+.task-histo-text { font-size: 14px; color: var(--muted); }
+.task-histo-time { font-size: 12px; color: var(--muted); }
+
+/* notes d'équipe (bulle et panneau) */
+.notes-panel-overlay { background: var(--backdrop); }
+.notes-panel { background: var(--paper); color: var(--ink); }
+.notes-panel-header { border-bottom: 1px solid var(--line); }
+.notes-panel-title { font-family: var(--serif); font-weight: 400; font-size: 24px; }
+.notes-panel-close { color: var(--ink); min-width: 44px; min-height: 44px; font-size: 24px; }
+.notes-composer, .note-msg { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.notes-author-sel, .notes-input { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; min-height: 44px; font-size: 15px; color: var(--ink); }
+.notes-author-sel:focus, .notes-input:focus, .notes-free:focus { border-color: var(--accent); }
+.notes-send-btn, .vocal-btn { background: var(--ink); color: var(--cream); border-radius: 14px; min-height: 48px; font-size: 15px; font-weight: 600; }
+.vocal-btn.recording { background: var(--err); color: var(--paper); }
+.vocal-timer, .note-time { color: var(--muted); font-size: 12px; }
+.note-author { color: var(--accent-deep); font-size: 14px; }
+.note-text { font-size: 15px; }
+.note-del { color: var(--muted); opacity: .7; min-width: 36px; min-height: 36px; }
+.note-vocal-badge { background: var(--surface-2); color: var(--ink); font-size: 11px; }
+.transcribe-btn { border: 1px solid var(--line); color: var(--accent-deep); background: var(--cream); border-radius: 10px; min-height: 36px; font-size: 13px; }
+.note-transcription { background: var(--cream); color: var(--muted); font-size: 14px; }
+.notes-free { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; color: var(--ink); font-size: 15px; }
+.titem .move-btn { min-width: 34px; min-height: 34px; }
