@@ -2311,9 +2311,9 @@ function renderCmdClients() {
   let html = `
     <button class="mat-add-btn" onclick="openM('mCmdClient')">+ Nouvelle commande client</button>
     ${S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length>1 ?
-      `<button onclick="lancerTournee()" style="width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:12px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Lancer la tournée optimisée (${S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length} arrêts)</button>`
+      `<button onclick="lancerTournee()" class="tournee-btn" style="width:100%;background:var(--ok);color:var(--paper);border:none;border-radius:14px;padding:12px;min-height:52px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Lancer la tournée optimisée (${S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length} arrêts)</button>`
       : S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length===1 ?
-      `<button onclick="lancerTournee()" style="width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:12px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Naviguer vers ce client</button>`
+      `<button onclick="lancerTournee()" class="tournee-btn" style="width:100%;background:var(--ok);color:var(--paper);border:none;border-radius:14px;padding:12px;min-height:52px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Naviguer vers ce client</button>`
       : ''
     }`;
 

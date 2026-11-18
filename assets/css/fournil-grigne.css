@@ -414,3 +414,23 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .mat-btn { width: 44px; height: 44px; color: var(--ink); }
 .mat-btn:active { background: var(--accent-soft); }
 .mat-in { height: 44px; min-width: 0; width: 100%; font-family: var(--serif); font-weight: 400; font-size: 19px; color: var(--ink); }
+
+/* ========== Tournée : commandes clients et livraisons ========== */
+.cmd-client-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 14px 14px 19px; margin-bottom: 12px; }
+.cmd-client-card::before { width: 5px; border-radius: 0; background: var(--accent); }
+.cmd-client-card.urgent::before { background: var(--err); }
+.cmd-client-card.validated::before { background: var(--ok); }
+.cmd-client-card.sent::before { background: var(--muted2); }
+.cmd-client-name { font-size: 16px; }
+.cmd-client-badge { font-size: 11px; padding: 3px 9px; }
+.badge-pending { background: var(--accent-soft); color: var(--accent-deep); }
+.badge-sent { background: var(--surface-2); color: var(--ink); }
+.badge-validated { background: var(--ok-bg); color: var(--ok); }
+.badge-urgent { background: var(--err-bg); color: var(--err); }
+.cmd-client-detail { font-size: 15px; color: var(--ink); }
+.cmd-client-date { font-size: 13px; color: var(--muted); }
+.cmd-client-actions { gap: 8px; }
+.cmd-action-btn { min-height: 44px; border-radius: 12px; font-size: 14px; }
+.btn-send { background: var(--ink); color: var(--cream); }
+.btn-validate { background: var(--ok); color: var(--paper); }
+.btn-del-cmd { background: transparent; color: var(--err); border: 1px solid var(--err); }
