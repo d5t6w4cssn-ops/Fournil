@@ -434,3 +434,28 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .btn-send { background: var(--ink); color: var(--cream); }
 .btn-validate { background: var(--ok); color: var(--paper); }
 .btn-del-cmd { background: transparent; color: var(--err); border: 1px solid var(--err); }
+
+/* ========== Journal et statistiques ========== */
+.journal-date-nav { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.journal-nav-btn { border: 1px solid var(--line); background: var(--cream); color: var(--ink); border-radius: 12px; min-width: 44px; min-height: 44px; }
+.journal-date-label, .journal-date-title { font-family: var(--serif); font-weight: 400; color: var(--ink); }
+.journal-prod-row { border-bottom: 1px solid var(--line2); }
+.journal-ctrl { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; }
+.journal-btn { width: 44px; height: 44px; color: var(--ink); }
+.journal-btn:active { background: var(--accent-soft); }
+.journal-input { height: 44px; font-family: var(--serif); font-weight: 400; font-size: 19px; color: var(--ink); }
+.journal-obs { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; font-size: 15px; color: var(--ink); }
+.journal-obs:focus { border-color: var(--accent); }
+.journal-save-btn { background: var(--ink); color: var(--cream); border-radius: 14px; min-height: 50px; font-size: 15px; font-weight: 600; }
+.journal-save-btn:active { background: var(--ink-hover); }
+.journal-history-entry { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding-left: 18px; }
+.journal-history-entry::before { width: 5px; border-radius: 0; background: var(--accent); }
+.journal-history-date { font-family: var(--serif); font-weight: 400; font-size: 18px; color: var(--ink); }
+.journal-history-obs { font-size: 14px; color: var(--muted); }
+.bureau-placeholder-title { font-family: var(--serif); font-weight: 400; color: var(--ink); }
+.bureau-placeholder-desc { color: var(--muted); }
+.journal-date-lbl { font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--ink); }
+.journal-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.journal-section-title { font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--muted); }
+.journal-prod-name { font-size: 15px; }
+.journal-prod-ctrl { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; }
