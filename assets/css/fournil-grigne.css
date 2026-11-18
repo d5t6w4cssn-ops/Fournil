@@ -398,3 +398,19 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 /* ========== Labo ========== */
 #laboTabs .tab { text-transform: none; letter-spacing: 0; font-size: 13px; }
 #laboModule .sn-lbl { white-space: nowrap; }
+
+/* ========== Bureau : matières premières et commandes fournisseurs ========== */
+.mat-card::before { background: var(--ok); }
+.mat-card.low::before { background: var(--accent); }
+.mat-card.empty::before, .mat-card.dlc-soon::before { background: var(--err); }
+.mat-name { font-size: 16px; font-weight: 600; }
+.mat-dlc-badge { font-size: 11px; padding: 3px 9px; }
+.dlc-ok { background: var(--ok-bg); color: var(--ok); }
+.dlc-soon { background: var(--accent-soft); color: var(--accent-deep); }
+.dlc-exp { background: var(--err-bg); color: var(--err); }
+.mat-stock-val { font-family: var(--serif); font-weight: 400; font-size: 26px; color: var(--ink); }
+.mat-unit { font-size: 13px; color: var(--muted); }
+.mat-ctrl { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; height: 46px; min-width: 0; }
+.mat-btn { width: 44px; height: 44px; color: var(--ink); }
+.mat-btn:active { background: var(--accent-soft); }
+.mat-in { height: 44px; min-width: 0; width: 100%; font-family: var(--serif); font-weight: 400; font-size: 19px; color: var(--ink); }
