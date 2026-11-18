@@ -703,6 +703,11 @@ html:has(#appArea:not([hidden])) #tab-recettes { scroll-padding-bottom: calc(88p
 /* ===== Ajustements Fournil ===== */
 /* Ajustements propres à Fournil pour les écrans de Grigne (ajoutés après leurs styles). */
 
+/* Section affichée seulement quand l'onglet Recettes est ouvert : la règle body de Grigne
+   (display: flex), limitée à #tab-recettes, ne doit pas l'emporter sur .section de Fournil. */
+#tab-recettes:not(.active) { display: none; }
+#tab-recettes.active { display: block; }
+
 /* La section prend toute la largeur du contenu de Fournil, sur le fond de Grigne. */
 #tab-recettes {
   background: var(--cream); color: var(--ink); font-family: var(--sans);

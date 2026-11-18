@@ -66,7 +66,15 @@ test('import PDF : PDF.js local, chargé seulement au premier PDF, ingrédients 
 
     await page.goto(`${origine}/index.html`);
     await page.waitForFunction(() => document.getElementById('homeScreen').style.display === 'flex');
+    // La section Recettes n'apparaît que dans son onglet (pas sous le Stock ni les Réglages).
+    for (const t of ['stock', 'settings']) {
+      await page.evaluate((o) => { openModule('fournil'); sw(o); }, t);
+      assert.equal(await page.locator('#tab-recettes').isVisible(), false, `Recettes visible dans l'onglet ${t}`);
+    }
+    await page.evaluate(() => { openModule('labo'); swL('lstock'); });
+    assert.equal(await page.locator('#tab-recettes').isVisible(), false, 'Recettes visible dans le stock du Labo');
     await page.evaluate(() => { openModule('fournil'); sw('recettes'); });
+    assert.equal(await page.locator('#tab-recettes').isVisible(), true);
 
     assert.equal(requetes.filter((r) => r.includes('pdfjs')).length, 0, "PDF.js n'est pas chargé tant qu'aucun PDF n'est importé");
     assert.equal(bloquees.filter((u) => /cdnjs|pdf\.js/.test(u)).length, 0, 'aucun appel au CDN de PDF.js');
