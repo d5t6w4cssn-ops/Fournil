@@ -62,6 +62,8 @@ function createFakeFirebase(initialDocs = {}) {
     reads,
     /** Simule un autre appareil qui écrit dans la base (sans passer par l'appli testée). */
     externalSet(path, data) { docs.set(path, { ...(docs.get(path) || {}), ...data }); },
+    /** Nombre d'écoutes temps réel en place (l'appli est prête quand il y en a 3). */
+    nbEcoutes() { let n = 0; listeners.forEach((l) => { n += l.length; }); return n; },
     setFailServerGet(v) { failServerGet = v; },
   };
 }

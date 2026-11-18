@@ -61,8 +61,9 @@ async function chargerAppli({ recettes, etat } = {}) {
     },
   });
   const { window } = dom;
-  await pause(20);
-  await pause(20);
+  // Prête : écoutes temps réel de state, labo et recettes en place, premières données reçues.
+  for (let i = 0; i < 300 && fake.nbEcoutes() < 3; i++) await pause(10);
+  await pause(30);
 
   const lib = () => window.document.getElementById('rc-library-view');
   const carte = () => window.document.querySelector('#tab-recettes .rc-echange');
@@ -88,13 +89,18 @@ async function chargerAppli({ recettes, etat } = {}) {
     const file = new window.File([texte], nom, { type: 'application/json' });
     if (taille !== undefined) Object.defineProperty(file, 'size', { value: taille });
     Object.defineProperty(input, 'files', { value: [file], configurable: true });
+    const avant = zone().innerHTML;
     input.dispatchEvent(new window.Event('change'));
-    await pause(20);
+    // attendre que l'aperçu (ou le message) remplace l'ancien contenu, 3 s au plus
+    for (let i = 0; i < 300 && zone().innerHTML === avant; i++) await pause(10);
+    await pause(10);
   }
 
   async function confirmer() {
     zone().querySelector('.rc-import-ok').click();
-    await pause(20);
+    // attendre le bilan (ou une erreur) : « Import en cours… » doit disparaître
+    for (let i = 0; i < 300 && (!/Import terminé|Rien à ajouter|rien n’a été importé|échoué/.test(zone().textContent)); i++) await pause(10);
+    await pause(10);
   }
 
   const recettesEnBase = () => {

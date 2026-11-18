@@ -1,0 +1,234 @@
+/* Fournil dans le style de Grigne (voir HERITAGE-GRIGNE.md).
+   Chargé APRÈS les styles d'origine de index.html : il les remplace sans toucher à la logique.
+   1. Palette de Grigne (clair / sombre) et anciens noms de couleurs de Fournil rebranchés dessus.
+   2. Base : polices, Lecture facile, boutons ronds thème / lecture.
+   3. Navigation (barre du bas / barre latérale), en-têtes, accueil, fenêtres, boutons flottants.
+   4. Un bloc par module (ajoutés module par module). */
+
+/* ========== 1. Palette (valeurs de assets/css/base.css de Grigne) ========== */
+:root {
+  --cream: #F5F0E6; --paper: #FFFCF6; --surface-2: #EDE6D8; --row-alt: #F0EADD; --total-bg: #E9E1D0;
+  --ink: #26211C; --ink-hover: #3A332C; --muted: #5C5348; --muted2: #685E51; --faint: #766C5F;
+  --accent: #8F4F26; --accent-deep: #6E3A1B; --accent-soft: #F3E6D8; --accent-line: #E6D3C0; --on-accent: #FFFCF6;
+  --err: #A3301A; --err-bg: #F1E1D5; --ok: #46602C; --ok-bg: #E8EBD8;
+  --line: #D9D0BE; --line2: #E4DCCB;
+  --stamp: #8F4F26; --stamp-bg: #FFFCF6; --backdrop: rgba(38, 33, 28, .55);
+  --shadow: 0 1px 2px rgba(38, 33, 28, .06), 0 10px 28px -16px rgba(38, 33, 28, .28);
+  --shadow-up: 0 -8px 24px -18px rgba(38, 33, 28, .35);
+  --radius: 18px;
+  --serif: 'Grigne Espace fine', 'Young Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Grigne Espace fine', 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --cream: #17130F; --paper: #26211C; --surface-2: #322B24; --row-alt: #211C17; --total-bg: #2E2620;
+    --ink: #F5F0E6; --ink-hover: #E4DACB; --muted: #C9BEAC; --muted2: #BDB19F; --faint: #A89C8A;
+    --accent: #E2A577; --accent-deep: #EDBF98; --accent-soft: #3A2C21; --accent-line: #4E3A2A; --on-accent: #1E1914;
+    --err: #F08A72; --err-bg: #3A221B; --ok: #A9C98A; --ok-bg: #26301C;
+    --line: #43392F; --line2: #382F27;
+    --stamp: #E8B48A; --stamp-bg: #26211C; --backdrop: rgba(0, 0, 0, .62);
+    --shadow: 0 10px 28px -18px rgba(0, 0, 0, .8); --shadow-up: none;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --cream: #17130F; --paper: #26211C; --surface-2: #322B24; --row-alt: #211C17; --total-bg: #2E2620;
+  --ink: #F5F0E6; --ink-hover: #E4DACB; --muted: #C9BEAC; --muted2: #BDB19F; --faint: #A89C8A;
+  --accent: #E2A577; --accent-deep: #EDBF98; --accent-soft: #3A2C21; --accent-line: #4E3A2A; --on-accent: #1E1914;
+  --err: #F08A72; --err-bg: #3A221B; --ok: #A9C98A; --ok-bg: #26301C;
+  --line: #43392F; --line2: #382F27;
+  --stamp: #E8B48A; --stamp-bg: #26211C; --backdrop: rgba(0, 0, 0, .62);
+  --shadow: 0 10px 28px -18px rgba(0, 0, 0, .8); --shadow-up: none;
+  color-scheme: dark;
+}
+/* Anciens noms de Fournil → palette de Grigne (suivent donc le thème sombre). */
+:root {
+  --brown: var(--ink); --brown-mid: var(--accent); --brown-light: var(--muted2);
+  --ocre: var(--accent); --ocre-light: var(--accent-line); --ocre-pale: var(--accent-soft);
+  --green: var(--ok); --green-light: var(--ok-bg);
+  --orange: var(--accent-deep); --orange-light: var(--accent-soft);
+  --red: var(--err); --red-light: var(--err-bg);
+  --cold: var(--muted); --cold-light: var(--surface-2);
+  --bureau-ink: var(--ink); --bureau-accent: var(--accent);
+  --sh: var(--shadow); --sh2: var(--shadow);
+  --r: var(--radius); --rs: 12px;
+  /* noms des anciennes recettes, encore utilisés ailleurs */
+  --brick: var(--accent); --gold: var(--accent);
+}
+
+/* ========== 2. Base ========== */
+html { background: var(--cream); }
+body {
+  background: var(--cream); color: var(--ink); font-family: var(--sans);
+  font-variant-numeric: lining-nums tabular-nums; line-height: 1.45;
+  max-width: none;
+}
+button, input, select, textarea { font-family: var(--sans); color: inherit; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* Lecture facile : OpenDyslexic partout (même réglage que Grigne). */
+:root[data-lecture="facile"] {
+  --serif: 'Grigne Espace fine', 'OpenDyslexic', Georgia, serif;
+  --sans: 'Grigne Espace fine', 'OpenDyslexic', system-ui, sans-serif;
+}
+:root[data-lecture="facile"] body { letter-spacing: 0; word-spacing: -.3em; line-height: 1.6; }
+:root[data-lecture="facile"] body :not(svg, svg *) { letter-spacing: inherit; }
+
+/* Boutons ronds : thème, lecture facile, guide, déconnexion */
+.theme-btn { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; padding: 0; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; }
+.theme-btn svg { grid-area: 1 / 1; }
+.theme-btn[aria-pressed="true"] .ic-moon, .theme-btn[aria-pressed="false"] .ic-sun { display: none; }
+.theme-btn:hover { border-color: var(--faint); }
+.read-btn span { font-family: var(--serif); font-size: 17px; line-height: 1; }
+.theme-btn[aria-pressed="true"].read-btn { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+
+/* ========== 3. Navigation ========== */
+.app-nav {
+  position: fixed; z-index: 250; left: 0; right: 0; bottom: 0;
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  background: var(--paper); border-top: 1px solid var(--line); box-shadow: var(--shadow-up);
+}
+.nav-liste { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
+.nav-item {
+  display: none; position: relative; justify-items: center; align-content: center; gap: 3px; min-width: 0; min-height: 58px; padding: 6px 2px;
+  border: 0; border-radius: 14px; background: none; font: inherit; font-size: 12px; font-weight: 600; line-height: 1.15; color: var(--muted); cursor: pointer;
+}
+.nav-item.nav-principal, .nav-plus { display: grid; }
+.nav-item:hover { color: var(--ink); }
+.nav-item.actif { color: var(--ink); background: var(--surface-2); }
+.nav-item.actif svg { color: var(--accent); }
+.nav-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-badge { position: absolute; top: 4px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--err); color: var(--paper); font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; }
+.nav-marque, .nav-groupe, .app-nav .nav-prefs { display: none; }
+:root[data-lecture="facile"] .nav-item { font-size: 10px; padding-inline: 0; }
+
+.nav-feuille { position: fixed; inset: 0; z-index: 400; }
+.nav-feuille-fond { position: absolute; inset: 0; background: var(--backdrop); }
+.nav-feuille-corps {
+  position: absolute; left: 0; right: 0; bottom: 0; max-height: 86svh; overflow-y: auto;
+  background: var(--paper); border-radius: 22px 22px 0 0; padding: 16px 16px calc(22px + env(safe-area-inset-bottom));
+  box-shadow: var(--shadow);
+}
+.nav-feuille-tete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.nav-feuille-tete h2 { font-family: var(--serif); font-weight: 400; font-size: 26px; }
+.nav-fermer { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--cream); font-size: 24px; line-height: 1; color: var(--ink); cursor: pointer; }
+.nav-feuille-grille { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.nav-tuile {
+  position: relative; display: grid; justify-items: center; align-content: center; gap: 6px; min-height: 84px; padding: 12px 4px;
+  border: 1px solid var(--line); border-radius: 16px; background: var(--cream); color: var(--ink);
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.nav-tuile svg { color: var(--accent); }
+.nav-tuile.actif { border-color: var(--accent); background: var(--accent-soft); }
+.nav-feuille .nav-prefs { display: flex; justify-content: center; gap: 12px; margin-top: 18px; }
+
+/* le contenu ne passe jamais sous la barre du bas */
+body.avec-nav { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+body.avec-nav .fab { bottom: calc(86px + env(safe-area-inset-bottom)); }
+body.avec-nav .notes-bubble { bottom: calc(150px + env(safe-area-inset-bottom)); }
+
+/* ordinateur : barre latérale */
+@media (min-width: 860px) {
+  .app-nav {
+    top: 0; right: auto; width: 112px; padding: 18px 10px 16px; overflow-y: auto;
+    border-top: 0; border-right: 1px solid var(--line); box-shadow: none;
+    display: flex; flex-direction: column;
+  }
+  .nav-marque { display: block; font-family: var(--serif); font-size: 21px; text-align: center; color: var(--ink); margin: 2px 0 14px; }
+  .nav-liste { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+  .nav-item { display: grid; min-height: 56px; font-size: 12.5px; }
+  .nav-plus { display: none !important; }
+  .nav-groupe { display: block; margin: 10px 0 2px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); text-align: center; }
+  .app-nav .nav-prefs { display: grid; grid-template-columns: 1fr 1fr; justify-items: center; gap: 8px; margin-top: 16px; }
+  .app-nav .theme-btn { width: 42px; height: 42px; }
+  body.avec-nav { padding: 0 0 0 112px; }
+  body.avec-nav .fab { bottom: 28px; right: 28px; }
+  body.avec-nav .notes-bubble { bottom: 92px; right: 28px; }
+}
+
+/* ========== En-têtes de module ========== */
+.hdr, .hdr.bureau-mode, #hdrLabo {
+  background: var(--paper); border-bottom: 1px solid var(--line); padding: 10px 16px 0; box-shadow: none;
+}
+.hdr-top { min-height: 48px; margin-bottom: 8px; gap: 10px; }
+.hdr-logo, .bureau-mode .hdr-logo, #hdrLabo .hdr-logo { font-family: var(--serif); font-weight: 400; font-size: 22px; color: var(--ink); }
+.hdr-logo em, #hdrLabo .hdr-logo em { font-style: normal; font-family: var(--sans); font-size: 13px; color: var(--muted2); margin-left: 6px; }
+.hdr-date, #hdrLabo .hdr-date { font-size: 13px; font-weight: 400; color: var(--muted); margin-right: 52px; text-align: right; }
+.hdr-back, #hdrLabo .hdr-back { min-height: 44px; color: var(--accent); }
+.hdr-back span { font-size: 12px; font-weight: 600; }
+/* la navigation remplace les onglets du Fournil et du Bureau ; le Labo garde les siens */
+body.avec-nav #hdrFournil .tabs, body.avec-nav #hdrBureau .tabs { display: none; }
+body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
+#laboTabs { gap: 4px; padding: 4px; margin: 0 -6px 10px; overflow-x: auto; scrollbar-width: none; background: var(--cream); border-radius: 14px; }
+#laboTabs::-webkit-scrollbar { display: none; }
+#laboTabs .tab, #laboTabs .tab-wrap { flex: 1 0 auto; }
+#laboTabs .tab { min-height: 44px; padding: 10px 8px; border: 0; border-radius: 10px; font-size: 12px; font-weight: 600; color: var(--muted); }
+#laboTabs .tab.active { background: var(--paper); color: var(--ink); box-shadow: var(--shadow); }
+.tab-badge { background: var(--err); color: var(--paper); }
+@media (min-width: 860px) {
+  body.avec-nav .hdr-back { display: none; }
+}
+
+/* bouton Actualiser : en haut à droite, dans l'en-tête */
+.refresh-btn {
+  top: 12px; left: auto; right: 14px; width: 44px; height: 44px;
+  background: var(--paper); border: 1px solid var(--line); color: var(--ink); box-shadow: none; z-index: 150;
+}
+#homeScreen ~ .refresh-btn, .refresh-btn { color: var(--ink); }
+
+/* ========== Contenu ========== */
+#homeScreen, #appWrapper { width: 100%; max-width: 620px; margin: 0 auto; }
+@media (min-width: 860px) { #homeScreen, #appWrapper { max-width: 880px; } }
+.content { padding: 16px 16px 40px; }
+.sec-title { font-family: var(--serif); font-weight: 400; font-size: 22px; color: var(--ink); margin: 6px 0 12px; }
+.empty { color: var(--muted); font-size: 14px; }
+
+/* ========== Accueil ========== */
+#homeScreen { background: var(--cream); }
+#homeScreen::before, #homeScreen::after { display: none; }
+.home-header { padding: 28px 18px 10px; }
+.home-logo { font-family: var(--serif); font-weight: 400; font-size: 40px; color: var(--ink); letter-spacing: -.01em; }
+.home-logo em { font-family: var(--sans); font-style: normal; text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--muted); margin-top: 8px; }
+.home-date { color: var(--muted); font-size: 14px; }
+#syncTxt { color: var(--muted) !important; font-size: 12px !important; }
+.home-header button { background: var(--paper) !important; border: 1px solid var(--line) !important; color: var(--ink) !important; width: 44px !important; height: 44px !important; }
+.home-modules { flex: 0 0 auto; justify-content: flex-start; padding: 14px 16px 32px; }
+#homeScreen { min-height: 0; }
+.hdr-logo em { display: inline; }
+.module-card, .module-fournil, .module-labo, .module-bureau {
+  background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: var(--radius); padding: 26px 22px 22px;
+}
+.module-card::before, .module-fournil::before, .module-labo::before, .module-bureau::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; top: 0; left: 0; right: 0; width: auto; height: 6px; border-radius: 0; background: var(--accent);
+}
+.module-name, .module-fournil .module-name, .module-labo .module-name, .module-bureau .module-name { font-family: var(--serif); font-weight: 400; font-size: 26px; color: var(--ink); }
+.module-desc { color: var(--muted); font-size: 14px; }
+.module-tag, .module-fournil .module-tag, .module-labo .module-tag, .module-bureau .module-tag { background: var(--surface-2); color: var(--muted); font-size: 11px; text-transform: none; letter-spacing: 0; }
+.module-arrow, .module-fournil .module-arrow, .module-labo .module-arrow, .module-bureau .module-arrow { color: var(--accent); opacity: 1; font-size: 26px; }
+@media (min-width: 860px) {
+  .home-modules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+}
+
+/* ========== Fenêtres, messages, boutons flottants ========== */
+.overlay { background: var(--backdrop); }
+.modal { background: var(--paper); color: var(--ink); border-radius: 22px 22px 0 0; padding: 22px 18px 34px; max-width: 560px; }
+@media (min-width: 860px) { .overlay { align-items: center; } .modal { border-radius: 22px; } }
+.modal-title { font-family: var(--serif); font-weight: 400; font-size: 24px; color: var(--ink); }
+.mgroup label { font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--muted); }
+.minput { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; min-height: 48px; padding: 10px 14px; font-size: 16px; color: var(--ink); }
+.minput:focus { border-color: var(--accent); outline: none; }
+.mbtn { min-height: 48px; border-radius: 14px; font-size: 15px; font-weight: 600; }
+.mbtn-p { background: var(--ink); color: var(--cream); }
+.mbtn-p:hover { background: var(--ink-hover); }
+.mbtn-c { background: var(--accent-soft); color: var(--accent-deep); border: 1px solid var(--accent-line); }
+.toast { background: var(--ink); color: var(--cream); border-radius: 14px; font-size: 14px; }
+.fab { background: var(--ink); color: var(--cream); box-shadow: var(--shadow); width: 56px; height: 56px; }
+.fab.bureau { background: var(--ink); }
+.notes-bubble { background: var(--accent); color: var(--on-accent); box-shadow: var(--shadow); }
+.notes-bubble-badge { background: var(--err); color: var(--paper); }
+.thermo-add-btn, .mat-add-btn { background: var(--ink); color: var(--cream); border-radius: 14px; min-height: 52px; font-size: 15px; font-weight: 600; }
+#helpOverlay { background: var(--backdrop) !important; }
+#helpOverlay > div { background: var(--paper) !important; color: var(--ink); max-width: 620px !important; }

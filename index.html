@@ -9,29 +9,22 @@
 <meta name="theme-color" content="#221508">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥐</text></svg>">
 <title>Fournil</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#F5F0E6">
+<meta name="color-scheme" content="light dark">
+<script src="assets/js/theme.js"></script>
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="recettes/recettes.css">
 <style>
-:root {
-  --cream: #F4EDD8; --paper: #FBF7EE; --ink: #221508; --brown: #5C2E0A;
-  --brown-mid: #8B4E1E; --brown-light: #C49A6C; --ocre: #D4A030;
-  --ocre-light: #F2D98A; --ocre-pale: #FBF0CC; --green: #4A7040;
-  --green-light: #C8E0C0; --orange: #C05A18; --orange-light: #FAD8B8;
-  --red: #963020; --red-light: #F0CCCA; --cold-light: #C0D8EA;
-  --bureau-ink: #1A1F2E; --bureau-accent: #4A90D9;
-  --sh: 0 2px 10px rgba(34,21,8,0.09); --sh2: 0 4px 20px rgba(34,21,8,0.14);
-  --r: 14px; --rs: 9px;
-}
+/* Couleurs : voir assets/css/fournil-grigne.css (palette de Grigne, clair et sombre). */
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(--ink); min-height: 100svh; max-width: 480px; margin: 0 auto; overflow-x: hidden; }
+body { background: var(--cream); font-family: var(--sans); color: var(--ink); min-height: 100svh; max-width: 480px; margin: 0 auto; overflow-x: hidden; }
 
 /* HOME */
 #homeScreen { min-height: 100svh; display: flex; flex-direction: column; background: var(--ink); position: relative; overflow: hidden; }
 #homeScreen::before { content: ''; position: absolute; top: -60px; left: -60px; width: 260px; height: 260px; background: radial-gradient(circle, rgba(212,160,48,0.12) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
 #homeScreen::after { content: ''; position: absolute; bottom: -80px; right: -80px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(74,112,64,0.1) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
 .home-header { padding: 52px 24px 24px; position: relative; z-index: 1; }
-.home-logo { font-family: 'Playfair Display', serif; color: var(--ocre-light); font-size: 32px; font-weight: 700; letter-spacing: 0.5px; line-height: 1; }
+.home-logo { font-family: var(--serif); color: var(--ocre-light); font-size: 32px; font-weight: 700; letter-spacing: 0.5px; line-height: 1; }
 .home-logo em { display: block; font-style: italic; color: var(--brown-light); font-size: 14px; font-weight: 400; margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
 .home-date { font-size: 12px; color: rgba(196,154,108,0.55); margin-top: 10px; text-transform: capitalize; }
 .home-modules { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 16px 20px 40px; position: relative; z-index: 1; }
@@ -47,7 +40,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .module-labo { background: linear-gradient(135deg, #1A0A2A 0%, #2A1040 60%, #3D1860 100%); border: 1px solid rgba(180,100,220,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 .module-labo::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(180,100,220,0.15) 0%, transparent 70%); border-radius: 50%; }
 .module-icon { font-size: 38px; margin-bottom: 12px; display: block; }
-.module-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+.module-name { font-family: var(--serif); font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 5px; }
 .module-fournil .module-name { color: var(--ocre-light); }
 .module-bureau .module-name { color: #A8C8F0; }
 .module-labo .module-name { color: #E0B8FF; }
@@ -68,9 +61,9 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .hdr { background: var(--ink); padding: 16px 18px 0; position: sticky; top: 0; z-index: 100; }
 .hdr.bureau-mode { background: var(--bureau-ink); }
 .hdr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.hdr-back { background: none; border: none; color: rgba(196,154,108,0.6); font-size: 20px; cursor: pointer; padding: 2px 6px 2px 0; display: flex; align-items: center; gap: 5px; font-family: 'DM Sans', sans-serif; }
+.hdr-back { background: none; border: none; color: rgba(196,154,108,0.6); font-size: 20px; cursor: pointer; padding: 2px 6px 2px 0; display: flex; align-items: center; gap: 5px; font-family: var(--sans); }
 .hdr-back span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
-.hdr-logo { font-family: 'Playfair Display', serif; color: var(--ocre-light); font-size: 18px; font-weight: 700; }
+.hdr-logo { font-family: var(--serif); color: var(--ocre-light); font-size: 18px; font-weight: 700; }
 .bureau-mode .hdr-logo { color: #A8C8F0; }
 .hdr-logo em { font-style: italic; color: var(--brown-light); font-size: 11px; margin-left: 5px; font-weight: 400; }
 .hdr-date { font-size: 11px; color: #6B4E2E; font-weight: 300; text-transform: capitalize; }
@@ -94,9 +87,9 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .ov-strip { display: flex; gap: 8px; margin-bottom: 16px; }
 .ov-pill { flex: 1; background: var(--paper); border-radius: 12px; padding: 10px 12px; box-shadow: var(--sh); display: flex; align-items: center; gap: 9px; }
 .ov-icon { font-size: 20px; flex-shrink: 0; }
-.ov-num { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; line-height: 1; color: var(--brown); }
+.ov-num { font-family: var(--serif); font-size: 22px; font-weight: 700; line-height: 1; color: var(--brown); }
 .ov-lbl { font-size: 9px; color: var(--brown-light); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-.sec-title { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--brown-mid); margin-bottom: 9px; }
+.sec-title { font-family: var(--serif); font-size: 14px; color: var(--brown-mid); margin-bottom: 9px; }
 
 /* STOCK CARD */
 .scard { background: var(--paper); border-radius: var(--r); padding: 13px 14px; margin-bottom: 9px; box-shadow: var(--sh); position: relative; overflow: hidden; display: flex; align-items: center; gap: 12px; }
@@ -109,7 +102,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .ff-d { opacity: 0; transform: translateY(12px); }
 .flip-box.show-d .ff-s { opacity: 0; transform: translateY(-12px); }
 .flip-box.show-d .ff-d { opacity: 1; transform: translateY(0); }
-.fn { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; line-height: 1; color: var(--ocre-light); }
+.fn { font-family: var(--serif); font-size: 30px; font-weight: 700; line-height: 1; color: var(--ocre-light); }
 .fn.neg { color: #FF8C60; }
 .fl { font-size: 8px; text-transform: uppercase; letter-spacing: 0.9px; margin-top: 3px; font-weight: 500; }
 .ff-s .fl { color: var(--cold-light); }
@@ -119,7 +112,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .scard-emoji { font-size: 17px; flex-shrink: 0; }
 .scard-nums { display: flex; gap: 6px; }
 .scard-num-block { flex: 1; background: var(--cream); border-radius: 7px; padding: 5px 7px; text-align: center; }
-.sn-val { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; line-height: 1; }
+.sn-val { font-family: var(--serif); font-size: 16px; font-weight: 700; line-height: 1; }
 .sn-lbl { font-size: 8px; color: var(--brown-light); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
 .scard-actions { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; }
 .badge { font-size: 9px; font-weight: 600; padding: 3px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
@@ -132,7 +125,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .meteo-card { background: linear-gradient(135deg, #1E3A5F 0%, #2A5878 100%); border-radius: var(--r); padding: 12px 14px; margin-bottom: 12px; box-shadow: var(--sh2); display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; }
 .meteo-icon { font-size: 36px; flex-shrink: 0; }
 .meteo-main { flex: 1; }
-.meteo-temp { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: white; line-height: 1; }
+.meteo-temp { font-family: var(--serif); font-size: 28px; font-weight: 700; color: white; line-height: 1; }
 .meteo-desc { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 2px; text-transform: capitalize; }
 .meteo-city { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 3px; }
 .meteo-suggestion { font-size: 11px; color: var(--ocre-light); margin-top: 5px; font-style: italic; line-height: 1.3; }
@@ -152,17 +145,17 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .mcard-top { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
 .mcard-name { font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 5px; flex: 1; }
 .mcard-stock { font-size: 11px; color: var(--brown-light); flex-shrink: 0; }
-.mcard-stock b { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--brown-mid); }
+.mcard-stock b { font-family: var(--serif); font-size: 14px; color: var(--brown-mid); }
 .mcontrols { display: flex; gap: 8px; align-items: flex-end; }
 .mctrl-group { flex: 1; }
 .mctrl-lbl { font-size: 9px; color: var(--brown-light); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; margin-bottom: 4px; }
 .mctrl { display: flex; align-items: center; background: var(--cream); border-radius: 8px; overflow: hidden; height: 40px; }
 .mc-btn { width: 36px; height: 40px; border: none; background: none; font-size: 20px; font-weight: 600; color: var(--brown-mid); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.1s; }
 .mc-btn:active { background: var(--ocre-pale); }
-.mc-in { flex: 1; height: 40px; border: none; background: none; text-align: center; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--ink); min-width: 0; }
+.mc-in { flex: 1; height: 40px; border: none; background: none; text-align: center; font-family: var(--serif); font-size: 19px; font-weight: 700; color: var(--ink); min-width: 0; }
 .mc-in:focus { outline: none; }
 .mtotal-pill { flex-shrink: 0; background: var(--ink); border-radius: 9px; padding: 4px 11px 4px 9px; display: flex; flex-direction: column; align-items: center; min-width: 56px; }
-.mtotal-val { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ocre-light); line-height: 1.1; }
+.mtotal-val { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--ocre-light); line-height: 1.1; }
 .mtotal-lbl { font-size: 8px; color: var(--ocre); text-transform: uppercase; letter-spacing: 0.5px; }
 .mwarn { font-size: 10px; color: var(--red); margin-top: 6px; font-weight: 500; display: none; }
 .mcard-carousel { overflow: hidden; position: relative; }
@@ -189,7 +182,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 
 /* CATÉGORIES TÂCHES */
 .task-cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top:6px; }
-.task-cat-btn { background: var(--cream); border: 2px solid transparent; border-radius: 8px; padding: 8px 6px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--brown-mid); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.task-cat-btn { background: var(--cream); border: 2px solid transparent; border-radius: 8px; padding: 8px 6px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--brown-mid); font-family: var(--sans); transition: all 0.15s; }
 .task-cat-btn.active { border-color: var(--ocre); background: var(--ocre-pale); color: var(--brown); }
 .task-cat-badge { font-size: 9px; padding: 1px 6px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; flex-shrink: 0; }
 .cat-general    { background: var(--ocre-pale); color: var(--brown-mid); }
@@ -216,14 +209,14 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .dlc-soon { background: var(--orange-light); color: var(--orange); }
 .dlc-exp  { background: var(--red-light); color: var(--red); }
 .mat-stock-row { display: flex; align-items: center; gap: 8px; }
-.mat-stock-val { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--brown); }
+.mat-stock-val { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--brown); }
 .mat-unit { font-size: 11px; color: var(--brown-light); }
 .mat-ctrl { display: flex; align-items: center; background: var(--cream); border-radius: 8px; overflow: hidden; height: 34px; flex: 1; }
 .mat-btn { width: 34px; height: 34px; border: none; background: none; font-size: 18px; font-weight: 700; color: var(--brown-mid); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .mat-btn:active { background: var(--ocre-pale); }
-.mat-in { flex: 1; height: 34px; border: none; background: none; text-align: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--ink); min-width: 0; }
+.mat-in { flex: 1; height: 34px; border: none; background: none; text-align: center; font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); min-width: 0; }
 .mat-in:focus { outline: none; }
-.mat-add-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 10px; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 14px; }
+.mat-add-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 10px; padding: 12px; font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 14px; }
 
 /* COMMANDES CLIENTS */
 .cmd-client-card {
@@ -245,7 +238,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .cmd-client-detail { font-size:13px; color:var(--brown-mid); margin-bottom:4px; }
 .cmd-client-date { font-size:11px; color:var(--brown-light); }
 .cmd-client-actions { display:flex; gap:6px; margin-top:10px; }
-.cmd-action-btn { flex:1; padding:8px; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; cursor:pointer; transition:background 0.15s; }
+.cmd-action-btn { flex:1; padding:8px; border:none; border-radius:8px; font-family:var(--sans); font-size:11px; font-weight:600; cursor:pointer; transition:background 0.15s; }
 .btn-send     { background:var(--brown); color:var(--ocre-light); }
 .btn-validate { background:var(--green); color:white; }
 .btn-del-cmd  { background:var(--red-light); color:var(--red); flex:0 0 auto; padding:8px 12px; }
@@ -256,7 +249,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 /* CALENDRIER */
 .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
 .cal-nav { background:none; border:1px solid rgba(196,154,108,0.3); border-radius:8px; padding:6px 12px; font-size:16px; cursor:pointer; color:var(--brown-light); }
-.cal-month { font-family:'Playfair Display',serif; font-size:17px; color:var(--brown); }
+.cal-month { font-family:var(--serif); font-size:17px; color:var(--brown); }
 .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:16px; }
 .cal-day-name { text-align:center; font-size:9px; font-weight:600; color:var(--brown-light); text-transform:uppercase; padding:4px 0; }
 .cal-day {
@@ -281,7 +274,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .cal-legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--brown-light); }
 .cal-legend-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
 .cal-events { background:var(--paper); border-radius:var(--r); padding:13px 14px; box-shadow:var(--sh); }
-.cal-event-title { font-family:'Playfair Display',serif; font-size:14px; color:var(--brown-mid); margin-bottom:10px; }
+.cal-event-title { font-family:var(--serif); font-size:14px; color:var(--brown-mid); margin-bottom:10px; }
 .cal-event-item { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid rgba(196,154,108,0.1); }
 .cal-event-item:last-child { border-bottom:none; }
 .cal-event-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
@@ -292,12 +285,12 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .hebdo-prod-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(196,154,108,0.1); }
 .hebdo-prod-row:last-child { border-bottom: none; }
 .hebdo-prod-name { font-size: 13px; display: flex; align-items: center; gap: 6px; }
-.hebdo-prod-qty { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--orange); }
+.hebdo-prod-qty { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--orange); }
 
 /* HISTORIQUE */
 .histo-filters { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
 .histo-filters::-webkit-scrollbar { display: none; }
-.hf-btn { background: var(--paper); border: 2px solid transparent; border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 500; cursor: pointer; white-space: nowrap; color: var(--brown-mid); transition: all 0.15s; flex-shrink: 0; font-family: 'DM Sans', sans-serif; }
+.hf-btn { background: var(--paper); border: 2px solid transparent; border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 500; cursor: pointer; white-space: nowrap; color: var(--brown-mid); transition: all 0.15s; flex-shrink: 0; font-family: var(--sans); }
 .hf-btn.active { background: var(--ink); color: var(--ocre-light); border-color: var(--ink); }
 .histo-day { margin-bottom: 16px; }
 .histo-day-title { font-size: 11px; font-weight: 600; color: var(--brown-light); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
@@ -309,11 +302,11 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .histo-info { flex: 1; }
 .histo-name { font-size: 13px; font-weight: 500; }
 .histo-type { font-size: 10px; color: var(--brown-light); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 1px; }
-.histo-qty { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+.histo-qty { font-family: var(--serif); font-size: 18px; font-weight: 700; flex-shrink: 0; }
 .histo-entry.sortie .histo-qty { color: var(--orange); }
 .histo-entry.recharge .histo-qty { color: var(--green); }
 .histo-del-btn { background: none; border: none; color: var(--faint); cursor: pointer; padding: 4px; flex-shrink: 0; display: flex; align-items: center; }
-.histo-clear-btn { background: none; border: 1px solid rgba(196,154,108,0.3); border-radius: 7px; color: var(--brown-light); font-size: 12px; padding: 6px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 12px; font-family: 'DM Sans', sans-serif; }
+.histo-clear-btn { background: none; border: 1px solid rgba(196,154,108,0.3); border-radius: 7px; color: var(--brown-light); font-size: 12px; padding: 6px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 12px; font-family: var(--sans); }
 
 /* SETTINGS */
 .pcard-set { background: var(--paper); border-radius: var(--r); padding: 12px 13px; margin-bottom: 8px; box-shadow: var(--sh); display: flex; align-items: center; gap: 10px; }
@@ -335,7 +328,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .pdf-viewer { position: fixed; inset: 0; background: rgba(34,21,8,0.92); z-index: 500; display: none; flex-direction: column; }
 .pdf-viewer.open { display: flex; }
 .pdf-viewer-bar { background: var(--ink); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.pdf-viewer-title { font-family: 'Playfair Display', serif; color: var(--ocre-light); font-size: 15px; }
+.pdf-viewer-title { font-family: var(--serif); color: var(--ocre-light); font-size: 15px; }
 .pdf-close { background: none; border: 1px solid rgba(196,154,108,0.3); border-radius: 7px; padding: 6px 12px; color: var(--ocre-light); font-size: 13px; cursor: pointer; }
 .pdf-frame { flex: 1; width: 100%; border: none; background: white; }
 
@@ -370,7 +363,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 }
 .notes-panel.open { transform: translateY(0); }
 .notes-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 12px; border-bottom: 1px solid rgba(196,154,108,0.15); flex-shrink: 0; }
-.notes-panel-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--ink); }
+.notes-panel-title { font-family: var(--serif); font-size: 17px; color: var(--ink); }
 .notes-panel-close { background: none; border: none; color: var(--brown-light); font-size: 20px; cursor: pointer; padding: 2px 6px; }
 .notes-panel-content { flex: 1; overflow-y: auto; padding: 14px 14px 40px; }
 
@@ -389,7 +382,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 }
 .journal-nav-btn:active { background: var(--cream); }
 .journal-date-lbl {
-  font-family: 'Playfair Display', serif; font-size: 15px;
+  font-family: var(--serif); font-size: 15px;
   color: var(--brown); text-align: center;
 }
 .journal-card {
@@ -418,13 +411,13 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .journal-btn:active { background: var(--ocre-pale); }
 .journal-input {
   width: 50px; height: 36px; border: none; background: none;
-  text-align: center; font-family: 'Playfair Display', serif;
+  text-align: center; font-family: var(--serif);
   font-size: 16px; font-weight: 700; color: var(--ink);
 }
 .journal-input:focus { outline: none; }
 .journal-obs {
   width: 100%; background: var(--cream); border: 2px solid transparent;
-  border-radius: 8px; padding: 10px 12px; font-family: 'DM Sans', sans-serif;
+  border-radius: 8px; padding: 10px 12px; font-family: var(--sans);
   font-size: 13px; color: var(--ink); resize: none; min-height: 80px;
   transition: border 0.15s; margin-top: 8px;
 }
@@ -432,7 +425,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .journal-save-btn {
   width: 100%; background: var(--brown); color: var(--ocre-light);
   border: none; border-radius: 10px; padding: 12px;
-  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
   cursor: pointer; margin-top: 10px;
 }
 .journal-save-btn:active { background: var(--brown-mid); }
@@ -446,7 +439,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
   background: var(--ocre); border-radius: 3px 0 0 3px;
 }
 .journal-history-date {
-  font-family: 'Playfair Display', serif; font-size: 14px;
+  font-family: var(--serif); font-size: 14px;
   color: var(--brown); margin-bottom: 6px;
 }
 .journal-history-obs {
@@ -454,7 +447,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
   margin-top: 5px; line-height: 1.4;
 }
 .bureau-placeholder-icon { font-size: 52px; margin-bottom: 16px; }
-.bureau-placeholder-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--bureau-ink); margin-bottom: 8px; }
+.bureau-placeholder-title { font-family: var(--serif); font-size: 20px; color: var(--bureau-ink); margin-bottom: 8px; }
 .bureau-placeholder-desc { font-size: 13px; color: var(--brown-light); line-height: 1.6; }
 
 /* EMPTY / FAB / MODALS / TOAST */
@@ -472,40 +465,40 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .overlay.open { display: flex; }
 .modal { background: var(--paper); border-radius: var(--r) var(--r) 0 0; padding: 20px 16px 38px; width: 100%; max-width: 480px; animation: mup 0.2s ease; }
 @keyframes mup { from { transform: translateY(48px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.modal-title { font-family: 'Playfair Display', serif; font-size: 17px; margin-bottom: 14px; color: var(--ink); }
-.minput { width: 100%; border: 2px solid var(--cream); background: var(--cream); border-radius: var(--rs); padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); margin-bottom: 9px; transition: border 0.15s; }
+.modal-title { font-family: var(--serif); font-size: 17px; margin-bottom: 14px; color: var(--ink); }
+.minput { width: 100%; border: 2px solid var(--cream); background: var(--cream); border-radius: var(--rs); padding: 10px 12px; font-family: var(--sans); font-size: 14px; color: var(--ink); margin-bottom: 9px; transition: border 0.15s; }
 .minput:focus { outline: none; border-color: var(--ocre); }
 .mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 9px; }
 .mgroup label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--brown-light); margin-bottom: 4px; font-weight: 500; }
 .mactions { display: flex; gap: 7px; }
-.mbtn { flex: 1; padding: 12px; border: none; border-radius: var(--rs); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.12s; }
+.mbtn { flex: 1; padding: 12px; border: none; border-radius: var(--rs); font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.12s; }
 .mbtn-p { background: var(--ink); color: var(--ocre-light); }
 .mbtn-p:active { background: var(--brown); }
 .mbtn-c { background: var(--cream); color: var(--brown-mid); flex: 0 0 auto; padding: 12px 16px; }
 .toast { position: fixed; top: 68px; left: 50%; transform: translateX(-50%) translateY(-8px); background: var(--ink); color: var(--ocre-light); padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 500; z-index: 400; opacity: 0; transition: all 0.22s; white-space: nowrap; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.thermo-add-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 10px; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 4px; }
+.thermo-add-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 10px; padding: 12px; font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 4px; }
 
 /* NOTES */
 .notes-composer { background: var(--paper); border-radius: var(--r); padding: 13px 14px; margin-bottom: 12px; box-shadow: var(--sh); }
 .notes-composer-top { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-.notes-author-sel { flex: 1; background: var(--cream); border: 2px solid var(--cream); border-radius: 8px; padding: 8px 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); }
+.notes-author-sel { flex: 1; background: var(--cream); border: 2px solid var(--cream); border-radius: 8px; padding: 8px 10px; font-family: var(--sans); font-size: 13px; color: var(--ink); }
 .notes-author-sel:focus { outline: none; border-color: var(--ocre); }
-.notes-input { width: 100%; background: var(--cream); border: 2px solid var(--cream); border-radius: 8px; padding: 9px 11px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); resize: none; min-height: 64px; transition: border 0.15s; }
+.notes-input { width: 100%; background: var(--cream); border: 2px solid var(--cream); border-radius: 8px; padding: 9px 11px; font-family: var(--sans); font-size: 13px; color: var(--ink); resize: none; min-height: 64px; transition: border 0.15s; }
 .notes-input:focus { outline: none; border-color: var(--ocre); }
-.notes-send-btn { width: 100%; background: var(--brown); color: var(--ocre-light); border: none; border-radius: 8px; padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 7px; }
+.notes-send-btn { width: 100%; background: var(--brown); color: var(--ocre-light); border: none; border-radius: 8px; padding: 10px; font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 7px; }
 .notes-send-btn:active { background: var(--brown-mid); }
 
 /* JOURNAL VOCAL */
-.vocal-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 8px; padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 7px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.vocal-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 8px; padding: 10px; font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 7px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .vocal-btn.recording { background: var(--red); animation: pulse 1s infinite; }
 .vocal-btn:active { opacity: 0.85; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
 .vocal-timer { font-size: 11px; color: var(--brown-light); text-align: center; margin-top: 4px; }
 .note-audio { width: 100%; margin-top: 6px; height: 36px; border-radius: 8px; accent-color: var(--brown); }
 .note-vocal-badge { font-size: 9px; background: #F0E8FF; color: #6A20A0; padding: 2px 7px; border-radius: 20px; font-weight: 600; flex-shrink: 0; }
-.transcribe-btn { background: none; border: 1px solid rgba(196,154,108,0.3); border-radius: 6px; padding: 4px 10px; font-size: 11px; color: var(--brown-light); cursor: pointer; margin-top: 6px; font-family: 'DM Sans', sans-serif; }
+.transcribe-btn { background: none; border: 1px solid rgba(196,154,108,0.3); border-radius: 6px; padding: 4px 10px; font-size: 11px; color: var(--brown-light); cursor: pointer; margin-top: 6px; font-family: var(--sans); }
 .transcribe-btn:active { background: var(--cream); }
 .note-transcription { font-size: 12px; color: var(--brown-light); font-style: italic; margin-top: 6px; padding: 6px 10px; background: var(--cream); border-radius: 6px; line-height: 1.4; }
 .note-msg { background: var(--paper); border-radius: var(--r); padding: 11px 13px; margin-bottom: 7px; box-shadow: var(--sh); }
@@ -515,9 +508,10 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 .note-text { font-size: 13px; line-height: 1.4; }
 .note-del { background: none; border: none; color: var(--brown-light); font-size: 16px; cursor: pointer; opacity: 0.35; padding: 0 2px; }
 .note-del:active { opacity: 1; color: var(--red); }
-.notes-free { width: 100%; background: var(--paper); border: 2px solid rgba(196,154,108,0.2); border-radius: var(--r); padding: 12px 13px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); resize: none; min-height: 140px; box-shadow: var(--sh); transition: border 0.15s; display: block; margin-top: 8px; }
+.notes-free { width: 100%; background: var(--paper); border: 2px solid rgba(196,154,108,0.2); border-radius: var(--r); padding: 12px 13px; font-family: var(--sans); font-size: 13px; color: var(--ink); resize: none; min-height: 140px; box-shadow: var(--sh); transition: border 0.15s; display: block; margin-top: 8px; }
 .notes-free:focus { outline: none; border-color: var(--ocre); }
 </style>
+<link rel="stylesheet" href="assets/css/fournil-grigne.css">
 </head>
 <body>
 
@@ -533,12 +527,12 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     </div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <input id="loginEmail" type="email" autocomplete="username" placeholder="Email"
-        style="background:var(--paper);border:1px solid rgba(196,154,108,0.25);border-radius:8px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;">
+        style="background:var(--paper);border:1px solid rgba(196,154,108,0.25);border-radius:8px;padding:12px 14px;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;">
       <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Mot de passe"
-        style="background:var(--paper);border:1px solid rgba(196,154,108,0.25);border-radius:8px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;">
+        style="background:var(--paper);border:1px solid rgba(196,154,108,0.25);border-radius:8px;padding:12px 14px;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;">
       <div id="loginError" style="font-size:12px;color:#FF8C60;min-height:16px;"></div>
       <button id="loginBtn" onclick="doLogin()"
-        style="background:var(--ocre);color:var(--ink);border:none;border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">Se connecter</button>
+        style="background:var(--ocre);color:var(--ink);border:none;border-radius:8px;padding:12px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;">Se connecter</button>
     </div>
   </div>
 </div>
@@ -597,13 +591,13 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
 <div id="helpOverlay" style="display:none;position:fixed;inset:0;background:rgba(34,21,8,0.7);z-index:500;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeHelp()">
   <div style="background:var(--paper);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:88svh;display:flex;flex-direction:column;animation:mup 0.25s ease">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 18px 12px;border-bottom:1px solid rgba(196,154,108,0.15);flex-shrink:0">
-      <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--ink)">ℹ️ Guide d'utilisation</div>
+      <div style="font-family:var(--serif);font-size:18px;color:var(--ink)">ℹ️ Guide d'utilisation</div>
       <button onclick="closeHelp()" style="background:none;border:none;color:var(--brown-light);font-size:22px;cursor:pointer">✕</button>
     </div>
     <div style="overflow-y:auto;padding:16px 18px 40px;flex:1">
 
       <div style="margin-bottom:20px">
-        <div style="font-family:'Playfair Display',serif;font-size:15px;color:var(--brown);margin-bottom:10px">🍞 Module Fournil</div>
+        <div style="font-family:var(--serif);font-size:15px;color:var(--brown);margin-bottom:10px">🍞 Module Fournil</div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">❄️ Stock</div>
         <div style="font-size:13px;color:var(--ink);line-height:1.5">Affiche le stock disponible au congélateur. La carte alterne entre le stock restant et ce qui a été sorti. Appuie sur ✏️ pour ajouter de la production — la quantité s'additionne au stock existant. Les boutons ↑ ↓ permettent de réordonner les produits.</div></div>
@@ -631,7 +625,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
       </div>
 
       <div style="margin-bottom:20px">
-        <div style="font-family:'Playfair Display',serif;font-size:15px;color:#7BB8F0;margin-bottom:10px">📋 Module Gestion</div>
+        <div style="font-family:var(--serif);font-size:15px;color:#7BB8F0;margin-bottom:10px">📋 Module Gestion</div>
 
         <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🌾 Matières premières</div>
         <div style="font-size:13px;color:var(--ink);line-height:1.5">Suivi des stocks de farine, beurre, levure… Saisis la quantité à utiliser et appuie sur <b>Utiliser</b>. Bouton ✏️ pour modifier une matière. Alertes DLC en orange (&lt;7 jours) ou rouge (expiré). Boutons ↑ ↓ pour réordonner.</div></div>
@@ -650,7 +644,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
       </div>
 
       <div style="margin-bottom:20px">
-        <div style="font-family:'Playfair Display',serif;font-size:15px;color:#C080FF;margin-bottom:10px">🍰 Module Labo Pâtisserie</div>
+        <div style="font-family:var(--serif);font-size:15px;color:#C080FF;margin-bottom:10px">🍰 Module Labo Pâtisserie</div>
 
         <div style="font-size:13px;color:var(--ink);line-height:1.5;margin-bottom:10px">Le Labo a exactement les mêmes fonctionnalités que le Fournil, mais pour la pâtisserie. Les données sont totalement séparées — les produits, stocks et historiques pâtisserie sont indépendants de la boulangerie.</div>
 
@@ -728,23 +722,23 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     </div>
   </div>
 
-  <div class="hdr" id="hdrLabo" style="display:none;background:linear-gradient(180deg,#1A0A2A 0%,#2A1040 100%)">
+  <div class="hdr" id="hdrLabo" style="display:none">
     <div class="hdr-top">
-      <button class="hdr-back" onclick="goHome()" style="color:rgba(192,128,255,0.6)">‹ <span>Menu</span></button>
-      <div class="hdr-logo" style="color:#E0B8FF">🍰 Labo <em style="color:#C080FF">pâtisserie</em></div>
-      <div class="hdr-date" id="hdateLabo" style="color:#6B4A8A"></div>
+      <button class="hdr-back" onclick="goHome()">‹ <span>Menu</span></button>
+      <div class="hdr-logo">🍰 Labo <em>pâtisserie</em></div>
+      <div class="hdr-date" id="hdateLabo"></div>
     </div>
     <div class="tabs" id="laboTabs">
-      <div class="tab active" onclick="swL('lstock')" style="color:rgba(192,128,255,0.5)">❄️ Stock</div>
-      <div class="tab" onclick="swL('lmagasin')" style="color:rgba(192,128,255,0.5)">🛒 Magasin</div>
-      <div class="tab" onclick="swL('recettes')" style="color:rgba(192,128,255,0.5)">📖 Recettes</div>
+      <div class="tab active" onclick="swL('lstock')">❄️ Stock</div>
+      <div class="tab" onclick="swL('lmagasin')">🛒 Magasin</div>
+      <div class="tab" onclick="swL('recettes')">📖 Recettes</div>
       <div class="tab-wrap">
-        <div class="tab" onclick="swL('ltasks')" style="color:rgba(192,128,255,0.5)">✅ Tâches</div>
+        <div class="tab" onclick="swL('ltasks')">✅ Tâches</div>
         <div class="tab-badge" id="laboTaskBadge" style="display:none"></div>
       </div>
-      <div class="tab" onclick="swL('lhisto')" style="color:rgba(192,128,255,0.5)">📈 Histo</div>
-      <div class="tab" onclick="swL('lcalendr')" style="color:rgba(192,128,255,0.5)">📅</div>
-      <div class="tab" onclick="swL('lsettings')" style="color:rgba(192,128,255,0.5)">⚙️</div>
+      <div class="tab" onclick="swL('lhisto')">📈 Histo</div>
+      <div class="tab" onclick="swL('lcalendr')">📅</div>
+      <div class="tab" onclick="swL('lsettings')">⚙️</div>
     </div>
   </div>
 
@@ -910,7 +904,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     <div class="modal-title" id="mReapproTitle">Réapprovisionner</div>
     <div style="background:var(--cream);border-radius:var(--rs);padding:10px 13px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:11px;color:var(--brown-light);text-transform:uppercase;letter-spacing:0.5px;font-weight:500">❄️ Stock actuel</span>
-      <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--brown)" id="mReapproStock">0</span>
+      <span style="font-family:var(--serif);font-size:22px;font-weight:700;color:var(--brown)" id="mReapproStock">0</span>
     </div>
     <div class="mgroup">
       <label>📦 Quantité produite à ajouter</label>
@@ -918,7 +912,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     </div>
     <div style="background:var(--ocre-pale);border-radius:var(--rs);padding:8px 13px;margin-top:8px;display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:11px;color:var(--brown-mid);font-weight:500">Nouveau total</span>
-      <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--brown)" id="mReapproTotal">0</span>
+      <span style="font-family:var(--serif);font-size:18px;font-weight:700;color:var(--brown)" id="mReapproTotal">0</span>
     </div>
     <div class="mactions" style="margin-top:12px">
       <button class="mbtn mbtn-c" onclick="closeM('mReappro')">Annuler</button>
@@ -954,7 +948,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     <div class="modal-title" id="mCorrectTitle">Corriger le stock</div>
     <div style="display:flex;align-items:center;justify-content:space-between;background:var(--cream);border-radius:var(--rs);padding:10px 13px;margin-bottom:12px">
       <span style="font-size:11px;color:var(--brown-light);text-transform:uppercase;letter-spacing:0.5px;font-weight:500">❄️ Disponible actuellement</span>
-      <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--brown)" id="mc-dispo">0</span>
+      <span style="font-family:var(--serif);font-size:22px;font-weight:700;color:var(--brown)" id="mc-dispo">0</span>
     </div>
     <div class="mgrid">
       <div class="mgroup"><label>📦 Quantité produite à ajouter</label><input class="minput" id="mc-stock" type="number" min="0" placeholder="0" style="margin-bottom:0"></div>
@@ -962,7 +956,7 @@ body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(
     </div>
     <div style="background:var(--ocre-pale);border-radius:var(--rs);padding:8px 13px;margin-top:8px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:11px;color:var(--brown-mid);font-weight:500">Nouveau total congelo</span>
-      <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--brown)" id="mc-total">0</span>
+      <span style="font-family:var(--serif);font-size:18px;font-weight:700;color:var(--brown)" id="mc-total">0</span>
     </div>
     <div class="mactions">
       <button class="mbtn mbtn-c" onclick="closeM('mCorrect')">Annuler</button>
@@ -2177,7 +2171,7 @@ function renderMatieres() {
           </div>
           <div style="display:flex;align-items:center;background:var(--cream);border-radius:8px;overflow:hidden;height:32px">
             <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock(${escJ(m.id)},-1)">−</button>
-            <input style="width:40px;height:32px;border:none;background:none;text-align:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--ink)" type="number" min="0" id="mat-val-${esc(m.id)}" value="0" inputmode="numeric">
+            <input style="width:40px;height:32px;border:none;background:none;text-align:center;font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink)" type="number" min="0" id="mat-val-${esc(m.id)}" value="0" inputmode="numeric">
             <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock(${escJ(m.id)},+1)">+</button>
           </div>
           <button style="font-size:9px;background:var(--brown);color:var(--ocre-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;white-space:nowrap" onclick="useMatiere(${escJ(m.id)})">Utiliser</button>
@@ -2317,9 +2311,9 @@ function renderCmdClients() {
   let html = `
     <button class="mat-add-btn" onclick="openM('mCmdClient')">+ Nouvelle commande client</button>
     ${S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length>1 ?
-      `<button onclick="lancerTournee()" style="width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Lancer la tournée optimisée (${S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length} arrêts)</button>`
+      `<button onclick="lancerTournee()" style="width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:12px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Lancer la tournée optimisée (${S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length} arrêts)</button>`
       : S.cmdClients.filter(c=>c.adresse&&c.status!=='validated').length===1 ?
-      `<button onclick="lancerTournee()" style="width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Naviguer vers ce client</button>`
+      `<button onclick="lancerTournee()" style="width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:12px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🗺️ Naviguer vers ce client</button>`
       : ''
     }`;
 
@@ -2580,7 +2574,7 @@ function renderCmdFournisseur() {
         <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(196,154,108,0.1)">
           <div><div style="font-weight:500;font-size:14px">${esc(m.emoji||'📦')} ${esc(m.name)}</div>
           <div style="font-size:11px;color:var(--brown-light)">Stock : ${m.stock||0} · Conso : ${m.conso}/sem</div></div>
-          <div style="text-align:right"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--brown)">→ ${m.besoin}</div>
+          <div style="text-align:right"><div style="font-family:var(--serif);font-size:20px;font-weight:700;color:var(--brown)">→ ${m.besoin}</div>
           <div style="font-size:10px;color:var(--brown-light)">${esc(m.unit)}</div></div>
         </div>`).join('')}
     </div>`;
@@ -3151,5 +3145,7 @@ if (initFirebaseApp()) {
 
 <!-- Module Recettes : écrans de Grigne branchés sur boulangerie/recettes -->
 <script src="recettes/recettes.js"></script>
+<!-- Navigation (barre du bas / barre latérale) -->
+<script src="assets/js/navigation.js"></script>
 </body>
 </html>
