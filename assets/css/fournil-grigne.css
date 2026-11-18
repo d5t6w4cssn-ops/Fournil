@@ -377,3 +377,20 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .hebdo-prod-qty { font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--accent-deep); }
 .cal-day.charge-mid  { box-shadow: inset 0 0 0 1px var(--accent-line); }
 .cal-day.charge-high { box-shadow: inset 0 0 0 2px var(--err); font-weight: 700; }
+
+/* ========== Réglages : produits, PDF de recette ========== */
+.pcard-set { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 12px 14px; min-height: 60px; }
+.pcard-set-name { font-size: 15px; font-weight: 600; }
+.pcard-set-sub { font-size: 13px; color: var(--muted); }
+.sdel { border: 1px solid var(--err); color: var(--err); background: transparent; border-radius: 10px; min-height: 40px; padding: 6px 12px; font-size: 13px; }
+.sdel:hover { background: var(--err-bg); }
+.pdf-upload-zone { border: 1.5px dashed var(--line); background: var(--cream); color: var(--muted); border-radius: 14px; }
+.pdf-viewer { background: var(--cream); }
+.pdf-close { background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 50%; min-width: 44px; min-height: 44px; }
+.pdf-close { border-radius: 12px; padding: 8px 14px; }
+.pdf-viewer { background: var(--backdrop); }
+.pdf-viewer-bar { background: var(--paper); border-bottom: 1px solid var(--line); }
+.pdf-viewer-title { font-family: var(--serif); color: var(--ink); font-size: 18px; }
+.pdf-upload-lbl { font-size: 14px; color: var(--muted); }
+.pdf-upload-lbl b { color: var(--accent-deep); }
+.pdf-selected { color: var(--ok); font-size: 13px; }
