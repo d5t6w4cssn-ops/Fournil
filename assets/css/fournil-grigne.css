@@ -526,3 +526,32 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
   .saisie-produit { order: 3; flex: 1 0 100%; }
   .saisie-retirer { margin-left: auto; }
 }
+
+/* ========== État de l'enregistrement (assets/js/synchro.js) ========== */
+.etat-synchro { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--surface-2); color: var(--ink); white-space: nowrap; }
+.etat-synchro::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+.etat-synchro[data-etat="ok"]::before { background: var(--ok); }
+.etat-synchro[data-etat="attente"] { background: var(--accent-soft); color: var(--accent-deep); }
+.etat-synchro[data-etat="attente"]::before { background: var(--accent); }
+.etat-synchro[data-etat="hors-ligne"] { background: var(--accent-soft); color: var(--accent-deep); }
+.etat-synchro[data-etat="hors-ligne"]::before { background: var(--muted); }
+.etat-synchro[data-etat="erreur"] { background: var(--err-bg); color: var(--err); }
+.etat-synchro[data-etat="erreur"]::before { background: var(--err); }
+#syncDot[data-etat="ok"] { background: var(--ok) !important; }
+#syncDot[data-etat="attente"], #syncDot[data-etat="hors-ligne"] { background: var(--accent) !important; }
+#syncDot[data-etat="erreur"] { background: var(--err) !important; }
+@media (max-width: 420px) {
+  .hdr-top { flex-wrap: wrap; }
+  .hdr-top .etat-synchro { order: 5; }
+}
+.bandeau-synchro {
+  position: fixed; z-index: 450; top: 10px; left: 50%; transform: translateX(-50%);
+  width: min(560px, calc(100% - 20px)); display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 14px; border-radius: 14px; border: 1px solid var(--err);
+  background: var(--err-bg); color: var(--err); box-shadow: var(--shadow); font-size: 14px;
+}
+.bandeau-synchro p { margin: 0; flex: 1; color: var(--ink); }
+.bandeau-synchro strong { color: var(--err); }
+.bandeau-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.bandeau-reessayer { min-height: 40px; padding: 6px 12px; border: 0; border-radius: 10px; background: var(--err); color: var(--paper); font-weight: 600; cursor: pointer; }
+.bandeau-fermer { min-width: 40px; min-height: 40px; border: 0; background: none; color: var(--err); font-size: 22px; cursor: pointer; }

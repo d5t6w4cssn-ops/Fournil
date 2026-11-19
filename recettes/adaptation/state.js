@@ -80,9 +80,15 @@ async function ecrire(champ, valeur, cacheKey) {
     notify(false);
     return false;
   }
+  // Avec la persistance hors ligne, set() n'aboutit qu'une fois la donnée arrivée au serveur
+  // (parfois bien plus tard) : la saisie est déjà gardée sur l'appareil, on ne l'attend pas.
+  // L'état réel est affiché par assets/js/synchro.js (Fournil), qui suit l'envoi.
+  const donnees = { [champ]: JSON.stringify(valeur) };
+  const renvoyer = () => doc.set(donnees, { merge: true });
   try {
-    await doc.set({ [champ]: JSON.stringify(valeur) }, { merge: true });
-    notify(true);
+    const envoi = renvoyer();
+    if (window.fournilSynchro) window.fournilSynchro.suivre(envoi, 'recettes', renvoyer);
+    envoi.then(() => notify(true), () => notify(false));
     return true;
   } catch {
     notify(false);

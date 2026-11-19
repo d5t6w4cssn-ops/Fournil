@@ -1128,6 +1128,13 @@ function initFirebase() {
     if (typeof firebase === 'undefined') throw new Error('Firebase SDK non chargé');
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
+    // Persistance hors ligne : chaque saisie est gardée sur l'appareil (même si l'appli est
+    // fermée) et envoyée dès que le réseau revient. À activer avant toute lecture.
+    try {
+      db.enablePersistence({ synchronizeTabs: true })
+        .then(() => window.fournilSynchro && window.fournilSynchro.persistance(null))
+        .catch(e => window.fournilSynchro && window.fournilSynchro.persistance(e));
+    } catch (e) { if (window.fournilSynchro) window.fournilSynchro.persistance(e); }
 
     // Écoute temps réel — Fournil
     db.collection('boulangerie').doc('state').onSnapshot(snap => {
@@ -1167,17 +1174,28 @@ function initFirebase() {
   }
 }
 
+// Envoi suivi jusqu'à la confirmation du serveur (assets/js/synchro.js affiche l'état réel
+// et un message clair si le serveur refuse ; « Réessayer » renvoie exactement ces données).
+function envoyer(docId, donnees) {
+  const ref = db.collection('boulangerie').doc(docId);
+  const renvoyer = () => ref.set(donnees);
+  const envoi = renvoyer();
+  if (window.fournilSynchro) window.fournilSynchro.suivre(envoi, docId, renvoyer);
+  else envoi.catch(e => console.warn('Envoi refusé', e));
+  return envoi;
+}
+
 async function save() {
   try {
     try { await window.storage.set('fournil-local', JSON.stringify(S)); } catch {}
-    if (db) db.collection('boulangerie').doc('state').set({ state: JSON.stringify(S) });
+    if (db) envoyer('state', { state: JSON.stringify(S) });
   } catch(e) { console.warn('Erreur save', e); }
 }
 
 async function saveL() {
   try {
     try { await window.storage.set('labo-local', JSON.stringify(L)); } catch {}
-    if (db) db.collection('boulangerie').doc('labo').set({ state: JSON.stringify(L) });
+    if (db) envoyer('labo', { state: JSON.stringify(L) });
   } catch(e) { console.warn('Erreur saveL', e); }
 }
 
@@ -1346,6 +1364,8 @@ function goHome(){
 }
 
 function updateSyncIndicator(connected) {
+  // État réel (envoyé, en attente, hors ligne, erreur) : assets/js/synchro.js
+  if (window.fournilSynchro) { window.fournilSynchro.connexion(connected); return; }
   const dot = document.getElementById('syncDot');
   const txt = document.getElementById('syncTxt');
   if (dot) dot.style.background = connected ? '#4A7040' : '#C05A18';
@@ -3172,6 +3192,8 @@ if (initFirebaseApp()) {
 <!-- Module Recettes : écrans de Grigne branchés sur boulangerie/recettes -->
 <script src="recettes/recettes.js"></script>
 <!-- Stock : remise à zéro, − / + et retrait avec motif, saisie rapide -->
+<!-- État réel de l'enregistrement (synchronisé, pas encore envoyé, hors ligne, erreur) -->
+<script src="assets/js/synchro.js"></script>
 <script src="assets/js/saisie-rapide.js"></script>
 <script src="assets/js/stock.js"></script>
 <!-- Navigation (barre du bas / barre latérale) -->
