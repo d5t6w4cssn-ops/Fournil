@@ -1145,6 +1145,8 @@ function initFirebase() {
           normalizeState();
           if (activeModule === 'fournil') render();
           if (tab === 'notes') renderNotes();
+          // Passage au jour suivant, sur les vraies données (assets/js/jour.js)
+          if (window.fournilJour) window.fournilJour.verifier('fournil');
         }
       }
       updateSyncIndicator(true);
@@ -1158,6 +1160,7 @@ function initFirebase() {
           L = JSON.parse(remote);
           normalizeLabo();
           if (activeModule === 'labo') renderLabo();
+          if (window.fournilJour) window.fournilJour.verifier('labo');
         }
       }
     }, () => {});
@@ -1387,6 +1390,7 @@ async function actualiserApp() {
       ]);
       if (snapState.exists && snapState.data().state) { S = JSON.parse(snapState.data().state); normalizeState(); }
       if (snapLabo.exists && snapLabo.data().state) { L = JSON.parse(snapLabo.data().state); normalizeLabo(); }
+      if (window.fournilJour) { window.fournilJour.verifier('fournil'); window.fournilJour.verifier('labo'); }
       if (snapRec.exists && window.rcApplyRemote) window.rcApplyRemote(snapRec.data());
 
       if (activeModule === 'fournil') render();
@@ -3194,6 +3198,8 @@ if (initFirebaseApp()) {
 <!-- Stock : remise à zéro, − / + et retrait avec motif, saisie rapide -->
 <!-- État réel de l'enregistrement (synchronisé, pas encore envoyé, hors ligne, erreur) -->
 <script src="assets/js/synchro.js"></script>
+<!-- Passage au jour suivant (sorties de la veille, plusieurs jours manqués) -->
+<script src="assets/js/jour.js"></script>
 <script src="assets/js/saisie-rapide.js"></script>
 <script src="assets/js/stock.js"></script>
 <!-- Navigation (barre du bas / barre latérale) -->

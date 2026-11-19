@@ -10,6 +10,7 @@ function createFakeFirebase(initialDocs = {}) {
   const writes = []; // { path, data, options }
   const reads = []; // { path, options }
   const journal = []; // ordre des appels : 'persistance', 'ecoute:<chemin>'
+  const transactions = [];
   const enAttente = []; // écritures faites hors ligne : { path, resolve }
   let failServerGet = false;
   let horsLigne = false;
@@ -67,6 +68,16 @@ function createFakeFirebase(initialDocs = {}) {
 
   const firestore = {
     collection: (c) => ({ doc: (d) => doc(`${c}/${d}`) }),
+    // Transaction : lecture puis écriture d'un seul tenant ; impossible hors ligne.
+    async runTransaction(fn) {
+      transactions.push('debut');
+      if (horsLigne) throw Object.assign(new Error('hors ligne'), { code: 'unavailable' });
+      const ecritures = [];
+      const tx = { get: (ref) => ref.get(), set: (ref, data, options) => { ecritures.push([ref, data, options]); return tx; } };
+      const r = await fn(tx);
+      ecritures.forEach(([ref, data, options]) => ref.set(data, options));
+      return r;
+    },
     enablePersistence(options) {
       journal.push('persistance');
       persistance = options || {};
@@ -106,6 +117,7 @@ function createFakeFirebase(initialDocs = {}) {
       notifierTout();
     },
     nbEnAttente: () => enAttente.length,
+    nbTransactions: () => transactions.length,
     /** Le prochain envoi (ou les n prochains) sera refusé par le serveur avec ce code. */
     refuserProchainEnvoi(code, n = 1) { for (let i = 0; i < n; i++) echecs.push(code); },
     /** enablePersistence échouera avec ce code (ex. 'unimplemented'). */
