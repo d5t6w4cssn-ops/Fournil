@@ -1,3 +1,5 @@
+> Réponds toujours en français, dans des phrases simples et sans jargon, même après un /clear ou dans une nouvelle session.
+
 # Fournil
 
 PWA de gestion d'une boulangerie, utilisée **tous les jours par l'équipe, avec de vraies
