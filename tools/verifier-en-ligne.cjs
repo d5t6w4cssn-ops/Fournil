@@ -17,7 +17,10 @@ const URL_SITE = process.argv[2] || 'https://d5t6w4cssn-ops.github.io/Fournil/';
   await page.waitForTimeout(2000);
   const res = await page.evaluate(() => ({
     titre: document.title,
-    carteExportImport: !!document.querySelector('#rc-library-view .rc-echange, #tab-recettes [data-echange]'),
+    carteExportImport: !!document.querySelector('#tab-recettes .rc-echange'),
+    ecransGrigne: !!document.querySelector('#tab-recettes .tabs [data-tab="levain"]'),
+    navigation: !!document.getElementById('appNav'),
+    styleGrigne: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
     ecranConnexion: getComputedStyle(document.getElementById('loginScreen')).display,
     thermometres: !!document.getElementById('mThermo'),
   }));
