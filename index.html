@@ -1622,7 +1622,7 @@ function toggleLaboTask(id){
   saveL();renderLaboTasks();
 }
 function delLaboTask(id){L.tasks=L.tasks.filter(t=>t.id!==id);saveL();renderLaboTasks();}
-function addLaboTask(){const v=document.getElementById('taskInput').value.trim();if(!v)return;if(!L.tasks)L.tasks=[];L.tasks.push({id:'lt_'+Date.now(),text:v,done:false,auto:false,cat:selectedCat});document.getElementById('taskInput').value='';selectedCat='general';document.querySelectorAll('.task-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat==='general'));closeM('mTask');saveL();renderLaboTasks();toast('Tâche ajoutée');}
+function addLaboTask(){const v=document.getElementById('taskInput').value.trim();if(!v){champManquant('taskInput','Écris la tâche avant de l’ajouter.');return;}if(!L.tasks)L.tasks=[];L.tasks.push({id:'lt_'+Date.now(),text:v,done:false,auto:false,cat:selectedCat});document.getElementById('taskInput').value='';selectedCat='general';document.querySelectorAll('.task-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat==='general'));closeM('mTask');saveL();renderLaboTasks();toast('Tâche ajoutée');}
 
 function renderLaboHistoTaches(){
   const el=document.getElementById('lHistoTachesList');if(!el)return;
@@ -1691,6 +1691,7 @@ function openLaboEditProduct(id){const p=L.products.find(x=>x.id===id);if(!p)ret
 function delLaboProduct(id){L.products=L.products.filter(p=>p.id!==id);stopLaboFlip(id);saveL();renderLaboSettings();renderLaboStock();toast('Produit supprimé');}
 
 function saveProduct(){
+  if(!document.getElementById('np-name').value.trim()){champManquant('np-name','Donne un nom au produit.');return;}
   if(window._laboProdMode){
     window._laboProdMode=false;
     const name=document.getElementById('np-name').value.trim();const emoji=document.getElementById('np-emoji').value.trim()||'🍰';const seuil=parseInt(document.getElementById('np-seuil').value)||10;const base=parseInt(document.getElementById('np-base').value)||0;
@@ -1716,7 +1717,7 @@ function fabClick(){
 
 function addTask(){
   if(activeModule==='labo'){addLaboTask();return;}
-  const v=document.getElementById('taskInput').value.trim();if(!v)return;
+  const v=document.getElementById('taskInput').value.trim();if(!v){champManquant('taskInput','Écris la tâche avant de l’ajouter.');return;}
   S.tasks.push({id:'t_'+Date.now(),text:v,done:false,auto:false,cat:selectedCat});
   document.getElementById('taskInput').value='';selectedCat='general';
   document.querySelectorAll('.task-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat==='general'));
@@ -2431,7 +2432,7 @@ function saveMatiere() {
   const seuil = parseFloat(document.getElementById('mat-seuil').value)||5;
   const conso = parseFloat(document.getElementById('mat-conso').value)||0;
   const dlc   = document.getElementById('mat-dlc').value||'';
-  if(!name) return;
+  if(!name) { champManquant('mat-name','Donne un nom à la matière première.'); return; }
 
   if(editMatiereId) {
     const m = (S.matieres||[]).find(x=>x.id===editMatiereId);
@@ -2557,7 +2558,7 @@ function addCmdClient() {
   const date    = document.getElementById('cc-date').value;
   const heure   = document.getElementById('cc-heure').value;
   const detail  = document.getElementById('cc-detail').value.trim();
-  if(!nom) return;
+  if(!nom) { champManquant('cc-nom','Indique le nom du client.'); return; }
   if(!S.cmdClients) S.cmdClients = [];
   S.cmdClients.push({ id:'cc_'+Date.now(), nom, adresse, date, heure, detail, status:'pending', createdAt:today() });
   ['cc-nom','cc-adresse','cc-date','cc-heure','cc-detail'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
@@ -2960,7 +2961,7 @@ function saveFreeNotes(){
 
 function addBoulanger(){
   const name=document.getElementById('bl-name').value.trim();
-  if(!name)return;
+  if(!name){champManquant('bl-name','Indique le prénom du boulanger.');return;}
   if(!S.boulangers)S.boulangers=[];
   if(!S.boulangers.includes(name))S.boulangers.push(name);
   document.getElementById('bl-name').value='';
@@ -3118,6 +3119,16 @@ document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{
 document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
 
 let tt;
+// Champ obligatoire vide : message sous le champ et curseur dedans, au lieu d'un bouton
+// qui ne fait rien (audit G4).
+function champManquant(id,message){
+  const champ=document.getElementById(id);
+  if(!champ){toast(message);return;}
+  let m=champ.parentNode.querySelector('.champ-erreur[data-pour="'+id+'"]');
+  if(!m){m=document.createElement('p');m.className='champ-erreur';m.dataset.pour=id;m.setAttribute('role','alert');champ.insertAdjacentElement('afterend',m);}
+  m.textContent=message;champ.setAttribute('aria-invalid','true');champ.focus();
+  champ.addEventListener('input',()=>{m.textContent='';champ.removeAttribute('aria-invalid');},{once:true});
+}
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2500);}
 
 function openHelp(){const el=document.getElementById('helpOverlay');if(el){el.style.display='flex';}}
