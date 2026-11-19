@@ -1249,6 +1249,35 @@ function checkDay() {
 }
 
 let histSeq=0;
+// Affichage d'une ligne d'historique. Types d'origine : sortie, recharge. Ajoutés pour le
+// stock : ajustement (boutons − / +, delta signé), retrait (avec motif), raz (remise à zéro),
+// saisie (saisie rapide : plusieurs produits en une fois, détail dans lignes).
+const MOTIFS_RETRAIT={perte:'Perte',casse:'Casse',don:'Don',degustation:'Dégustation',autre:'Autre'};
+function fmtQ(n){const v=Math.round((Number(n)||0)*1000)/1000;return String(v).replace('.',',');}
+function histoClasse(h){
+  if(h.type==='sortie'||h.type==='retrait'||h.type==='raz')return 'sortie';
+  if(h.type==='ajustement')return (h.delta||0)<0?'sortie':'recharge';
+  if(h.type==='saisie')return (h.lignes||[]).every(l=>l.delta<0)?'sortie':'recharge';
+  return 'recharge';
+}
+function histoLibelle(h){
+  switch(h.type){
+    case 'sortie':return '🌡️ Sorti';
+    case 'recharge':return '📦 Rechargé';
+    case 'ajustement':return '± Ajusté à la main';
+    case 'retrait':return '➖ Retiré · '+(MOTIFS_RETRAIT[h.motif]||'Autre')+(h.note?' — '+h.note:'');
+    case 'raz':return '0 Stock remis à zéro';
+    case 'saisie':return '⚡ Saisie rapide · '+(h.lignes||[]).map(l=>(l.delta<0?'−':'+')+fmtQ(Math.abs(l.delta))+' '+l.name+(l.nouveau?' (nouveau)':'')).join(', ');
+    default:return String(h.type||'');
+  }
+}
+function histoQuantite(h){
+  const u=h.unit?'\u202f'+h.unit:'';
+  if(h.type==='raz')return '→ 0';
+  if(h.type==='saisie'){const n=(h.lignes||[]).length;return n+' produit'+(n>1?'s':'');}
+  if(h.type==='ajustement'){const d=h.delta||0;return (d<0?'− ':'+ ')+fmtQ(Math.abs(d))+u;}
+  return (histoClasse(h)==='sortie'?'− ':'+ ')+fmtQ(h.qty)+u;
+}
 function addHist(type,p,qty){
   if(!S.history) S.history=[];
   S.history.unshift({id:'h_'+Date.now()+'_'+(histSeq++),date:today(),type,pid:p.id,name:p.name,emoji:p.emoji,qty});
@@ -1584,7 +1613,7 @@ function renderLaboHisto(){
   if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-icon">📈</div>Aucun historique encore.</div>';return;}
   const byDate={};entries.forEach(h=>{if(!byDate[h.date])byDate[h.date]=[];byDate[h.date].push(h);});
   const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-  el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div></div>`).join('')}</div>`).join('');
+  el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${histoClasse(h)}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${esc(histoLibelle(h))}</div></div><div class="histo-qty">${esc(histoQuantite(h))}</div></div>`).join('')}</div>`).join('');
 }
 function setLaboHistoFilter(pid){laboHistoFilter=pid;renderLaboHisto();}
 
@@ -1615,7 +1644,7 @@ function renderLaboCalendrier(){
     <div class="cal-events">
       <div class="cal-event-title">${selLabel}</div>
       ${!histoSel.length?'<div style="font-size:13px;color:var(--brown-light)">Aucun événement ce jour.</div>':''}
-      ${histoSel.map(h=>`<div class="cal-event-item"><div class="cal-event-dot" style="background:${h.type==='sortie'?'var(--orange)':'var(--green)'}"></div><div class="cal-event-text">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'} : ${esc(h.emoji)} ${esc(h.name)} (${h.qty})</div></div>`).join('')}
+      ${histoSel.map(h=>`<div class="cal-event-item"><div class="cal-event-dot" style="background:${histoClasse(h)==='sortie'?'var(--orange)':'var(--green)'}"></div><div class="cal-event-text">${esc(histoLibelle(h))} : ${esc(h.emoji)} ${esc(h.name)} (${h.qty})</div></div>`).join('')}
     </div>`;
 }
 
@@ -2076,7 +2105,7 @@ function renderHisto(){
   entries.forEach(h=>{if(!byDate[h.date])byDate[h.date]=[];byDate[h.date].push(h);});
   const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
   const clearBtn=`<button class="histo-clear-btn" onclick="clearHisto()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg> Tout effacer</button>`;
-  el.innerHTML=clearBtn+Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${h.type}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'}</div></div><div class="histo-qty">${h.type==='sortie'?'−':'+'} ${h.qty}</div><button class="histo-del-btn" aria-label="Supprimer" onclick="delHistoEntry(${escJ(h.id)})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg></button></div>`).join('')}</div>`).join('');
+  el.innerHTML=clearBtn+Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${histoClasse(h)}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${esc(histoLibelle(h))}</div></div><div class="histo-qty">${esc(histoQuantite(h))}</div><button class="histo-del-btn" aria-label="Supprimer" onclick="delHistoEntry(${escJ(h.id)})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg></button></div>`).join('')}</div>`).join('');
 }
 function setHistoFilter(pid){histoFilter=pid;renderHisto();}
 function delHistoEntry(id){
@@ -2684,8 +2713,8 @@ function renderCalendrier() {
         </div>`).join('')}
       ${histoSel.map(h=>`
         <div class="cal-event-item">
-          <div class="cal-event-dot" style="background:${h.type==='sortie'?'var(--orange)':'var(--green)'}"></div>
-          <div class="cal-event-text">${h.type==='sortie'?'🌡️ Sorti':'📦 Rechargé'} : ${esc(h.emoji)} ${esc(h.name)} (${h.qty})</div>
+          <div class="cal-event-dot" style="background:${histoClasse(h)==='sortie'?'var(--orange)':'var(--green)'}"></div>
+          <div class="cal-event-text">${esc(histoLibelle(h))} : ${esc(h.emoji)} ${esc(h.name)} (${h.qty})</div>
         </div>`).join('')}
     </div>`;
 }
@@ -3142,6 +3171,8 @@ if (initFirebaseApp()) {
 
 <!-- Module Recettes : écrans de Grigne branchés sur boulangerie/recettes -->
 <script src="recettes/recettes.js"></script>
+<!-- Stock : remise à zéro, − / + et retrait avec motif, saisie rapide -->
+<script src="assets/js/stock.js"></script>
 <!-- Navigation (barre du bas / barre latérale) -->
 <script src="assets/js/navigation.js"></script>
 </body>

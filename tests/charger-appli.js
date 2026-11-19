@@ -24,10 +24,11 @@ class ChargeurLocal extends ResourceLoader {
 }
 const pause = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 
-async function chargerAppli({ recettes, etat } = {}) {
+async function chargerAppli({ recettes, etat, labo } = {}) {
   const initial = {};
   if (recettes) initial['boulangerie/recettes'] = { recipes: JSON.stringify(recettes) };
   if (etat) initial['boulangerie/state'] = { state: JSON.stringify(etat) };
+  if (labo) initial['boulangerie/labo'] = { state: JSON.stringify(labo) };
   const fake = createFakeFirebase(initial);
   const erreurs = [];
   const telechargements = [];
