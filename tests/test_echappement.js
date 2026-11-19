@@ -8,7 +8,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { chargerAppli } = require('./charger-appli.js');
 
-const today = new Date().toISOString().slice(0, 10);
+const today = require('../assets/js/date.js').dateParis();
 // Piège : casse un attribut entre guillemets doubles ou simples, puis crée un élément marqué.
 const P = (champ) => `"'><i data-piege="${champ}"></i>`;
 // Piège pour les identifiants utilisés dans onclick="f('…')" : sortie de la chaîne JS.
@@ -123,7 +123,7 @@ test('aucun texte des données ne peut injecter du HTML ou du JavaScript', async
 });
 
 test("le PDF d'un produit n'accepte qu'un vrai PDF, jamais une adresse javascript:", async () => {
-  const today2 = new Date().toISOString().slice(0, 10);
+  const today2 = require('../assets/js/date.js').dateParis();
   const prod = (id, recipeUrl) => ({ id, name: 'P', emoji: 'e', stockReel: 0, base: 0, commande: 0, seuil: 5, recipeUrl });
   const a = await chargerAppli({ etat: { products: [prod('ok', 'data:application/pdf;base64,JVBERi0='), prod('ko', 'javascript:window.__piege=1')], tasks: [], lastDate: today2, history: [], thermos: [], notes: [], boulangers: [], freeNotes: '', journal: {} } });
   await a.pause(20);

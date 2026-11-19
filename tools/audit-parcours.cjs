@@ -24,7 +24,7 @@ function serveur() {
   return new Promise((r) => srv.listen(0, '127.0.0.1', () => r(srv)));
 }
 
-const hier = () => { const d = new Date(); d.setDate(d.getDate() - 1); return d.toISOString().slice(0, 10); };
+const hier = () => { const { dateParis, decalerJour } = require('../assets/js/date.js'); return decalerJour(dateParis(), -1); };
 
 async function ouvrir(browser, origine, { modifier, viewport = { width: 390, height: 844 }, echecEcriture = false } = {}) {
   const d = donneesDemo();
@@ -67,7 +67,7 @@ async function ouvrir(browser, origine, { modifier, viewport = { width: 390, hei
     const s = await ouvrir(browser, origine, { modifier: (d) => { d.state.lastDate = hier(); } });
     const e = await s.etat();
     const c = e.products.find((p) => p.id === 'croissant');
-    note('passage au jour suivant', `lastDate=${e.lastDate} (attendu ${new Date().toISOString().slice(0, 10)}), croissant stock=${c.stockReel} (attendu 18), commande=${c.commande} (attendu 0)`);
+    note('passage au jour suivant', `lastDate=${e.lastDate} (attendu ${require('../assets/js/date.js').dateParis()}), croissant stock=${c.stockReel} (attendu 18), commande=${c.commande} (attendu 0)`);
     await s.page.evaluate(() => { openModule('fournil'); sw('magasin'); });
     note('passage au jour suivant', `pastille magasin : « ${(await s.page.locator('#tab-magasin .day-pill').innerText()).replace(/\s+/g, ' ')} »`);
     await s.ctx.close();
@@ -195,7 +195,7 @@ async function ouvrir(browser, origine, { modifier, viewport = { width: 390, hei
     await s.page.evaluate(() => { openModule('bureau'); swB('journal'); document.getElementById('journalObs').value = 'Note non enregistrée'; });
     await s.page.locator('.journal-nav-btn').first().click();
     await s.page.locator('.journal-nav-btn').last().click();
-    note('journal', `observation tapée puis jour précédent / suivant sans « Enregistrer » → champ=« ${await s.page.evaluate(() => document.getElementById('journalObs').value)} », enregistré=« ${(await s.etat()).journal[new Date().toISOString().slice(0, 10)].obs} »`);
+    note('journal', `observation tapée puis jour précédent / suivant sans « Enregistrer » → champ=« ${await s.page.evaluate(() => document.getElementById('journalObs').value)} », enregistré=« ${(await s.etat()).journal[require('../assets/js/date.js').dateParis()].obs} »`);
     await s.ctx.close();
   }
 

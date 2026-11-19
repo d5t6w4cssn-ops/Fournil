@@ -6,7 +6,8 @@ const assert = require('node:assert/strict');
 const { chargerAppli } = require('./charger-appli.js');
 const { donneesDemo } = require('./donnees-demo.js');
 
-const jour = (n) => { const d = new Date(); d.setUTCDate(d.getUTCDate() - n); return d.toISOString().slice(0, 10); };
+const { dateParis, decalerJour } = require('../assets/js/date.js');
+const jour = (n) => decalerJour(dateParis(), -n);
 const AUJ = jour(0);
 
 async function ouvrir(t, { joursFournil = 0, joursLabo = 0, ...opts } = {}) {

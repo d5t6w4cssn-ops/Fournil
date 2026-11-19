@@ -12,6 +12,7 @@
 <meta name="theme-color" content="#F5F0E6">
 <meta name="color-scheme" content="light dark">
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/date.js"></script>
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="recettes/recettes.css">
 <style>
@@ -1100,7 +1101,8 @@ let L={products:[],tasks:[],lastDate:null,history:[],histoTaches:[]}; // State L
 let flips={},tab='stock',activeModule=null,correctId=null,dbt={},histoFilter='all',meteoLoaded=false,pendingPdfUrl=null;
 let laboTab='lstock',laboHistoFilter='all',laboDbt={},laboFlips={};
 
-const today=()=>new Date().toISOString().slice(0,10);
+// Date du jour à l'heure de Paris (assets/js/date.js, correction G8)
+const today=()=>window.FournilDate.dateParis();
 // Échappement à l'affichage : tout texte venu des données passe par esc() avant
 // d'entrer dans du HTML ; un argument de onclick="f(…)" passe par escJ() (chaîne
 // JavaScript sûre, elle-même échappée pour l'attribut).
@@ -1250,7 +1252,7 @@ async function load() {
   normalizeLabo();
 
   document.getElementById('homeDate').textContent =
-    new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
+    FournilDate.aujourdhuiEnLettres();
   checkDay();
   checkDayLabo();
   initFirebase();
@@ -1341,14 +1343,14 @@ function openModule(m){
     document.getElementById('hdrLabo').style.display='block';
     document.getElementById('laboModule').style.display='block';
     document.getElementById('fab').classList.add('hidden');
-    document.getElementById('hdateLabo').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+    document.getElementById('hdateLabo').textContent=FournilDate.aujourdhuiEnLettres();
     swL(laboTab);
   } else {
     document.getElementById('hdrBureau').style.display='block';
     document.getElementById('bureauModule').style.display='block';
     document.getElementById('tab-recettes').classList.remove('active');
     document.getElementById('fab').classList.add('hidden');
-    document.getElementById('hdateBureau').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+    document.getElementById('hdateBureau').textContent=FournilDate.aujourdhuiEnLettres();
     swB('matieres');
   }
 }
@@ -1448,7 +1450,7 @@ function swL(t){
 
 function renderLabo(){
   if(activeModule!=='labo') return;
-  document.getElementById('hdateLabo').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('hdateLabo').textContent=FournilDate.aujourdhuiEnLettres();
   renderLaboStock(); renderLaboMagasin(); renderLaboTasks(); renderLaboSettings();
 }
 
@@ -1539,7 +1541,7 @@ function renderLaboMagasin(){
   const el=document.getElementById('lMagasinList');if(!el)return;
   const ldTxt=document.getElementById('lDayTxt');const ldSub=document.getElementById('lDaySub');const ldDot=document.getElementById('lDayDot');
   if(ldTxt)ldTxt.textContent=L.lastDate===today()?'Journée en cours ✓':'En attente…';
-  if(ldSub)ldSub.textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  if(ldSub)ldSub.textContent=FournilDate.aujourdhuiEnLettres();
   if(ldDot)ldDot.className='day-dot'+(L.lastDate===today()?'':' pending');
   if(!L.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">🛒</div>Aucun produit.</div>';return;}
   el.innerHTML=L.products.map(p=>{
@@ -1641,7 +1643,7 @@ function renderLaboHisto(){
 }
 function setLaboHistoFilter(pid){laboHistoFilter=pid;renderLaboHisto();}
 
-let laboCalYear=new Date().getFullYear(),laboCalMonth=new Date().getMonth(),laboCalSel=today();
+let laboCalYear=Number(today().slice(0,4)),laboCalMonth=Number(today().slice(5,7))-1,laboCalSel=today();
 function renderLaboCalendrier(){
   const el=document.getElementById('lCalendrContent');if(!el)return;
   const firstDay=new Date(laboCalYear,laboCalMonth,1);const lastDay=new Date(laboCalYear,laboCalMonth+1,0);
@@ -1757,7 +1759,7 @@ function swB(t){
 
 function render(){
   if(activeModule!=='fournil')return;
-  document.getElementById('hdate').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('hdate').textContent=FournilDate.aujourdhuiEnLettres();
   renderStock();renderMagasin();renderTasks();renderSettings();
 }
 
@@ -1841,7 +1843,7 @@ function openCorrect(id){
 function renderMagasin(){
   const ok=S.lastDate===today();
   document.getElementById('dayTxt').textContent=ok?'Journée en cours ✓':'En attente…';
-  document.getElementById('daySub').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('daySub').textContent=FournilDate.aujourdhuiEnLettres();
   document.getElementById('dayDot').className='day-dot'+(ok?'':' pending');
   const el=document.getElementById('magasinList');
   if(!S.products.length){el.innerHTML='<div class="empty"><div class="empty-icon">🛒</div>Aucun produit.</div>';return;}
@@ -2047,10 +2049,8 @@ function renderJournal() {
   const entry = S.journal[journalDate] || { obs: '', produits: {} };
   const isToday = journalDate === today();
   const dateLabel = new Date(journalDate).toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
-  const prevDate = new Date(journalDate); prevDate.setDate(prevDate.getDate()-1);
-  const nextDate = new Date(journalDate); nextDate.setDate(nextDate.getDate()+1);
-  const prevStr = prevDate.toISOString().slice(0,10);
-  const nextStr = nextDate.toISOString().slice(0,10);
+  const prevStr = FournilDate.decalerJour(journalDate, -1);
+  const nextStr = FournilDate.decalerJour(journalDate, 1);
   const canNext = nextStr <= today();
 
   el.innerHTML = `
@@ -2157,7 +2157,7 @@ function renderMatieres() {
   if(!el) return;
   if(!S.matieres) S.matieres = [];
 
-  const today_d = new Date(); today_d.setHours(0,0,0,0);
+  const today_d = new Date(today()+'T00:00:00');
   const in7 = new Date(today_d); in7.setDate(in7.getDate()+7);
 
   let html = `<button class="mat-add-btn" onclick="openM('mMatiere')">+ Ajouter une matière première</button>`;
@@ -2300,13 +2300,8 @@ function renderHebdo() {
   const el = document.getElementById('bur-stats');
   if(!el) return;
 
-  const today_d = new Date();
   const days = [];
-  for(let i=6;i>=0;i--){
-    const d = new Date(today_d);
-    d.setDate(d.getDate()-i);
-    days.push(d.toISOString().slice(0,10));
-  }
+  for(let i=6;i>=0;i--) days.push(FournilDate.decalerJour(today(), -i));
 
   // Sorties par produit sur 7 jours (depuis historique)
   const sorties = {};
@@ -2355,7 +2350,7 @@ function renderCmdClients() {
   if(!el) return;
   if(!S.cmdClients) S.cmdClients = [];
 
-  const today_d = new Date(); today_d.setHours(0,0,0,0);
+  const today_d = new Date(today()+'T00:00:00');
   const tomorrow = new Date(today_d); tomorrow.setDate(tomorrow.getDate()+1);
 
   let html = `
@@ -2509,7 +2504,7 @@ function exportCmdFournisseur() {
     ...m, besoin: Math.max(0, Math.ceil((m.conso||0)-(m.stock||0)))
   })).filter(m=>m.besoin>0);
 
-  const date = new Date().toLocaleDateString('fr-FR');
+  const date = FournilDate.aujourdhuiEnLettres({ day:'2-digit', month:'2-digit', year:'numeric' });
   let txt = `COMMANDE FOURNISSEUR — ${date}\n`;
   txt += '='.repeat(35) + '\n\n';
   if(!commandes.length) {
@@ -2608,7 +2603,7 @@ function renderCmdFournisseur() {
     el.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>Ajoutez d\'abord vos matières premières.</div>';
     return;
   }
-  const today_d = new Date(); today_d.setHours(0,0,0,0);
+  const today_d = new Date(today()+'T00:00:00');
   const commandes = S.matieres.filter(m=>(m.conso||0)>0).map(m=>({
     ...m, besoin: Math.max(0, Math.ceil((m.conso||0)-(m.stock||0)))
   })).filter(m=>m.besoin>0);
@@ -2641,8 +2636,8 @@ function renderCmdFournisseur() {
 }
 
 // ── CALENDRIER ──
-let calYear = new Date().getFullYear();
-let calMonth = new Date().getMonth();
+let calYear = Number(today().slice(0,4));
+let calMonth = Number(today().slice(5,7))-1;
 let calSelectedDate = today();
 
 function renderCalendrier() {
@@ -2705,8 +2700,7 @@ function renderCalendrier() {
   const histoSel = (S.history||[]).filter(h=>h.date===calSelectedDate);
   const cmdsSel  = (S.cmdClients||[]).filter(c=>c.date===calSelectedDate);
   // Commandes à préparer la veille
-  const tomorrow2 = new Date(calSelectedDate); tomorrow2.setDate(tomorrow2.getDate()+1);
-  const tomorrowStr = tomorrow2.toISOString().slice(0,10);
+  const tomorrowStr = FournilDate.decalerJour(calSelectedDate, 1);
   const cmdsTomorrow = (S.cmdClients||[]).filter(c=>c.date===tomorrowStr&&c.status!=='validated');
 
   el.innerHTML = `

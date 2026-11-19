@@ -3,9 +3,8 @@
 'use strict';
 
 function jour(decalage) {
-  const d = new Date();
-  d.setDate(d.getDate() + decalage);
-  return d.toISOString().slice(0, 10);
+  const { dateParis, decalerJour } = require('../assets/js/date.js');
+  return decalerJour(dateParis(), decalage);
 }
 
 function donneesDemo() {

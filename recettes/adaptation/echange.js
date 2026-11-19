@@ -27,6 +27,8 @@ const pl = (n, un, plusieurs) => `${n} ${n > 1 ? plusieurs : un}`;
 
 function exportFileName(d){
   const p = n => String(n).padStart(2, '0');
+  // jour à l'heure de Paris (assets/js/date.js), sinon jour de l'appareil
+  if (window.FournilDate) return `fournil-recettes-${window.FournilDate.dateParis(d)}.json`;
   return `fournil-recettes-${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}.json`;
 }
 

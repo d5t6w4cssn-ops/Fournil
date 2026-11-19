@@ -6,7 +6,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { chargerAppli } = require('./charger-appli.js');
 
-const today = new Date().toISOString().slice(0, 10);
+const today = require('../assets/js/date.js').dateParis();
 const anciennes = [
   { id: 'th_1', name: 'Chambre froide', mode: 'tuya', clientId: 'abc', secret: 'chut', deviceId: 'dev', temp: null, hum: null, maxTemp: 5 },
   { id: 'th_2', name: 'Congélateur', mode: 'ip', ip: '192.168.1.42', temp: -18, hum: 40, maxTemp: -15 },
