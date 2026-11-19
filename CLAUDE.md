@@ -57,6 +57,20 @@ sans build ni dépendance à l'exécution). Le déploiement consiste à remplace
   `escJ()` pour un argument de `onclick="f(…)"`. `tests/test_echappement.js` piège toutes les
   données et ouvre tous les écrans : il doit toujours passer.
 
+## Stock
+
+`assets/js/stock.js` se branche sur les fonctions d'affichage existantes (`renderStock`,
+`renderLaboStock`, `renderMatieres`, `renderSettings`) sans les modifier :
+
+- Réglages → « Remettre tout le stock à zéro » (Fournil, Labo, matières) : seules les quantités.
+- Sur chaque produit : − / + (une ligne d'historique `ajustement` regroupée) et « Retrait avec
+  motif » (`retrait` : perte, casse, don, dégustation, autre). Jamais sous 0 sans prévenir.
+- Saisie rapide en haut du Stock (texte ou dictée) : reconnaissance dans
+  `assets/js/saisie-rapide.js` (fonctions pures, `tests/test_saisie_rapide.js`), aperçu
+  corrigeable, une seule écriture et une seule ligne d'historique `saisie`.
+- Types d'historique ajoutés : `ajustement`, `retrait`, `raz`, `saisie`, affichés par
+  `histoLibelle` / `histoQuantite` (script principal). Les statistiques ne comptent que `sortie`.
+
 ## Export / import des recettes
 
 Dans Recettes → Bibliothèque, carte « Mes recettes : exporter / importer » :

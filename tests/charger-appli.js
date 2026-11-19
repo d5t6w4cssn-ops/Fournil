@@ -24,7 +24,7 @@ class ChargeurLocal extends ResourceLoader {
 }
 const pause = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 
-async function chargerAppli({ recettes, etat, labo } = {}) {
+async function chargerAppli({ recettes, etat, labo, preparer } = {}) {
   const initial = {};
   if (recettes) initial['boulangerie/recettes'] = { recipes: JSON.stringify(recettes) };
   if (etat) initial['boulangerie/state'] = { state: JSON.stringify(etat) };
@@ -47,6 +47,7 @@ async function chargerAppli({ recettes, etat, labo } = {}) {
     beforeParse(window) {
       window.firebase = fake.firebase;
       // Pas de window.storage : il n'existe pas en production non plus.
+      if (preparer) preparer(window); // ex. faux micro pour la dictée
       window.fetch = (u) => { reseau.push(String(u)); return Promise.reject(new Error('réseau bloqué en test')); };
       window.alert = () => {};
       // CSS.escape existe dans tous les navigateurs, pas dans jsdom.

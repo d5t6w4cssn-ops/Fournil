@@ -12,11 +12,12 @@
       liste: () => S.products || [],
       champ: 'stockReel',
       histo: () => { if (!S.history) S.history = []; return S.history; },
-      enregistrer: () => save(),
+      // genAutoTasks met à jour les tâches « stock bas » puis enregistre : une seule écriture.
+      enregistrer: () => enregistrerFournil(),
       carte: (id) => `pc-${id}`,
       unite: () => '',
       entier: true,
-      majAffichage: (p) => { refresh(p); if (typeof genAutoTasks === 'function') genAutoTasks(); },
+      majAffichage: (p) => refresh(p),
     },
     labo: {
       nom: 'Labo',
@@ -42,6 +43,10 @@
     },
   };
   const MAX_HISTO = 630;
+  function enregistrerFournil() {
+    if (typeof genAutoTasks === 'function') genAutoTasks();
+    else save();
+  }
   const arrondi = (n) => Math.round(n * 1000) / 1000;
   const fq = (n) => String(arrondi(n)).replace('.', ',');
   const avecUnite = (n, u) => (u ? `${fq(n)} ${u}` : fq(n));
@@ -111,9 +116,8 @@
     (L.products || []).forEach((p) => { p.stockReel = 0; });
     ajouterHisto('fournil', { type: 'raz', pid: '', name: 'Tout le stock (Fournil et matières premières)', emoji: '0️⃣', qty: 0 });
     ajouterHisto('labo', { type: 'raz', pid: '', name: 'Tout le stock du Labo', emoji: '0️⃣', qty: 0 });
-    save();
+    enregistrerFournil();
     saveL();
-    if (typeof genAutoTasks === 'function') genAutoTasks();
     renderStock();
     renderLaboStock();
     renderMatieres();
@@ -266,13 +270,231 @@
     };
   }
 
-  window.FournilStock = { remettreAZero, demanderRemiseAZero, ajuster, retirerAvecMotif, CATEGORIES };
+  // =====================================================================
+  // 3. Saisie rapide (texte ou voix) en haut du Stock du Fournil
+  // =====================================================================
+  const saisie = { mode: 'ajouter', lignes: [], texte: '' };
+  let compteurLigne = 0;
+  const NOUVEAU = '__nouveau__';
+
+  function carteSaisie() {
+    const sec = document.getElementById('tab-stock');
+    if (!sec || document.getElementById('saisieRapide')) return;
+    const c = document.createElement('section');
+    c.id = 'saisieRapide';
+    c.className = 'saisie-carte';
+    c.setAttribute('aria-labelledby', 'saisieTitre');
+    const voix = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+    c.innerHTML = `
+      <h2 class="saisie-titre" id="saisieTitre">Saisie rapide</h2>
+      <div class="saisie-modes" role="group" aria-label="Ajouter ou retirer">
+        <button type="button" class="saisie-mode" data-mode="ajouter" aria-pressed="true">＋ AJOUTER</button>
+        <button type="button" class="saisie-mode" data-mode="retirer" aria-pressed="false">− RETIRER</button>
+      </div>
+      <label class="sr-only" for="saisieTexte">Texte de la saisie rapide</label>
+      <div class="saisie-champ">
+        <textarea id="saisieTexte" rows="2" placeholder="Ex. 40 viennoises, 50 chaussons, 200 pains au chocolat, 300 croissants"></textarea>
+        <button type="button" class="saisie-micro" aria-pressed="false" ${voix ? '' : 'disabled title="La dictée n’est pas disponible sur ce navigateur"'} aria-label="Dicter">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+      </div>
+      <p class="saisie-aide">Un signe moins (« -20 croissants ») retire cette ligne même en mode Ajouter.</p>
+      <button type="button" class="saisie-apercu-btn">Voir l'aperçu</button>
+      <div class="saisie-apercu" aria-live="polite"></div>`;
+    sec.insertBefore(c, sec.firstChild);
+    c.querySelectorAll('.saisie-mode').forEach((b) => {
+      b.onclick = () => {
+        saisie.mode = b.dataset.mode;
+        c.querySelectorAll('.saisie-mode').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        saisie.lignes.forEach((l) => { if (!l.signe) l.sens = saisie.mode; });
+        rendreApercu();
+      };
+    });
+    c.querySelector('.saisie-apercu-btn').onclick = construireApercu;
+    c.querySelector('.saisie-micro').onclick = dicter;
+  }
+
+  // Dictée : même reconnaissance que le journal vocal (Web Speech API, français).
+  let ecoute = null;
+  function dicter() {
+    const btn = document.querySelector('#saisieRapide .saisie-micro');
+    if (ecoute) { ecoute.stop(); return; }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { toast('La dictée n’est pas disponible sur ce navigateur'); return; }
+    const r = new SR();
+    r.lang = 'fr-FR';
+    r.continuous = false;
+    r.interimResults = false;
+    ecoute = r;
+    btn.setAttribute('aria-pressed', 'true');
+    btn.classList.add('ecoute');
+    toast('Je t’écoute…');
+    r.onresult = (e) => {
+      const dit = Array.from(e.results).map((x) => x[0].transcript).join(' ').trim();
+      const champ = document.getElementById('saisieTexte');
+      champ.value = champ.value.trim() ? `${champ.value.trim()}, ${dit}` : dit;
+      champ.focus();
+    };
+    r.onerror = (e) => {
+      toast(e && e.error === 'not-allowed' ? 'Autorise le micro pour dicter' : 'Dictée interrompue, réessaie');
+    };
+    r.onend = () => {
+      ecoute = null;
+      btn.setAttribute('aria-pressed', 'false');
+      btn.classList.remove('ecoute');
+    };
+    r.start();
+  }
+
+  function construireApercu() {
+    const texte = document.getElementById('saisieTexte').value;
+    saisie.texte = texte.trim();
+    const F = window.FournilSaisie;
+    saisie.lignes = F.analyser(texte).map((l) => {
+      const ligne = { id: ++compteurLigne, texte: l.texte, quantite: l.quantite, signe: l.signe, sens: l.signe === '-' ? 'retirer' : l.signe === '+' ? 'ajouter' : saisie.mode, erreur: l.erreur, produitId: '', nouveauNom: '', candidats: [] };
+      if (l.nom && l.erreur !== 'sans-quantite') {
+        const r = F.rapprocher(l.nom, S.products || []);
+        if (r.statut === 'trouve') ligne.produitId = r.produit.id;
+        else if (r.statut === 'nouveau') { ligne.produitId = NOUVEAU; ligne.nouveauNom = F.nomProduit(l.nom); }
+        else { ligne.candidats = r.candidats.map((c) => c.produit.id); ligne.ambigu = true; }
+      }
+      if (l.erreur === 'sans-quantite') ligne.nouveauNom = F.nomProduit(l.nom);
+      return ligne;
+    });
+    if (!saisie.lignes.length) {
+      zone().innerHTML = '<p class="saisie-msg">Écris par exemple « 40 viennoises, 300 croissants », puis appuie sur « Voir l’aperçu ».</p>';
+      return;
+    }
+    rendreApercu();
+  }
+
+  const zone = () => document.querySelector('#saisieRapide .saisie-apercu');
+
+  // Problème d'une ligne (null si elle peut être enregistrée).
+  function probleme(l) {
+    const q = Number(String(l.quantite ?? '').replace(',', '.'));
+    if (l.quantite === null || l.quantite === '' || !Number.isFinite(q)) return 'Quantité manquante : indique un nombre ou retire la ligne.';
+    if (q <= 0) return 'La quantité doit être supérieure à 0.';
+    if (!Number.isInteger(q)) return 'Indique un nombre entier de pièces.';
+    if (!l.produitId) return l.ambigu ? 'Plusieurs produits possibles : choisis le bon.' : 'Nombre sans produit : choisis le produit ou retire la ligne.';
+    if (l.produitId === NOUVEAU && !String(l.nouveauNom || '').trim()) return 'Donne un nom au nouveau produit.';
+    return null;
+  }
+
+  function stockAvant(l) {
+    if (l.produitId === NOUVEAU || !l.produitId) return 0;
+    const p = (S.products || []).find((x) => x.id === l.produitId);
+    return p ? Number(p.stockReel) || 0 : 0;
+  }
+
+  function rendreApercu() {
+    const z = zone();
+    if (!z) return;
+    if (!saisie.lignes.length) { z.innerHTML = ''; return; }
+    // stock prévu, ligne après ligne (deux lignes sur le même produit s'additionnent)
+    const prevu = {};
+    const options = (S.products || []).map((p) => ({ id: p.id, label: `${p.emoji || ''} ${p.name}`.trim() }));
+    let html = `<p class="saisie-apercu-titre">Aperçu : vérifie, corrige ou retire une ligne, puis enregistre.</p><ul class="saisie-lignes">`;
+    saisie.lignes.forEach((l) => {
+      const pb = probleme(l);
+      const cleP = l.produitId === NOUVEAU ? `n:${String(l.nouveauNom).trim().toLowerCase()}` : l.produitId;
+      const avant = cleP in prevu ? prevu[cleP] : stockAvant(l);
+      const q = pb ? 0 : Number(String(l.quantite).replace(',', '.'));
+      const brut = l.sens === 'retirer' ? avant - q : avant + q;
+      const apres = Math.max(0, brut);
+      if (!pb && cleP) prevu[cleP] = apres;
+      const opts = [`<option value="">— choisir un produit —</option>`]
+        .concat((l.ambigu ? options.filter((o) => l.candidats.includes(o.id)) : []).map((o) => `<option value="${esc(o.id)}" ${o.id === l.produitId ? 'selected' : ''}>${esc(o.label)} (proposé)</option>`))
+        .concat(options.map((o) => `<option value="${esc(o.id)}" ${o.id === l.produitId ? 'selected' : ''}>${esc(o.label)}</option>`))
+        .concat([`<option value="${NOUVEAU}" ${l.produitId === NOUVEAU ? 'selected' : ''}>＋ Nouveau produit…</option>`]);
+      html += `
+        <li class="saisie-ligne${pb ? ' a-corriger' : ''}" data-ligne="${l.id}">
+          <p class="saisie-origine">« ${esc(l.texte)} »</p>
+          <div class="saisie-ligne-corps">
+            <button type="button" class="saisie-sens ${l.sens === 'retirer' ? 'retirer' : 'ajouter'}" data-champ="sens" aria-label="${l.sens === 'retirer' ? 'Retirer (appuie pour ajouter)' : 'Ajouter (appuie pour retirer)'}">${l.sens === 'retirer' ? '−' : '+'}</button>
+            <input class="saisie-qte" data-champ="quantite" type="text" inputmode="numeric" aria-label="Quantité" value="${esc(l.quantite ?? '')}">
+            <select class="saisie-produit" data-champ="produitId" aria-label="Produit">${opts.join('')}</select>
+            <button type="button" class="saisie-retirer" data-champ="supprimer" aria-label="Retirer cette ligne">×</button>
+          </div>
+          ${l.produitId === NOUVEAU ? `<div class="saisie-nouveau"><span class="saisie-badge">nouveau produit</span><input class="saisie-nom" data-champ="nouveauNom" aria-label="Nom du nouveau produit" value="${esc(l.nouveauNom)}"></div>` : ''}
+          ${pb ? `<p class="saisie-erreur">${esc(pb)}</p>` : `<p class="saisie-stock">Stock : ${avant} → <strong>${apres}</strong>${brut < 0 ? ` <span class="saisie-alerte">(il n'y en a que ${avant} : le stock passera à 0, pas en dessous)</span>` : ''}</p>`}
+        </li>`;
+    });
+    const valides = saisie.lignes.filter((l) => !probleme(l)).length;
+    const bloque = saisie.lignes.some((l) => probleme(l));
+    html += `</ul>
+      <div class="saisie-actions">
+        <button type="button" class="mbtn mbtn-c" data-action="annuler">Annuler</button>
+        <button type="button" class="mbtn mbtn-p saisie-valider" data-action="valider" ${bloque ? 'disabled' : ''}>Enregistrer ${valides} ligne${valides > 1 ? 's' : ''}</button>
+      </div>
+      ${bloque ? '<p class="saisie-erreur">Corrige ou retire les lignes signalées pour pouvoir enregistrer.</p>' : ''}`;
+    z.innerHTML = html;
+    z.querySelectorAll('.saisie-ligne').forEach((li) => {
+      const l = saisie.lignes.find((x) => String(x.id) === li.dataset.ligne);
+      li.querySelector('[data-champ=sens]').onclick = () => { l.sens = l.sens === 'retirer' ? 'ajouter' : 'retirer'; l.signe = l.sens === 'retirer' ? '-' : '+'; rendreApercu(); };
+      li.querySelector('[data-champ=quantite]').onchange = (e) => { l.quantite = e.target.value.trim(); rendreApercu(); };
+      li.querySelector('[data-champ=produitId]').onchange = (e) => {
+        l.produitId = e.target.value;
+        if (l.produitId === NOUVEAU && !l.nouveauNom) l.nouveauNom = '';
+        rendreApercu();
+      };
+      li.querySelector('[data-champ=supprimer]').onclick = () => { saisie.lignes = saisie.lignes.filter((x) => x !== l); rendreApercu(); };
+      const nom = li.querySelector('[data-champ=nouveauNom]');
+      if (nom) nom.onchange = (e) => { l.nouveauNom = e.target.value; rendreApercu(); };
+    });
+    z.querySelector('[data-action=annuler]').onclick = () => { saisie.lignes = []; rendreApercu(); };
+    z.querySelector('[data-action=valider]').onclick = valider;
+  }
+
+  // Tout est appliqué puis enregistré en une seule fois, avec une seule ligne d'historique.
+  function valider() {
+    if (!saisie.lignes.length || saisie.lignes.some((l) => probleme(l))) return;
+    const crees = {};
+    const detail = [];
+    let total = 0;
+    saisie.lignes.forEach((l, i) => {
+      const q = Number(String(l.quantite).replace(',', '.'));
+      let p;
+      let nouveau = false;
+      if (l.produitId === NOUVEAU) {
+        const nom = String(l.nouveauNom).trim();
+        const cleNom = nom.toLowerCase();
+        p = crees[cleNom] || (S.products || []).find((x) => String(x.name).trim().toLowerCase() === cleNom);
+        if (!p) {
+          p = { id: `p_${Date.now()}_${i}`, name: nom, emoji: '📦', stockReel: 0, base: 0, commande: 0, seuil: 10, recipeUrl: null };
+          S.products.push(p);
+          crees[cleNom] = p;
+          nouveau = true;
+        }
+      } else {
+        p = S.products.find((x) => x.id === l.produitId);
+      }
+      if (!p) return;
+      const avant = Number(p.stockReel) || 0;
+      const apres = l.sens === 'retirer' ? Math.max(0, avant - q) : avant + q;
+      p.stockReel = apres;
+      const delta = apres - avant;
+      total += Math.abs(delta);
+      detail.push({ pid: p.id, name: p.name, emoji: p.emoji || '📦', delta, demande: l.sens === 'retirer' ? -q : q, nouveau: nouveau || undefined });
+    });
+    ajouterHisto('fournil', { type: 'saisie', pid: '', name: 'Saisie rapide', emoji: '⚡', qty: total, lignes: detail, texte: saisie.texte || undefined });
+    enregistrerFournil();
+    renderStock();
+    const n = detail.length;
+    saisie.lignes = [];
+    document.getElementById('saisieTexte').value = '';
+    zone().innerHTML = `<p class="saisie-msg ok">Saisie enregistrée : ${n} produit${n > 1 ? 's' : ''} mis à jour ✓</p>`;
+    toast(`Saisie enregistrée : ${n} produit${n > 1 ? 's' : ''} ✓`);
+  }
+
+  window.FournilStock = { remettreAZero, demanderRemiseAZero, ajuster, retirerAvecMotif, construireApercu, valider, CATEGORIES };
 
   function demarrer() {
     apres('renderStock', () => ajouterBoutons('fournil'));
     apres('renderLaboStock', () => ajouterBoutons('labo'));
     apres('renderMatieres', () => ajouterBoutons('matieres'));
     apres('renderSettings', carteRemiseAZero);
+    carteSaisie();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', demarrer);
   else demarrer();
