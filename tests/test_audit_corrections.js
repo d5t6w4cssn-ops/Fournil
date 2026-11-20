@@ -176,3 +176,37 @@ test('G7 : dans le Labo, la barre du bas ouvre les écrans du Labo ; le 4e bouto
   nav('taches').click();
   assert.deepEqual([w.eval('activeModule'), w.eval('tab')], ['fournil', 'tasks']);
 });
+
+test('D1 : au-delà de 1 000 pièces sur une ligne, confirmation par un second appui', async (t) => {
+  const { a, w, doc } = await ouvrir(t);
+  // saisie rapide
+  w.eval("openModule('fournil');sw('stock')");
+  doc.getElementById('saisieTexte').value = '1200 croissants, 10 brioches';
+  doc.querySelector('#saisieRapide .saisie-apercu-btn').click();
+  assert.match(doc.querySelector('#saisieRapide .saisie-ligne').textContent, /Plus de 1 000 pièces/);
+  const avant = a.fake.writes.length;
+  doc.querySelector('#saisieRapide [data-action=valider]').click();
+  await a.pause(20);
+  assert.equal(a.fake.writes.length, avant, 'rien enregistré au premier appui');
+  const bouton = doc.querySelector('#saisieRapide [data-action=valider]');
+  assert.match(bouton.textContent, /Oui, enregistrer/);
+  bouton.click();
+  await a.pause(30);
+  assert.equal(etat(a).products.find((p) => p.id === 'croissant').stockReel, 1264);
+  // fenêtre ✏️
+  w.eval("openCorrect('brioche')");
+  doc.getElementById('mc-stock').value = '1500';
+  w.eval('saveCorrect()');
+  await a.pause(20);
+  assert.match(msg(doc, 'mc-stock'), /Plus de 1 000 pièces/);
+  assert.equal(etat(a).products.find((p) => p.id === 'brioche').stockReel, 19, 'pas encore ajouté');
+  w.eval('saveCorrect()');
+  await a.pause(30);
+  assert.equal(etat(a).products.find((p) => p.id === 'brioche').stockReel, 1519);
+  // 1 000 pile : pas de confirmation
+  w.eval("openCorrect('viennoise')");
+  doc.getElementById('mc-stock').value = '1000';
+  w.eval('saveCorrect()');
+  await a.pause(30);
+  assert.equal(etat(a).products.find((p) => p.id === 'viennoise').stockReel, 1022);
+});

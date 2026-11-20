@@ -197,6 +197,7 @@
     const msg = ov.querySelector('#srMsg');
     const bouton = ov.querySelector('[data-action=retirer]');
     let confirmeSousZero = false;
+    let confirmeGrand = null;
     ov.querySelector('#srQte').oninput = () => { confirmeSousZero = false; bouton.textContent = 'Retirer'; msg.textContent = ''; };
     ov.querySelector('[data-action=annuler]').onclick = fermer;
     bouton.onclick = () => {
@@ -209,6 +210,11 @@
       }
       if (c.entier && !Number.isInteger(qte)) {
         msg.textContent = 'Indique un nombre entier de pièces.';
+        return;
+      }
+      if (c.entier && qte > 1000 && confirmeGrand !== qte) {
+        confirmeGrand = qte;
+        msg.textContent = 'Plus de 1\u202f000 pièces : appuie encore sur « Retirer » pour confirmer.';
         return;
       }
       const actuel = Number(p[c.champ]) || 0;
@@ -272,7 +278,10 @@
   // =====================================================================
   // 3. Saisie rapide (texte ou voix) en haut du Stock du Fournil
   // =====================================================================
-  const saisie = { mode: 'ajouter', lignes: [], texte: '' };
+  const saisie = { mode: 'ajouter', lignes: [], texte: '', confirme: false };
+  // Au-delà de 1 000 pièces sur une ligne, on demande une confirmation (audit D1).
+  const GRAND = 1000;
+  const quantiteLigne = (l) => Number(String(l.quantite ?? '').replace(',', '.'));
   let compteurLigne = 0;
   const NOUVEAU = '__nouveau__';
 
@@ -360,6 +369,7 @@
       if (l.erreur === 'sans-quantite') ligne.nouveauNom = F.nomProduit(l.nom);
       return ligne;
     });
+    saisie.confirme = false;
     if (!saisie.lignes.length) {
       zone().innerHTML = '<p class="saisie-msg">Écris par exemple « 40 viennoises, 300 croissants », puis appuie sur « Voir l’aperçu ».</p>';
       return;
@@ -416,38 +426,49 @@
             <button type="button" class="saisie-retirer" data-champ="supprimer" aria-label="Retirer cette ligne">×</button>
           </div>
           ${l.produitId === NOUVEAU ? `<div class="saisie-nouveau"><span class="saisie-badge">nouveau produit</span><input class="saisie-nom" data-champ="nouveauNom" aria-label="Nom du nouveau produit" value="${esc(l.nouveauNom)}"></div>` : ''}
+          ${!pb && q > GRAND ? `<p class="saisie-alerte saisie-grand">Plus de 1\u202f000 pièces : vérifie la quantité.</p>` : ''}
           ${pb ? `<p class="saisie-erreur">${esc(pb)}</p>` : `<p class="saisie-stock">Stock : ${avant} → <strong>${apres}</strong>${brut < 0 ? ` <span class="saisie-alerte">(il n'y en a que ${avant} : le stock passera à 0, pas en dessous)</span>` : ''}</p>`}
         </li>`;
     });
     const valides = saisie.lignes.filter((l) => !probleme(l)).length;
     const bloque = saisie.lignes.some((l) => probleme(l));
+    const grands = saisie.lignes.filter((l) => !probleme(l) && quantiteLigne(l) > GRAND).length;
+    const libelle = saisie.confirme && grands
+      ? `Oui, enregistrer (plus de 1\u202f000 pièces)`
+      : `Enregistrer ${valides} ligne${valides > 1 ? 's' : ''}`;
     html += `</ul>
       <div class="saisie-actions">
         <button type="button" class="mbtn mbtn-c" data-action="annuler">Annuler</button>
-        <button type="button" class="mbtn mbtn-p saisie-valider" data-action="valider" ${bloque ? 'disabled' : ''}>Enregistrer ${valides} ligne${valides > 1 ? 's' : ''}</button>
+        <button type="button" class="mbtn mbtn-p saisie-valider" data-action="valider" ${bloque ? 'disabled' : ''}>${libelle}</button>
       </div>
-      ${bloque ? '<p class="saisie-erreur">Corrige ou retire les lignes signalées pour pouvoir enregistrer.</p>' : ''}`;
+      ${bloque ? '<p class="saisie-erreur">Corrige ou retire les lignes signalées pour pouvoir enregistrer.</p>' : ''}
+      ${!bloque && saisie.confirme && grands ? '<p class="saisie-alerte" role="alert">Une ligne dépasse 1\u202f000 pièces : appuie encore pour confirmer.</p>' : ''}`;
     z.innerHTML = html;
     z.querySelectorAll('.saisie-ligne').forEach((li) => {
       const l = saisie.lignes.find((x) => String(x.id) === li.dataset.ligne);
-      li.querySelector('[data-champ=sens]').onclick = () => { l.sens = l.sens === 'retirer' ? 'ajouter' : 'retirer'; l.signe = l.sens === 'retirer' ? '-' : '+'; rendreApercu(); };
-      li.querySelector('[data-champ=quantite]').onchange = (e) => { l.quantite = e.target.value.trim(); rendreApercu(); };
+      li.querySelector('[data-champ=sens]').onclick = () => { l.sens = l.sens === 'retirer' ? 'ajouter' : 'retirer'; l.signe = l.sens === 'retirer' ? '-' : '+'; saisie.confirme = false; rendreApercu(); };
+      li.querySelector('[data-champ=quantite]').onchange = (e) => { l.quantite = e.target.value.trim(); saisie.confirme = false; rendreApercu(); };
       li.querySelector('[data-champ=produitId]').onchange = (e) => {
         l.produitId = e.target.value;
         if (l.produitId === NOUVEAU && !l.nouveauNom) l.nouveauNom = '';
         rendreApercu();
       };
-      li.querySelector('[data-champ=supprimer]').onclick = () => { saisie.lignes = saisie.lignes.filter((x) => x !== l); rendreApercu(); };
+      li.querySelector('[data-champ=supprimer]').onclick = () => { saisie.lignes = saisie.lignes.filter((x) => x !== l); saisie.confirme = false; rendreApercu(); };
       const nom = li.querySelector('[data-champ=nouveauNom]');
-      if (nom) nom.onchange = (e) => { l.nouveauNom = e.target.value; rendreApercu(); };
+      if (nom) nom.onchange = (e) => { l.nouveauNom = e.target.value; saisie.confirme = false; rendreApercu(); };
     });
-    z.querySelector('[data-action=annuler]').onclick = () => { saisie.lignes = []; rendreApercu(); };
+    z.querySelector('[data-action=annuler]').onclick = () => { saisie.lignes = []; saisie.confirme = false; rendreApercu(); };
     z.querySelector('[data-action=valider]').onclick = valider;
   }
 
   // Tout est appliqué puis enregistré en une seule fois, avec une seule ligne d'historique.
   function valider() {
     if (!saisie.lignes.length || saisie.lignes.some((l) => probleme(l))) return;
+    if (!saisie.confirme && saisie.lignes.some((l) => quantiteLigne(l) > GRAND)) {
+      saisie.confirme = true;
+      rendreApercu();
+      return;
+    }
     const crees = {};
     const detail = [];
     let total = 0;

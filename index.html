@@ -1523,6 +1523,9 @@ function saveCorrect(){
   // Quantité à ajouter : un nombre entier de pièces (avant, « 12.7 » devenait 12 sans prévenir).
   const brutAjout=String(document.getElementById('mc-stock').value).trim().replace(',','.');
   if(brutAjout!==''&&!(Number.isInteger(Number(brutAjout))&&Number(brutAjout)>=0)){champManquant('mc-stock','Indique un nombre entier de pièces (ex. 12).');return;}
+  // Au-delà de 1 000 pièces : confirmation par un second appui (audit D1)
+  if(Number(brutAjout)>1000&&window._confirmeGrandAjout!==brutAjout){window._confirmeGrandAjout=brutAjout;champManquant('mc-stock','Plus de 1\u202f000 pièces : appuie encore sur Enregistrer pour confirmer.');return;}
+  window._confirmeGrandAjout=null;
   const brutSeuil=String(document.getElementById('mc-seuil').value).trim().replace(',','.');
   if(brutSeuil!==''&&!(Number.isInteger(Number(brutSeuil))&&Number(brutSeuil)>=0)){champManquant('mc-seuil','Le seuil est un nombre entier, 0 ou plus.');return;}
   if(window._laboCorrectMode){
