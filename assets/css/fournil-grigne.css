@@ -439,8 +439,6 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .journal-history-entry::before { width: 5px; border-radius: 0; background: var(--accent); }
 .journal-history-date { font-family: var(--serif); font-weight: 400; font-size: 18px; color: var(--ink); }
 .journal-history-obs { font-size: 14px; color: var(--muted); }
-.bureau-placeholder-title { font-family: var(--serif); font-weight: 400; color: var(--ink); }
-.bureau-placeholder-desc { color: var(--muted); }
 .journal-date-lbl { font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--ink); }
 .journal-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
 .journal-section-title { font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--muted); }
