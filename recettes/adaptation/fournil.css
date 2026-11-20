@@ -39,3 +39,7 @@
 #tab-recettes .rc-echange-zone ul { margin: 0 0 12px; padding-left: 20px; font-size: 14px; color: var(--muted); max-height: 220px; overflow-y: auto; }
 #tab-recettes .rc-echange-zone li { margin: 3px 0; overflow-wrap: anywhere; }
 #tab-recettes .rc-echange-zone .muet { color: var(--faint); }
+
+/* Petit écran : le libellé caché de chaque outil (positionné en absolu par Grigne) reste dans
+   la barre qui défile, au lieu d'élargir la page (audit G6). */
+#tab-recettes .tabs [role=tab] { position: relative; }

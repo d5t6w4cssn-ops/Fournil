@@ -566,3 +566,13 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 .champ-erreur { margin: 6px 0 8px; font-size: 14px; color: var(--err); }
 .champ-erreur:empty { display: none; }
 [aria-invalid="true"] { border-color: var(--err) !important; }
+
+/* Petit écran (320 px) : une tâche tient sur la largeur (audit G6) */
+.titem { min-width: 0; }
+.ttext { min-width: 0; overflow-wrap: anywhere; }
+.titem .task-cat-badge, .titem .tauto, .titem .from-gestion { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 360px) {
+  .titem { gap: 8px; padding: 10px; }
+  .titem .tdel { min-width: 32px; }
+  .titem .move-btn { min-width: 30px; }
+}
