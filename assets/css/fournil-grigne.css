@@ -168,9 +168,8 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 #laboTabs .tab { min-height: 44px; padding: 10px 8px; border: 0; border-radius: 10px; font-size: 12px; font-weight: 600; color: var(--muted); }
 #laboTabs .tab.active { background: var(--paper); color: var(--ink); box-shadow: var(--shadow); }
 .tab-badge { background: var(--err); color: var(--paper); }
-@media (min-width: 860px) {
-  body.avec-nav .hdr-back { display: none; }
-}
+/* « ‹ Menu » retiré (audit D5) : l'accueil est dans « Plus » sur mobile et dans la barre latérale */
+body.avec-nav .hdr-back { display: none; }
 
 /* bouton Actualiser : en haut à droite, dans l'en-tête */
 .refresh-btn {
