@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Fournil">
@@ -520,10 +520,11 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
 </button>
 
+<main id="contenu">
 <div id="loginScreen" class="login-screen" style="display:none">
   <div class="login-carte">
     <div class="login-tete">
-      <div class="login-marque">🥐 Fournil</div>
+      <h1 class="login-marque">🥐 Fournil</h1>
       <p class="login-sous-titre">Connecte-toi pour retrouver ton fournil.</p>
     </div>
     <label class="login-label" for="loginEmail">Adresse e-mail</label>
@@ -538,7 +539,7 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
 <div id="homeScreen" style="display:none">
   <div class="home-header">
     <div style="display:flex;align-items:center;justify-content:space-between">
-      <div class="home-logo">🥐 Fournil<em>Gestion de boulangerie</em></div>
+      <h1 class="home-logo">🥐 Fournil<em>Gestion de boulangerie</em></h1>
       <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
         <button onclick="doLogout()" title="Déconnexion" style="background:rgba(196,154,108,0.15);border:1px solid rgba(196,154,108,0.25);border-radius:50%;width:34px;height:34px;color:var(--ocre-light);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">⏻</button>
         <button onclick="openHelp()" style="background:rgba(196,154,108,0.15);border:1px solid rgba(196,154,108,0.25);border-radius:50%;width:34px;height:34px;color:var(--ocre-light);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">ℹ️</button>
@@ -688,7 +689,7 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
   <div class="hdr" id="hdrFournil" style="display:none">
     <div class="hdr-top">
       <button class="hdr-back" onclick="goHome()">‹ <span>Menu</span></button>
-      <div class="hdr-logo">🥐 Fournil <em>inventaire</em></div>
+      <h1 class="hdr-logo">🥐 Fournil <em>inventaire</em></h1>
       <div class="hdr-date" id="hdate"></div>
     </div>
     <div class="tabs">
@@ -708,7 +709,7 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
   <div class="hdr bureau-mode" id="hdrBureau" style="display:none">
     <div class="hdr-top">
       <button class="hdr-back" onclick="goHome()">‹ <span>Menu</span></button>
-      <div class="hdr-logo">📋 Gestion <em>bureau</em></div>
+      <h1 class="hdr-logo">📋 Gestion <em>bureau</em></h1>
       <div class="hdr-date" id="hdateBureau"></div>
     </div>
     <div class="tabs">
@@ -723,10 +724,10 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
   <div class="hdr" id="hdrLabo" style="display:none">
     <div class="hdr-top">
       <button class="hdr-back" onclick="goHome()">‹ <span>Menu</span></button>
-      <div class="hdr-logo">🍰 Labo <em>pâtisserie</em></div>
+      <h1 class="hdr-logo">🍰 Labo <em>pâtisserie</em></h1>
       <div class="hdr-date" id="hdateLabo"></div>
     </div>
-    <div class="tabs" id="laboTabs">
+    <div class="tabs" id="laboTabs" tabindex="0" aria-label="Onglets du Labo">
       <div class="tab active" onclick="swL('lstock')">❄️ Stock</div>
       <div class="tab" onclick="swL('lmagasin')">🛒 Magasin</div>
       <div class="tab" onclick="swL('recettes')">📖 Recettes</div>
@@ -853,6 +854,8 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
 </div>
 
 <!-- Bulle flottante Notes -->
+</main>
+
 <button class="notes-bubble" id="notesBubble" onclick="openNotesPanel()" style="display:none">
   💬
   <div class="notes-bubble-badge" id="notesBubbleBadge" style="display:none"></div>
@@ -860,7 +863,7 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
 
 <!-- Panel Notes (slide-up) -->
 <div class="notes-panel-overlay" id="notesPanelOverlay" onclick="closeNotesPanel()"></div>
-<div class="notes-panel" id="notesPanel">
+<div class="notes-panel" id="notesPanel" role="dialog" aria-modal="true" aria-label="Notes de l’équipe">
   <div class="notes-panel-header">
     <div class="notes-panel-title">💬 Notes équipe</div>
     <button class="notes-panel-close" onclick="closeNotesPanel()">✕</button>
@@ -1557,13 +1560,13 @@ function renderLaboMagasin(){
         <div class="mcard-slide"><div class="mctrl-lbl">📦 Base / jour</div>
           <div class="mcontrols" style="margin-top:4px"><div class="mctrl-group" style="flex:1"><div class="mctrl">
             <button class="mc-btn" onclick="ladjM('base',${escJ(p.id)},-1)">−</button>
-            <input class="mc-in" id="lbase-${esc(p.id)}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="lonChange('base',${escJ(p.id)},this.value)">
+            <input class="mc-in" id="lbase-${esc(p.id)}" aria-label="Base par jour : ${esc(p.name)}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="lonChange('base',${escJ(p.id)},this.value)">
             <button class="mc-btn" onclick="ladjM('base',${escJ(p.id)},+1)">+</button>
           </div></div><div class="mtotal-pill"><div class="mtotal-val">${so}</div><div class="mtotal-lbl">Total</div></div></div></div>
         <div class="mcard-slide"><div class="mctrl-lbl">➕ Commande du jour</div>
           <div class="mcontrols" style="margin-top:4px"><div class="mctrl-group" style="flex:1"><div class="mctrl">
             <button class="mc-btn" onclick="ladjM('commande',${escJ(p.id)},-1)">−</button>
-            <input class="mc-in" id="lcommande-${esc(p.id)}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="lonChange('commande',${escJ(p.id)},this.value)">
+            <input class="mc-in" id="lcommande-${esc(p.id)}" aria-label="Commandes du jour : ${esc(p.name)}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="lonChange('commande',${escJ(p.id)},this.value)">
             <button class="mc-btn" onclick="ladjM('commande',${escJ(p.id)},+1)">+</button>
           </div></div><div class="mtotal-pill"><div class="mtotal-val">${so}</div><div class="mtotal-lbl">Total</div></div></div></div>
       </div>
@@ -1866,7 +1869,7 @@ function renderMagasin(){
           <div class="mcontrols" style="margin-top:4px">
             <div class="mctrl-group" style="flex:1"><div class="mctrl">
               <button class="mc-btn" onclick="adj('base',${escJ(p.id)},-1)">−</button>
-              <input class="mc-in" id="base-${esc(p.id)}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="onChange('base',${escJ(p.id)},this.value)">
+              <input class="mc-in" id="base-${esc(p.id)}" aria-label="Base par jour : ${esc(p.name)}" type="number" min="0" inputmode="numeric" value="${p.base||0}" oninput="onChange('base',${escJ(p.id)},this.value)">
               <button class="mc-btn" onclick="adj('base',${escJ(p.id)},+1)">+</button>
             </div></div>
             <div class="mtotal-pill"><div class="mtotal-val" id="mt-${esc(p.id)}">${so}</div><div class="mtotal-lbl">Total</div></div>
@@ -1877,7 +1880,7 @@ function renderMagasin(){
           <div class="mcontrols" style="margin-top:4px">
             <div class="mctrl-group" style="flex:1"><div class="mctrl">
               <button class="mc-btn" onclick="adj('commande',${escJ(p.id)},-1)">−</button>
-              <input class="mc-in" id="commande-${esc(p.id)}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="onChange('commande',${escJ(p.id)},this.value)">
+              <input class="mc-in" id="commande-${esc(p.id)}" aria-label="Commandes du jour : ${esc(p.name)}" type="number" min="0" inputmode="numeric" value="${p.commande||0}" oninput="onChange('commande',${escJ(p.id)},this.value)">
               <button class="mc-btn" onclick="adj('commande',${escJ(p.id)},+1)">+</button>
             </div></div>
             <div class="mtotal-pill"><div class="mtotal-val" id="mt2-${esc(p.id)}">${so}</div><div class="mtotal-lbl">Total</div></div>
@@ -2094,7 +2097,7 @@ function renderJournal() {
           <span class="journal-prod-name">${esc(p.name)}</span>
           <div class="journal-prod-ctrl">
             <button class="journal-btn" onclick="adjJournal(${escJ(p.id)},-1)">−</button>
-            <input class="journal-input" id="jprod-${esc(p.id)}" type="number" min="0"
+            <input class="journal-input" id="jprod-${esc(p.id)}" aria-label="Production du jour : ${esc(p.name)}" type="number" min="0"
               value="${qty}" inputmode="numeric" onchange="setJournal(${escJ(p.id)},this.value)">
             <button class="journal-btn" onclick="adjJournal(${escJ(p.id)},+1)">+</button>
           </div>
@@ -2247,7 +2250,7 @@ function renderMatieres() {
           </div>
           <div style="display:flex;align-items:center;background:var(--cream);border-radius:8px;overflow:hidden;height:32px">
             <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock(${escJ(m.id)},-1)">−</button>
-            <input style="width:40px;height:32px;border:none;background:none;text-align:center;font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink)" type="number" min="0" id="mat-val-${esc(m.id)}" value="0" inputmode="numeric">
+            <input style="width:40px;height:32px;border:none;background:none;text-align:center;font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink)" type="number" min="0" id="mat-val-${esc(m.id)}" aria-label="Quantité à utiliser : ${esc(m.name)}" value="0" inputmode="numeric">
             <button style="width:30px;height:32px;border:none;background:none;font-size:16px;font-weight:700;color:var(--brown-mid);cursor:pointer" onclick="adjMatStock(${escJ(m.id)},+1)">+</button>
           </div>
           <button style="font-size:9px;background:var(--brown);color:var(--ocre-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;white-space:nowrap" onclick="useMatiere(${escJ(m.id)})">Utiliser</button>
@@ -3138,7 +3141,9 @@ function renderHistoTaches() {
     </div>`).join('');
 }
 
-function openM(id){document.getElementById(id).classList.add('open');}
+// Fenêtres annoncées comme telles aux lecteurs d'écran (audit d'accessibilité)
+function annoncerFenetres(){document.querySelectorAll('.overlay > .modal').forEach((m,i)=>{if(m.getAttribute('role'))return;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');const t=m.querySelector('.modal-title');if(t){if(!t.id)t.id='titre-fenetre-'+i;m.setAttribute('aria-labelledby',t.id);}});}
+function openM(id){annoncerFenetres();document.getElementById(id).classList.add('open');}
 function closeM(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});

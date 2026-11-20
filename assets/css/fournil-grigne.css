@@ -576,3 +576,16 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
   .titem .tdel { min-width: 32px; }
   .titem .move-btn { min-width: 30px; }
 }
+
+/* ========== Accessibilité (audit axe) ========== */
+/* Titres principaux : mêmes tailles qu'avant (h1 n'impose ni taille ni graisse). */
+h1.home-logo, h1.hdr-logo, h1.login-marque { font-weight: 400; margin: 0; }
+/* Tâche faite : barrée et en gris lisible, au lieu d'être rendue transparente (contraste). */
+.titem.done { opacity: 1; }
+.titem.done .ttext { color: var(--muted); }
+.titem.done .tchk { opacity: 1; }
+#laboTabs:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Panneau des notes fermé : hors de l'écran ET retiré pour les lecteurs d'écran. */
+.notes-panel:not(.open) { visibility: hidden; }
+.notes-panel { transition: transform .3s ease, visibility 0s linear .3s; }
+.notes-panel.open { transition: transform .3s ease, visibility 0s; }
