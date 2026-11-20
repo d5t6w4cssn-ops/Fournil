@@ -2050,7 +2050,25 @@ function getPosition(){
 // ── JOURNAL DE PRODUCTION ──
 let journalDate = today();
 
+// Observation du journal enregistrée toute seule pendant la frappe (audit G3) : avant,
+// elle était perdue si on changeait de jour sans appuyer sur « Enregistrer ».
+let journalObsEnAttente=null;
+function journalObsChange(valeur){
+  const jour=journalDate;
+  clearTimeout(dbt.journalObs);
+  journalObsEnAttente=()=>{
+    journalObsEnAttente=null;
+    if(!S.journal)S.journal={};
+    if(!S.journal[jour])S.journal[jour]={obs:'',produits:{}};
+    if(S.journal[jour].obs===valeur)return;
+    S.journal[jour].obs=valeur;
+    save();
+  };
+  dbt.journalObs=setTimeout(()=>journalObsEnAttente&&journalObsEnAttente(),600);
+}
 function renderJournal() {
+  // une observation tapée juste avant de changer de jour est enregistrée d'abord
+  if(journalObsEnAttente){clearTimeout(dbt.journalObs);journalObsEnAttente();}
   const el = document.getElementById('journalContent');
   if (!el) return;
   if (!S.journal) S.journal = {};
@@ -2085,7 +2103,7 @@ function renderJournal() {
     </div>
     <div class="journal-card">
       <div class="journal-section-title">📝 Observations</div>
-      <textarea class="journal-obs" id="journalObs"
+      <textarea class="journal-obs" id="journalObs" aria-label="Observations du jour" oninput="journalObsChange(this.value)"
         placeholder="Ex: Pousse longue ce matin, four à 200°C, livraison farine reçue…">${esc(entry.obs||'')}</textarea>
       <button class="journal-save-btn" onclick="saveJournalEntry()">💾 Enregistrer</button>
     </div>

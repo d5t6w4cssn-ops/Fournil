@@ -105,3 +105,22 @@ test('G2 : vider le champ du magasin pour retaper ne remet pas 0 (Fournil et Lab
   await a.pause(400);
   assert.equal(labo(a).products.find((p) => p.id === 'lp_1').base, 6);
 });
+
+test('G3 : l’observation du journal s’enregistre toute seule, même si on change de jour tout de suite', async (t) => {
+  const { a, w, doc } = await ouvrir(t);
+  const auj = w.eval('today()');
+  w.eval("openModule('bureau');swB('journal')");
+  const obs = doc.getElementById('journalObs');
+  obs.value = 'Four 2 réparé';
+  obs.dispatchEvent(new w.Event('input'));
+  doc.querySelector('.journal-nav-btn').click(); // jour précédent, aussitôt
+  await a.pause(30);
+  assert.equal(etat(a).journal[auj].obs, 'Four 2 réparé');
+  doc.querySelectorAll('.journal-nav-btn')[1].click(); // retour à aujourd'hui
+  assert.equal(doc.getElementById('journalObs').value, 'Four 2 réparé');
+  const o2 = doc.getElementById('journalObs');
+  o2.value = 'Four 2 réparé, pâte un peu froide';
+  o2.dispatchEvent(new w.Event('input'));
+  await a.pause(800);
+  assert.equal(etat(a).journal[auj].obs, 'Four 2 réparé, pâte un peu froide');
+});
