@@ -188,7 +188,6 @@ body.avec-nav #hdrFournil, body.avec-nav #hdrBureau { padding-bottom: 2px; }
 
 /* ========== Accueil ========== */
 #homeScreen { background: var(--cream); }
-#homeScreen::before, #homeScreen::after { display: none; }
 .home-header { padding: 28px 18px 10px; }
 .home-logo { font-family: var(--serif); font-weight: 400; font-size: 40px; color: var(--ink); letter-spacing: -.01em; }
 .home-logo em { font-family: var(--sans); font-style: normal; text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--muted); margin-top: 8px; }
