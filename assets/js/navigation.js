@@ -27,15 +27,20 @@
   };
 
   // principal : visible dans la barre du bas (mobile). Les autres vont dans « Plus ».
+  // Dans le Labo (audit G7), Stock, Recettes et Tâches ouvrent les écrans du Labo, et le
+  // bouton Labo devient « Fournil » pour revenir au Fournil.
+  const dansLabo = () => typeof activeModule !== 'undefined' && activeModule === 'labo';
+  const ONGLET_LABO = { stock: 'lstock', recettes: 'recettes', taches: 'ltasks' };
+  const ENTREE_LABO = { lstock: 'stock', recettes: 'recettes', ltasks: 'taches' };
   const ENTREES = [
     { id: 'accueil', label: 'Accueil', go: () => goHome() },
-    { id: 'stock', label: 'Stock', principal: true, groupe: 'Fournil', go: () => { openModule('fournil'); sw('stock'); } },
+    { id: 'stock', label: 'Stock', principal: true, groupe: 'Fournil', go: () => { if (dansLabo()) swL('lstock'); else { openModule('fournil'); sw('stock'); } } },
     { id: 'magasin', label: 'Magasin', groupe: 'Fournil', go: () => { openModule('fournil'); sw('magasin'); } },
-    { id: 'recettes', label: 'Recettes', principal: true, groupe: 'Fournil', go: () => { openModule('fournil'); sw('recettes'); } },
-    { id: 'taches', label: 'Tâches', principal: true, groupe: 'Fournil', badge: 'taskBadge', go: () => { openModule('fournil'); sw('tasks'); } },
+    { id: 'recettes', label: 'Recettes', principal: true, groupe: 'Fournil', go: () => { if (dansLabo()) swL('recettes'); else { openModule('fournil'); sw('recettes'); } } },
+    { id: 'taches', label: 'Tâches', principal: true, groupe: 'Fournil', badge: 'taskBadge', badgeLabo: 'laboTaskBadge', go: () => { if (dansLabo()) swL('ltasks'); else { openModule('fournil'); sw('tasks'); } } },
     { id: 'historique', label: 'Historique', groupe: 'Fournil', go: () => { openModule('fournil'); sw('histo'); } },
     { id: 'calendrier', label: 'Calendrier', groupe: 'Fournil', go: () => { openModule('fournil'); sw('calendrier'); } },
-    { id: 'labo', label: 'Labo', principal: true, groupe: 'Labo', go: () => { openModule('labo'); } },
+    { id: 'labo', label: 'Labo', principal: true, groupe: 'Labo', go: () => { if (dansLabo()) { openModule('fournil'); sw('stock'); } else openModule('labo'); } },
     { id: 'matieres', label: 'Matières', groupe: 'Bureau', go: () => { openModule('bureau'); swB('matieres'); } },
     { id: 'fournisseurs', label: 'Fournisseurs', groupe: 'Bureau', go: () => { openModule('bureau'); swB('cmd-fournisseur'); } },
     { id: 'tournee', label: 'Tournée', groupe: 'Bureau', go: () => { openModule('bureau'); swB('cmd-clients'); } },
@@ -115,7 +120,7 @@
 
   function entreeActive() {
     if (typeof activeModule === 'undefined' || !activeModule) return 'accueil';
-    if (activeModule === 'labo') return 'labo';
+    if (activeModule === 'labo') return (typeof laboTab !== 'undefined' && ENTREE_LABO[laboTab]) || 'labo-autre';
     if (activeModule === 'fournil') return ONGLET_FOURNIL[tab] || 'stock';
     const sec = document.querySelector('#bureauModule .bur-section.active');
     return (sec && ONGLET_BUREAU[sec.id.replace(/^bur-/, '')]) || 'matieres';
@@ -135,13 +140,23 @@
       if (oui) b.setAttribute('aria-current', 'page');
       else b.removeAttribute('aria-current');
     });
+    const bascule = nav.querySelector('.nav-item[data-nav="labo"]');
+    if (bascule) {
+      const versFournil = dansLabo();
+      if (bascule.dataset.vers !== (versFournil ? 'fournil' : 'labo')) {
+        bascule.dataset.vers = versFournil ? 'fournil' : 'labo';
+        bascule.innerHTML = `${versFournil ? I.magasin : I.labo}<span class="nav-label">${versFournil ? 'Fournil' : 'Labo'}</span>`;
+        bascule.setAttribute('aria-label', versFournil ? 'Revenir au Fournil' : 'Ouvrir le Labo');
+      }
+    }
+    majPastilles();
     const plus = nav.querySelector('.nav-plus');
-    const dansPlus = !ENTREES.find((e) => e.id === actif)?.principal;
+    const dansPlus = actif !== 'labo-autre' && !ENTREES.find((e) => e.id === actif)?.principal;
     if (plus) plus.classList.toggle('actif', dansPlus);
     // Bouton retour du téléphone (audit G5) : chaque changement d'écran crée une étape.
     if (connecte && !enRetour && actif !== dernierEcran) {
       dernierEcran = actif;
-      try { history.pushState({ fournil: actif }, ''); } catch (e) { /* historique indisponible */ }
+      try { history.pushState({ fournil: actif, module: dansLabo() ? 'labo' : null }, ''); } catch (e) { /* historique indisponible */ }
     }
   }
 
@@ -169,9 +184,13 @@
     }
     const cible = ev.state && ev.state.fournil;
     const e = ENTREES.find((x) => x.id === cible);
-    if (!e) return; // avant le premier écran de Fournil : le navigateur s'en charge
+    if (!e && cible !== 'labo-autre') return; // avant le premier écran de Fournil : le navigateur s'en charge
     enRetour = true;
-    try { e.go(); window.scrollTo(0, 0); } finally { enRetour = false; }
+    try {
+      if (ev.state.module === 'labo') { openModule('labo'); swL(ONGLET_LABO[cible] || 'lstock'); }
+      else { if (dansLabo()) openModule('fournil'); e.go(); }
+      window.scrollTo(0, 0);
+    } finally { enRetour = false; }
     dernierEcran = cible;
     majNav();
   });
@@ -180,7 +199,8 @@
   // Pastilles (ex. tâches à faire) : recopie du texte des pastilles existantes.
   function majPastilles() {
     document.querySelectorAll('[data-badge-de]').forEach((p) => {
-      const src = document.getElementById(p.dataset.badgeDe);
+      const e = ENTREES.find((x) => x.badge === p.dataset.badgeDe);
+      const src = document.getElementById(dansLabo() && e && e.badgeLabo ? e.badgeLabo : p.dataset.badgeDe);
       const visible = src && src.style.display !== 'none' && src.textContent.trim() !== '';
       p.hidden = !visible;
       p.textContent = visible ? src.textContent : '';
@@ -202,7 +222,7 @@
     construire();
     ['openModule', 'goHome', 'sw', 'swL', 'swB', 'showLogin', 'hideLogin'].forEach(surveiller);
     const obs = new MutationObserver(() => { majNav(); majPastilles(); });
-    ['loginScreen', 'homeScreen', 'taskBadge'].forEach((id) => {
+    ['loginScreen', 'homeScreen', 'taskBadge', 'laboTaskBadge'].forEach((id) => {
       const el = document.getElementById(id);
       if (el) obs.observe(el, { attributes: true, attributeFilter: ['style', 'class'], childList: true, characterData: true, subtree: true });
     });

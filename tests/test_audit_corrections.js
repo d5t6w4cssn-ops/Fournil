@@ -9,7 +9,8 @@ const { donneesDemo } = require('./donnees-demo.js');
 async function ouvrir(t) {
   const d = donneesDemo();
   const a = await chargerAppli({ etat: d.state, labo: d.labo, recettes: d.recettes });
-  t.after(() => a.window.close());
+  // laisser finir les mises à jour en cours avant de fermer la page
+  t.after(async () => { await a.pause(60); a.window.close(); });
   return { a, d, w: a.window, doc: a.window.document };
 }
 const etat = (a) => JSON.parse(a.fake.docs.get('boulangerie/state').state);
@@ -153,4 +154,25 @@ test('Guide (tâche 4) : bouton « ? », premier pas, une section par module, so
   assert.equal(w.location.href, adresse, "l'adresse ne change pas");
   doc.querySelector('#helpOverlay .sheet-close').click();
   assert.equal(g.style.display, 'none');
+});
+
+test('G7 : dans le Labo, la barre du bas ouvre les écrans du Labo ; le 4e bouton ramène au Fournil', async (t) => {
+  const { w, doc } = await ouvrir(t);
+  const nav = (id) => doc.querySelector(`.app-nav [data-nav="${id}"]`);
+  nav('labo').click();
+  assert.equal(w.eval('activeModule'), 'labo');
+  assert.match(nav('labo').textContent, /Fournil/, 'le bouton devient « Fournil »');
+  nav('taches').click();
+  assert.deepEqual([w.eval('activeModule'), w.eval('laboTab')], ['labo', 'ltasks']);
+  assert.ok(nav('taches').classList.contains('actif'));
+  nav('stock').click();
+  assert.deepEqual([w.eval('activeModule'), w.eval('laboTab')], ['labo', 'lstock']);
+  nav('recettes').click();
+  assert.deepEqual([w.eval('activeModule'), w.eval('laboTab')], ['labo', 'recettes']);
+  assert.ok(doc.getElementById('tab-recettes').classList.contains('active'));
+  nav('labo').click(); // « Fournil »
+  assert.deepEqual([w.eval('activeModule'), w.eval('tab')], ['fournil', 'stock']);
+  assert.match(nav('labo').textContent, /Labo/);
+  nav('taches').click();
+  assert.deepEqual([w.eval('activeModule'), w.eval('tab')], ['fournil', 'tasks']);
 });

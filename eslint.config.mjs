@@ -11,7 +11,7 @@ const FOURNIL = Object.fromEntries([
   'S', 'L', 'db', 'tab', 'activeModule', 'firebase', 'today', 'esc', 'escJ', 'fmtQ', 'toast',
   'save', 'saveL', 'refresh', 'genAutoTasks', 'render', 'renderLabo', 'renderStock', 'renderLaboStock',
   'renderMatieres', 'renderSettings', 'normalizeState', 'normalizeLabo', 'openModule', 'goHome', 'sw', 'swL',
-  'swB', 'openHelp', 'closeHelp', 'doLogout', 'closePdfViewer', 'closeNotesPanel', 'FournilDate',
+  'swB', 'openHelp', 'closeHelp', 'doLogout', 'closePdfViewer', 'closeNotesPanel', 'FournilDate', 'laboTab',
 ].map((n) => [n, 'writable']));
 // Fonctions de l'appli appelées dans la page par les tests et les outils (page.evaluate).
 const PAGE = Object.fromEntries([
