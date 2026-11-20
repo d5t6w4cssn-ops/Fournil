@@ -1,0 +1,34 @@
+# Tests de Fournil à chaque envoi (push) et à chaque demande de fusion.
+# Ce workflow ne publie rien et ne modifie pas le site : il a seulement le droit de lire
+# le dépôt. Le site reste publié par GitHub Pages depuis la branche main.
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Dépendances de test
+        run: npm ci
+      - name: Navigateur pour les tests dans Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Vérification du code (ESLint)
+        run: npx eslint .
+      - name: Fichiers générés des recettes à jour
+        run: node tools/importer-grigne.mjs --verifier
+      - name: Tests
+        run: npm test
+        env:
+          TZ: Europe/Paris
