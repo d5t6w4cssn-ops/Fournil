@@ -1,5 +1,5 @@
 {
   "firestore": {
-    "rules": "firestore-fournil.rules"
+    "rules": "firebase/firestore-fournil.rules"
   }
 }

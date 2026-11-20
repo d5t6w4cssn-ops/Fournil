@@ -1,1 +1,33 @@
+# Dépendances (uniquement pour les tests et les outils)
 node_modules/
+
+# Résultats de tests et de captures
+test-results/
+playwright-report/
+captures/
+captures-reference/
+coverage/
+.eslintcache
+
+# Firebase (fichiers locaux de la CLI)
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Archives, journaux, fichiers temporaires
+*.zip
+*.log
+*.tmp
+*.bak
+*~
+
+# Secrets et réglages locaux : ne jamais les publier
+.env
+.env.*
+*.pem
+*.key
+service-account*.json
+
+# Systèmes
+.DS_Store
+Thumbs.db

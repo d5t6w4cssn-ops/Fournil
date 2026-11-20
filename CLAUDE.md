@@ -22,16 +22,16 @@ sans build ni dépendance à l'exécution). Le déploiement consiste à remplace
 
 ## Ordre des projets
 
-1. **Export / import des recettes** au format Grigne (`format-export.md`).
+1. **Export / import des recettes** au format Grigne (`docs/format-export.md`).
 2. **Sécurité** : règles Firestore trop ouvertes (tout utilisateur connecté lit et écrit
    `boulangerie/*`), inscription libre (fermée le 18 novembre 2026 : `disabledUserSignup` à true).
    PDF.js est hébergé dans `vendor/pdfjs/` (3.11.174, chargé au premier import de PDF).
    Thermomètres retirés le 18 novembre 2026 (`S.thermos` reste dans les données, non affiché).
-   Règles Firestore : `firestore-fournil.rules` (seul le compte de l'utilisateur lit et écrit
-   `boulangerie/*`), sauvegarde de la version précédente dans `firestore-avant-securite.rules`.
+   Règles Firestore : `firebase/firestore-fournil.rules` (seul le compte de l'utilisateur lit et écrit
+   `boulangerie/*`), sauvegarde de la version précédente dans `firebase/firestore-avant-securite.rules`.
    Publication, seulement avec l'accord de l'utilisateur :
    `firebase deploy --only firestore:rules --project fournils-5e5d1`.
-3. **Refonte dans le style de Grigne** : voir `HERITAGE-GRIGNE.md` (maquettes d'abord,
+3. **Refonte dans le style de Grigne** : voir `docs/HERITAGE-GRIGNE.md` (maquettes d'abord,
    écran par écran, accord de l'utilisateur avant d'appliquer).
 
 ## Organisation du code (`index.html`)

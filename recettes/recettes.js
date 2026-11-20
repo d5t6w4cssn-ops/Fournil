@@ -1792,14 +1792,14 @@ return { renderCroix };
 
 // ===== recettes/adaptation/echange.js =====
 __modules["echange.js"] = (function () {
-// Mes recettes : exporter / importer, au format d'échange de Grigne (format-export.md).
+// Mes recettes : exporter / importer, au format d'échange de Grigne (docs/format-export.md).
 // Repris tel quel de l'ancienne version de Fournil (mêmes règles, mêmes messages),
 // branché sur l'adaptation state.js. Les règles de lecture et de fusion suivent
 // celles de Grigne (src/js/core/export.js et sanitize.js).
 const { state, saveRecipes, reloadFromServer } = __modules["state.js"];
 const { esc, uid } = __modules["core/text.js"];
 
-// Format décrit dans format-export.md (Grigne, version 2). Les règles de lecture
+// Format décrit dans docs/format-export.md (Grigne, version 2). Les règles de lecture
 // et de fusion suivent celles de Grigne (src/js/core/export.js et sanitize.js),
 // pour qu'un fichier passe de l'un à l'autre sans surprise.
 const EX_APP = 'grigne';
