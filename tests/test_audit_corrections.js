@@ -124,3 +124,4 @@ test('G3 : l’observation du journal s’enregistre toute seule, même si on ch
   await a.pause(800);
   assert.equal(etat(a).journal[auj].obs, 'Four 2 réparé, pâte un peu froide');
 });
+

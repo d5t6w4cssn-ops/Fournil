@@ -139,7 +139,43 @@
     const plus = nav.querySelector('.nav-plus');
     const dansPlus = !ENTREES.find((e) => e.id === actif)?.principal;
     if (plus) plus.classList.toggle('actif', dansPlus);
+    // Bouton retour du téléphone (audit G5) : chaque changement d'écran crée une étape.
+    if (connecte && !enRetour && actif !== dernierEcran) {
+      dernierEcran = actif;
+      try { history.pushState({ fournil: actif }, ''); } catch (e) { /* historique indisponible */ }
+    }
   }
+
+  // ---------- retour du téléphone (audit G5) ----------
+  let enRetour = false;
+  let dernierEcran = null;
+  // Ferme la fenêtre ouverte, s'il y en a une (la question « combien de jours ? » attend une réponse).
+  function fermerFenetre() {
+    const feuille = document.getElementById('navPlus');
+    if (feuille && !feuille.hidden) { feuille.hidden = true; return true; }
+    const ouverte = [...document.querySelectorAll('.overlay.open')].find((o) => o.id !== 'mJour');
+    if (ouverte) { ouverte.classList.remove('open'); return true; }
+    const aide = document.getElementById('helpOverlay');
+    if (aide && aide.style.display === 'flex') { closeHelp(); return true; }
+    const pdf = document.getElementById('pdfViewer');
+    if (pdf && pdf.classList.contains('open')) { closePdfViewer(); return true; }
+    const notes = document.querySelector('.notes-panel-overlay.open');
+    if (notes && typeof closeNotesPanel === 'function') { closeNotesPanel(); return true; }
+    return false;
+  }
+  window.addEventListener('popstate', (ev) => {
+    if (fermerFenetre()) {
+      try { history.pushState({ fournil: dernierEcran }, ''); } catch (e) { /* rien */ }
+      return;
+    }
+    const cible = ev.state && ev.state.fournil;
+    const e = ENTREES.find((x) => x.id === cible);
+    if (!e) return; // avant le premier écran de Fournil : le navigateur s'en charge
+    enRetour = true;
+    try { e.go(); window.scrollTo(0, 0); } finally { enRetour = false; }
+    dernierEcran = cible;
+    majNav();
+  });
   window.fournilMajNav = majNav;
 
   // Pastilles (ex. tâches à faire) : recopie du texte des pastilles existantes.
@@ -171,6 +207,8 @@
       const el = document.getElementById(id);
       if (el) obs.observe(el, { attributes: true, attributeFilter: ['style', 'class'], childList: true, characterData: true, subtree: true });
     });
+    dernierEcran = entreeActive();
+    try { history.replaceState({ fournil: dernierEcran }, ''); } catch (e) { /* rien */ }
     majNav();
     majPastilles();
   }
