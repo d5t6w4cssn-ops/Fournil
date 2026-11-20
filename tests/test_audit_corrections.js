@@ -125,3 +125,15 @@ test('G3 : l’observation du journal s’enregistre toute seule, même si on ch
   assert.equal(etat(a).journal[auj].obs, 'Four 2 réparé, pâte un peu froide');
 });
 
+
+test('D6 : quantités des matières premières affichées avec une virgule', async (t) => {
+  const { a, w, doc } = await ouvrir(t);
+  w.eval("openModule('bureau');swB('matieres')");
+  assert.equal(doc.getElementById('msv-s-m_3').textContent, '1,5');
+  const champ = doc.getElementById('mat-val-m_3');
+  champ.value = '0.3';
+  w.eval("useMatiere('m_3')");
+  await a.pause(20);
+  assert.equal(doc.getElementById('msv-s-m_3').textContent, '1,2');
+  assert.equal(JSON.parse(a.fake.docs.get('boulangerie/state').state).matieres.find((m) => m.id === 'm_3').stock, 1.2, 'donnée inchangée (nombre)');
+});

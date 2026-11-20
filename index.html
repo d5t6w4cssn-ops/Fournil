@@ -2207,12 +2207,12 @@ function renderMatieres() {
       else                       { dlcBadge = `<span class="mat-dlc-badge dlc-ok">DLC ${new Date(m.dlc).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</span>`; }
     }
 
-    const consoStr = consoNum > 0 ? `−${consoNum}` : '—';
+    const consoStr = consoNum > 0 ? `−${fmtQ(consoNum)}` : '—';
 
     return `<div class="scard ${cls||dlcCls}" id="mpc-${esc(m.id)}" style="margin-bottom:9px">
       <div class="flip-box" id="mflip-${esc(m.id)}">
         <div class="flip-face ff-s">
-          <div class="fn" id="mfn-s-${esc(m.id)}" style="font-size:24px">${stockNum}</div>
+          <div class="fn" id="mfn-s-${esc(m.id)}" style="font-size:24px">${fmtQ(stockNum)}</div>
           <div class="fl">${esc(m.unit||'unités')}</div>
         </div>
         <div class="flip-face ff-d">
@@ -2226,15 +2226,15 @@ function renderMatieres() {
         </div>
         <div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap">
           ${dlcBadge}
-          <span class="mat-dlc-badge" style="background:var(--cream);color:var(--brown-light)">seuil : ${seuilNum} ${esc(m.unit||'')}</span>
+          <span class="mat-dlc-badge" style="background:var(--cream);color:var(--brown-light)">seuil : ${fmtQ(seuilNum)} ${esc(m.unit||'')}</span>
         </div>
         <div class="scard-nums">
           <div class="scard-num-block">
-            <div class="sn-val" id="msv-s-${esc(m.id)}">${stockNum}</div>
+            <div class="sn-val" id="msv-s-${esc(m.id)}">${fmtQ(stockNum)}</div>
             <div class="sn-lbl">📦 Stock</div>
           </div>
           <div class="scard-num-block">
-            <div class="sn-val" id="msv-d-${esc(m.id)}" style="${consoNum>0?'color:var(--orange)':''}">${consoNum>0?consoNum:'—'}</div>
+            <div class="sn-val" id="msv-d-${esc(m.id)}" style="${consoNum>0?'color:var(--orange)':''}">${consoNum>0?fmtQ(consoNum):'—'}</div>
             <div class="sn-lbl">📉 Utilisé</div>
           </div>
         </div>
@@ -2285,9 +2285,9 @@ function useMatiere(id) {
   input.value = 0;
   save();
   // Refresh sans re-render complet
-  const sfn = document.getElementById('mfn-s-'+id); if(sfn) sfn.textContent = m.stock;
-  const dfn = document.getElementById('mfn-d-'+id); if(dfn) dfn.textContent = `−${m.consoDuJour}`;
-  const svs = document.getElementById('msv-s-'+id); if(svs) svs.textContent = m.stock;
+  const sfn = document.getElementById('mfn-s-'+id); if(sfn) sfn.textContent = fmtQ(m.stock);
+  const dfn = document.getElementById('mfn-d-'+id); if(dfn) dfn.textContent = `−${fmtQ(m.consoDuJour)}`;
+  const svs = document.getElementById('msv-s-'+id); if(svs) svs.textContent = fmtQ(m.stock);
   const svd = document.getElementById('msv-d-'+id); if(svd) { svd.textContent = m.consoDuJour; svd.style.color='var(--orange)'; }
   const card = document.getElementById('mpc-'+id);
   if(card) {
