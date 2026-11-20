@@ -2633,7 +2633,6 @@ function renderCmdFournisseur() {
     el.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>Ajoutez d\'abord vos matières premières.</div>';
     return;
   }
-  const today_d = new Date(today()+'T00:00:00');
   const commandes = S.matieres.filter(m=>(m.conso||0)>0).map(m=>({
     ...m, besoin: Math.max(0, Math.ceil((m.conso||0)-(m.stock||0)))
   })).filter(m=>m.besoin>0);

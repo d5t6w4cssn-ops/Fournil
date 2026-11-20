@@ -5,7 +5,6 @@
 // Les données gardent leur format ; l'historique reçoit des lignes de types ajustement,
 // retrait, raz et saisie (affichées par histoLibelle / histoQuantite du script principal).
 (() => {
-  /* global S, L, save, saveL, today, refresh, genAutoTasks, renderStock, renderLaboStock, renderMatieres, renderSettings, toast, esc */
   const CATEGORIES = {
     fournil: {
       nom: 'Fournil',

@@ -114,7 +114,6 @@
   }
 
   function entreeActive() {
-    /* global activeModule, tab */
     if (typeof activeModule === 'undefined' || !activeModule) return 'accueil';
     if (activeModule === 'labo') return 'labo';
     if (activeModule === 'fournil') return ONGLET_FOURNIL[tab] || 'stock';

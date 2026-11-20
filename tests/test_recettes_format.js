@@ -81,8 +81,8 @@ test('calculateur : même résultat que le code de Grigne, historique enregistr�
   const attendu = computeScaling(EXISTANTES[0], { mode: 'total', totalQty: '10', totalUnit: 'kg', pieceRows: [], flourQty: '', flourUnit: 'kg' });
   const texte = vue.textContent.replace(/\s+/g, ' ');
   for (const i of EXISTANTES[0].ingredients) {
-    const g = formatGrams(i.qtyG * attendu.factor).replace(/ /g, ' ');
-    assert.ok(texte.replace(/ /g, ' ').includes(g), `${i.name} : ${g} attendu`);
+    const g = formatGrams(i.qtyG * attendu.factor).replace(/\u202f/g, ' ');
+    assert.ok(texte.replace(/\u202f/g, ' ').includes(g), `${i.name} : ${g} attendu`);
   }
 
   vue.querySelector('.save-calc-btn').click();

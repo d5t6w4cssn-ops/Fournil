@@ -9,7 +9,6 @@
 //   sorties si deux appareils s'ouvrent en même temps. Hors ligne : sur l'appareil, envoyé
 //   au retour du réseau.
 (() => {
-  /* global S, L, db, today, normalizeState, normalizeLabo, render, renderLabo, save, saveL, activeModule, toast, esc */
   const MAX_HISTO = 630;
   let seq = 0;
 

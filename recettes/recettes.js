@@ -69,7 +69,6 @@ const notify = (ok) => listeners.forEach((fn) => fn(ok));
 
 // Base Firestore de Fournil (variable globale `db` du script principal), ou null hors ligne.
 function fournilDb() {
-  // eslint-disable-next-line no-undef
   return typeof db !== 'undefined' && db ? db : null;
 }
 function docRecettes() {

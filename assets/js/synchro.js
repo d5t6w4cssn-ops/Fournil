@@ -6,7 +6,6 @@
 // - « Synchronisé » seulement quand plus rien n'attend ; sinon « Pas encore envoyé » ou
 //   « Hors ligne » ; bandeau d'erreur clair si le serveur refuse un envoi.
 (() => {
-  /* global db, save, saveL, toast */
   const etat = {
     enCours: 0, // envois partis, pas encore confirmés
     enAttente: {}, // document → true si Firestore a des écritures en attente
