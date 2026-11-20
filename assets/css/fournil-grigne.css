@@ -619,5 +619,7 @@ h1.home-logo, h1.hdr-logo, h1.login-marque { font-weight: 400; margin: 0; }
 .guide-traps li::before { content: "!"; position: absolute; left: 0; top: 2px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 12px; font-weight: 700; }
 .guide-note { margin-top: 12px !important; padding: 12px 14px; background: var(--total-bg); border-left: 3px solid var(--accent); font-size: 14px; color: var(--muted); }
 .bouton-guide { font-family: var(--serif); font-size: 22px !important; line-height: 1; cursor: pointer; border-radius: 50%; display: grid; place-items: center; }
-/* Accueil : les boutons (déconnexion, guide) ne passent plus sous le bouton Actualiser */
-.home-header > div:first-child { padding-right: 56px; }
+/* Accueil : les boutons (déconnexion, guide) se placent sous le bouton Actualiser, sans le
+   chevaucher, et le titre garde toute sa ligne */
+.home-header > div:first-child { align-items: flex-start !important; }
+.home-header > div:first-child > div:last-child { margin-top: 56px; }
