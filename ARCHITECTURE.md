@@ -73,7 +73,8 @@ lastDate       "AAAA-MM-JJ" : dernier passage au jour suivant (heure de Paris)
 history[]      { id, date, type, pid, name, emoji, qty, … }  630 lignes au plus
                  type : sortie, recharge, ajustement (delta), retrait (motif, note),
                         raz (remise à zéro), saisie (lignes[] de la saisie rapide)
-notes[]        { id, author, text, time, audioUrl?, isVocal?, transcription? }
+notes[]        { id, author, text, time, isVocal?, transcription?, audioUrl? }
+                 message vocal : texte dicté seulement ; audioUrl = son des anciens messages
 boulangers[], freeNotes
 journal        { "AAAA-MM-JJ": { obs, produits: { idProduit: quantité } } }
 histoTaches[]  { id, text, cat, date, time }  200 lignes au plus

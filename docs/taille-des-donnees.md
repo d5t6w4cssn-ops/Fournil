@@ -33,7 +33,12 @@ document n'a pas été allégé.
 - Partie fixe : environ **85 Ko** ; croissance : environ **0,4 Ko par jour**.
 - Limite atteinte dans environ **6 ans** : pas de risque à court terme.
 
-## Propositions (à décider, rien n'a été changé)
+## Décision du 20 novembre 2026
+
+Les messages vocaux ne gardent plus que leur transcription en texte : plus aucun son n'est
+enregistré. Les anciens sons restent ; leur poids est affiché dans Réglages → « Place occupée ».
+
+## Propositions (autres pistes)
 
 1. **Tout de suite, sans changer le format** : limiter la durée et la qualité des notes
    vocales (par exemple 16 kbit/s, soit environ 80 Ko pour 30 s) et n'en garder que les

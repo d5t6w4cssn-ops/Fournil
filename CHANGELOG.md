@@ -2,7 +2,16 @@
 
 Les dates sont celles de la mise en ligne (ou de la branche, si ce n'est pas encore en ligne).
 
-## Branche `nuit-2` — 20 novembre 2026 (pas encore en ligne)
+## 20 novembre 2026
+
+- **Messages vocaux** : seule la transcription en texte est enregistrée, plus aucun son dans
+  Firestore. Les anciens sons sont gardés ; Réglages → « Place occupée » montre leur poids.
+- **Labo** : la barre du bas ouvre le stock, les recettes et les tâches du Labo ; le 4e
+  bouton devient « Fournil ».
+- Confirmation au-delà de 1 000 pièces sur une ligne ; « FOURNIL » sur le tampon des
+  recettes ; bouton « ‹ Menu » retiré sur mobile.
+
+## Nuit du 19 au 20 novembre 2026
 
 - **Date de Paris** : « aujourd'hui » est toujours calculé à l'heure de Paris, même entre
   minuit et 2 h et au changement d'heure (avant : heure universelle).
