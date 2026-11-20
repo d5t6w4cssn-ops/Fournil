@@ -36,6 +36,12 @@ const AUTRES_COPIES = [
 // Fichiers de Grigne remplacés par une adaptation Fournil (même interface).
 const ADAPTATIONS = ['state.js', 'pdf.js', 'echange.js', 'app.js'];
 const VERIFIER = process.argv.includes('--verifier');
+// Remplacements faits à l'assemblage, sans toucher aux copies de recettes/src (qui restent
+// identiques à Grigne). Chacun doit trouver son texte exactement une fois.
+const REMPLACEMENTS = {
+  // le texte en arc en bas du tampon : « FOURNIL » dans Fournil (décision du 20 novembre 2026)
+  'ui/dom.js': [['>GRIGNE</textPath>', '>FOURNIL</textPath>']],
+};
 let differences = 0;
 function ecrireSortie(relatif, contenu) {
   const cible = path.join(RACINE, relatif);
@@ -73,7 +79,12 @@ function sourceDe(nom) {
 const resoudre = (depuis, spec) => path.posix.normalize(path.posix.join(path.posix.dirname(depuis), spec));
 
 function convertir(nom) {
-  const code = sourceDe(nom);
+  let code = sourceDe(nom);
+  for (const [avant, apres] of REMPLACEMENTS[nom] || []) {
+    const n = code.split(avant).length - 1;
+    if (n !== 1) throw new Error(`${nom} : « ${avant} » trouvé ${n} fois (1 attendue) : Grigne a changé ?`);
+    code = code.replace(avant, apres);
+  }
   const deps = [];
   const exports = [];
   const lignes = code.split('\n').map((ligne) => {

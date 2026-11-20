@@ -575,7 +575,7 @@ function stamp(label, top, value) {
           <path id="tamponBas" d="M10 60a50 50 0 0 0 100 0"/>
         </defs>
         <text><textPath href="#tamponHaut" startOffset="50%" text-anchor="middle">${esc(top)}</textPath></text>
-        <text><textPath href="#tamponBas" startOffset="50%" text-anchor="middle">GRIGNE</textPath></text>
+        <text><textPath href="#tamponBas" startOffset="50%" text-anchor="middle">FOURNIL</textPath></text>
       </svg>
     </div>`;
 }

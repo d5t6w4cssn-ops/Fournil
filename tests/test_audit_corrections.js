@@ -183,7 +183,7 @@ test('D1 : au-delà de 1 000 pièces sur une ligne, confirmation par un second a
   w.eval("openModule('fournil');sw('stock')");
   doc.getElementById('saisieTexte').value = '1200 croissants, 10 brioches';
   doc.querySelector('#saisieRapide .saisie-apercu-btn').click();
-  assert.match(doc.querySelector('#saisieRapide .saisie-ligne').textContent, /Plus de 1 000 pièces/);
+  assert.match(doc.querySelector('#saisieRapide .saisie-ligne').textContent, /Plus de 1\u202f000 pièces/);
   const avant = a.fake.writes.length;
   doc.querySelector('#saisieRapide [data-action=valider]').click();
   await a.pause(20);
@@ -198,7 +198,7 @@ test('D1 : au-delà de 1 000 pièces sur une ligne, confirmation par un second a
   doc.getElementById('mc-stock').value = '1500';
   w.eval('saveCorrect()');
   await a.pause(20);
-  assert.match(msg(doc, 'mc-stock'), /Plus de 1 000 pièces/);
+  assert.match(msg(doc, 'mc-stock'), /Plus de 1\u202f000 pièces/);
   assert.equal(etat(a).products.find((p) => p.id === 'brioche').stockReel, 19, 'pas encore ajouté');
   w.eval('saveCorrect()');
   await a.pause(30);

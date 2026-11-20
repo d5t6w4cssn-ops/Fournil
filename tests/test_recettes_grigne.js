@@ -37,3 +37,10 @@ test('recettes.js et recettes.css correspondent à leurs sources', () => {
   const sortie = execFileSync(process.execPath, [path.join(RACINE, 'tools', 'importer-grigne.mjs'), '--verifier'], { encoding: 'utf8' });
   assert.match(sortie, /à jour/);
 });
+
+test('le tampon des recettes affiche « FOURNIL » (remplacé à l’assemblage, la copie de Grigne reste intacte)', () => {
+  const bundle = fs.readFileSync(path.join(RACINE, 'recettes', 'recettes.js'), 'utf8');
+  assert.match(bundle, />FOURNIL<\/textPath>/);
+  assert.doesNotMatch(bundle, />GRIGNE<\/textPath>/);
+  assert.match(fs.readFileSync(path.join(RACINE, 'recettes', 'src', 'ui', 'dom.js'), 'utf8'), />GRIGNE<\/textPath>/);
+});
