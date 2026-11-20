@@ -1574,7 +1574,7 @@ function renderLaboMagasin(){
 }
 
 function ladjM(f,id,d){const i=document.getElementById('l'+f+'-'+id);const v=Math.max(0,(parseInt(i.value)||0)+d);i.value=v;lonChange(f,id,v);}
-function lonChange(f,id,val){clearTimeout(laboDbt[f+id]);laboDbt[f+id]=setTimeout(()=>{const p=L.products.find(x=>x.id===id);if(!p)return;p[f]=Math.max(0,parseInt(val)||0);saveL();},280);}
+function lonChange(f,id,val){clearTimeout(laboDbt[f+id]);if(String(val).trim()==='')return;laboDbt[f+id]=setTimeout(()=>{const p=L.products.find(x=>x.id===id);if(!p)return;p[f]=Math.max(0,parseInt(val)||0);saveL();},280);}
 
 const lcs={};
 function initLSwipe(id){
@@ -1895,6 +1895,8 @@ function renderMagasin(){
 function adj(f,id,d){const i=document.getElementById(f+'-'+id);const v=Math.max(0,(parseInt(i.value)||0)+d);i.value=v;onChange(f,id,v);}
 function onChange(f,id,val){
   clearTimeout(dbt[f+id]);
+  // Champ vidé pour retaper un nombre : on attend la nouvelle valeur (audit G2)
+  if(String(val).trim()==='')return;
   dbt[f+id]=setTimeout(()=>{const p=S.products.find(x=>x.id===id);if(!p)return;p[f]=Math.max(0,parseInt(val)||0);save();refresh(p);genAutoTasks();},280);
 }
 

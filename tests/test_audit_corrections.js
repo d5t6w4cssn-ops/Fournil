@@ -84,3 +84,24 @@ test('G1 : seuil 0 accepté ; quantité non entière refusée avec un message (F
   await a.pause(20);
   assert.equal(etat(a).products.find((p) => p.name === 'Fougasse').seuil, 0);
 });
+
+test('G2 : vider le champ du magasin pour retaper ne remet pas 0 (Fournil et Labo)', async (t) => {
+  const { a, w, doc } = await ouvrir(t);
+  w.eval("openModule('fournil');sw('magasin')");
+  const champ = doc.getElementById('base-croissant');
+  champ.value = '';
+  champ.dispatchEvent(new w.Event('input'));
+  await a.pause(400);
+  assert.equal(etat(a).products.find((p) => p.id === 'croissant').base, 40, 'base inchangée');
+  assert.equal(champ.value, '', 'le champ reste vide pendant la saisie');
+  champ.value = '45';
+  champ.dispatchEvent(new w.Event('input'));
+  await a.pause(400);
+  assert.equal(etat(a).products.find((p) => p.id === 'croissant').base, 45);
+  w.eval("openModule('labo');swL('lmagasin')");
+  const l = doc.getElementById('lbase-lp_1');
+  l.value = '';
+  l.dispatchEvent(new w.Event('input'));
+  await a.pause(400);
+  assert.equal(labo(a).products.find((p) => p.id === 'lp_1').base, 6);
+});
