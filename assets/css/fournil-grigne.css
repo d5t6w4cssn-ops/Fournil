@@ -623,3 +623,11 @@ h1.home-logo, h1.hdr-logo, h1.login-marque { font-weight: 400; margin: 0; }
    chevaucher, et le titre garde toute sa ligne */
 .home-header > div:first-child { align-items: flex-start !important; }
 .home-header > div:first-child > div:last-child { margin-top: 56px; }
+
+/* Réglages : place occupée (assets/js/donnees.js) */
+.place-occupee { margin-top: 26px; }
+.place-ligne { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.place-ligne strong { color: var(--ink); }
+.place-barre { height: 10px; margin: 6px 0 14px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.place-barre span { display: block; height: 100%; background: var(--accent); }
+.place-sons { margin-top: 4px; }

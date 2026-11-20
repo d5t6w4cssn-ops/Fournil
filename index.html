@@ -2853,11 +2853,15 @@ function renderNotes(){
 }
 
 // ── JOURNAL VOCAL ──
-let mediaRecorder = null;
-let audioChunks = [];
+// Le message vocal est transcrit en direct par la reconnaissance vocale du téléphone
+// (français) : seul le texte est enregistré, plus aucun son dans Firestore (un son de 30 s
+// pesait 150 à 600 Ko et pouvait remplir le document). Les anciens messages avec un son
+// restent affichés tels quels.
+let ecouteVocale = null;
 let vocalTimer = null;
 let vocalSeconds = 0;
 let isRecording = false;
+let texteVocal = '';
 
 async function toggleVocal() {
   if(isRecording) {
@@ -2867,65 +2871,71 @@ async function toggleVocal() {
   }
 }
 
-async function startVocal() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    audioChunks = [];
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(audioChunks, { type: 'audio/webm' });
-      const reader = new FileReader();
-      reader.onload = e => saveVocalNote(e.target.result);
-      reader.readAsDataURL(blob);
-      stream.getTracks().forEach(t => t.stop());
-    };
-    mediaRecorder.start();
-    isRecording = true;
-    vocalSeconds = 30;
-
-    const btn = document.getElementById('vocalBtn');
-    const timer = document.getElementById('vocalTimer');
-    if(btn) { btn.textContent = '⏹️ Arrêter'; btn.classList.add('recording'); }
-    if(timer) timer.style.display = 'block';
-
-    vocalTimer = setInterval(() => {
-      vocalSeconds--;
-      const t = document.getElementById('vocalTimer');
-      if(t) t.textContent = `⏱️ ${vocalSeconds}s restantes`;
-      if(vocalSeconds <= 0) stopVocal();
-    }, 1000);
-  } catch(e) {
-    toast('Micro non disponible — vérifie les permissions');
-  }
+function startVocal() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) { toast('La dictée n’est pas disponible sur ce navigateur : écris ton message.'); return; }
+  texteVocal = '';
+  const r = new SR();
+  r.lang = 'fr-FR';
+  r.continuous = true;
+  r.interimResults = false;
+  r.onresult = e => {
+    texteVocal = Array.from(e.results).map(x => x[0].transcript).join(' ').replace(/\s+/g,' ').trim();
+  };
+  r.onerror = e => {
+    if(e && e.error === 'not-allowed') toast('Autorise le micro pour dicter un message');
+  };
+  r.onend = () => finVocal();
+  ecouteVocale = r;
+  try { r.start(); } catch(e) { toast('Micro non disponible — vérifie les permissions'); ecouteVocale = null; return; }
+  isRecording = true;
+  vocalSeconds = 30;
+  const btn = document.getElementById('vocalBtn');
+  const timer = document.getElementById('vocalTimer');
+  if(btn) { btn.textContent = '⏹️ Arrêter'; btn.classList.add('recording'); }
+  if(timer) { timer.style.display = 'block'; timer.textContent = '⏱️ 30s restantes'; }
+  vocalTimer = setInterval(() => {
+    vocalSeconds--;
+    const t = document.getElementById('vocalTimer');
+    if(t) t.textContent = `⏱️ ${vocalSeconds}s restantes`;
+    if(vocalSeconds <= 0) stopVocal();
+  }, 1000);
 }
 
 function stopVocal() {
-  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  if(ecouteVocale) { try { ecouteVocale.stop(); } catch(e) { finVocal(); } }
+  else finVocal();
+}
+
+function finVocal() {
+  if(!isRecording) return;
   clearInterval(vocalTimer);
   isRecording = false;
+  ecouteVocale = null;
   const btn = document.getElementById('vocalBtn');
   const timer = document.getElementById('vocalTimer');
   if(btn) { btn.textContent = '🎙️ Journal vocal (30s)'; btn.classList.remove('recording'); }
   if(timer) timer.style.display = 'none';
+  if(texteVocal) saveVocalNote(texteVocal);
+  else toast('Je n’ai rien entendu : réessaie, ou écris ton message.');
 }
 
-function saveVocalNote(audioUrl) {
+function saveVocalNote(texte) {
   const author = document.getElementById('noteAuthor')?.value || 'Anonyme';
   if(!S.notes) S.notes = [];
   const now = new Date();
+  // même forme qu'avant, sans audioUrl : le texte dicté est la transcription
   S.notes.unshift({
     id: 'v_' + Date.now(),
     author,
-    text: '',
-    audioUrl,
+    text: texte,
     isVocal: true,
-    transcription: null,
+    transcription: texte,
     time: now.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' ' +
           now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})
   });
   save(); renderNotes();
-  toast('Message vocal enregistré ✓');
+  toast('Message vocal enregistré (texte) ✓');
 }
 
 function transcribeNote(id) {
@@ -3246,6 +3256,8 @@ if (initFirebaseApp()) {
 <script src="assets/js/jour.js"></script>
 <script src="assets/js/saisie-rapide.js"></script>
 <script src="assets/js/stock.js"></script>
+<!-- Réglages : place occupée dans Firestore (anciens messages vocaux) -->
+<script src="assets/js/donnees.js"></script>
 <!-- Navigation (barre du bas / barre latérale) -->
 <script src="assets/js/navigation.js"></script>
 </body>
