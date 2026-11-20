@@ -1516,11 +1516,16 @@ function openLaboCorrect(id){
 }
 
 function saveCorrect(){
+  // Quantité à ajouter : un nombre entier de pièces (avant, « 12.7 » devenait 12 sans prévenir).
+  const brutAjout=String(document.getElementById('mc-stock').value).trim().replace(',','.');
+  if(brutAjout!==''&&!(Number.isInteger(Number(brutAjout))&&Number(brutAjout)>=0)){champManquant('mc-stock','Indique un nombre entier de pièces (ex. 12).');return;}
+  const brutSeuil=String(document.getElementById('mc-seuil').value).trim().replace(',','.');
+  if(brutSeuil!==''&&!(Number.isInteger(Number(brutSeuil))&&Number(brutSeuil)>=0)){champManquant('mc-seuil','Le seuil est un nombre entier, 0 ou plus.');return;}
   if(window._laboCorrectMode){
     window._laboCorrectMode=false;
     const p=L.products.find(x=>x.id===laboCorrectId);if(!p)return;
     const ajout=Math.max(0,parseInt(document.getElementById('mc-stock').value)||0);
-    p.seuil=Math.max(0,parseInt(document.getElementById('mc-seuil').value)||5);
+    p.seuil=Math.max(0,entierOu(document.getElementById('mc-seuil').value,5));
     if(ajout>0){p.stockReel+=ajout;addLaboHist('recharge',p,ajout);}
     // Marquer tâche auto comme faite si réappro depuis tâche
     const t=L.tasks&&L.tasks.find(t=>t.auto&&t.pid===laboCorrectId&&!t.done);
@@ -1530,7 +1535,7 @@ function saveCorrect(){
   } else {
     const p=S.products.find(x=>x.id===correctId);if(!p)return;
     const ajout=Math.max(0,parseInt(document.getElementById('mc-stock').value)||0);
-    p.seuil=Math.max(0,parseInt(document.getElementById('mc-seuil').value)||5);
+    p.seuil=Math.max(0,entierOu(document.getElementById('mc-seuil').value,5));
     if(ajout>0){p.stockReel=p.stockReel+ajout;addHist('recharge',p,ajout);}
     closeM('mCorrect');save();refresh(p);genAutoTasks();
     toast(ajout>0?'+ '+ajout+' ajouté au stock ✓':'Seuil mis à jour ✓');
@@ -1694,14 +1699,14 @@ function saveProduct(){
   if(!document.getElementById('np-name').value.trim()){champManquant('np-name','Donne un nom au produit.');return;}
   if(window._laboProdMode){
     window._laboProdMode=false;
-    const name=document.getElementById('np-name').value.trim();const emoji=document.getElementById('np-emoji').value.trim()||'🍰';const seuil=parseInt(document.getElementById('np-seuil').value)||10;const base=parseInt(document.getElementById('np-base').value)||0;
+    const name=document.getElementById('np-name').value.trim();const emoji=document.getElementById('np-emoji').value.trim()||'🍰';const seuil=entierOu(document.getElementById('np-seuil').value,10);const base=parseInt(document.getElementById('np-base').value)||0;
     if(!name)return;
     if(editLaboProdId){const p=L.products.find(x=>x.id===editLaboProdId);if(p){p.name=name;p.emoji=emoji;p.seuil=seuil;p.base=base;}editLaboProdId=null;toast('Produit modifié ✓');}
     else{const stock=parseInt(document.getElementById('np-stock').value)||0;L.products.push({id:'lp_'+Date.now(),name,emoji,stockReel:stock,base,commande:0,seuil});toast('Produit créé : '+name);}
     document.getElementById('mProductTitle').textContent='Nouveau produit';document.getElementById('mProductBtn').textContent='Créer';document.getElementById('np-stock-group').style.display='block';
     ['np-name','np-emoji','np-seuil','np-base','np-stock'].forEach(id=>document.getElementById(id).value='');clearPdfInput();closeM('mProduct');saveL();renderLaboSettings();renderLaboStock();
   } else {
-    const name=document.getElementById('np-name').value.trim();const emoji=document.getElementById('np-emoji').value.trim()||'🍞';const seuil=parseInt(document.getElementById('np-seuil').value)||10;const base=parseInt(document.getElementById('np-base').value)||0;
+    const name=document.getElementById('np-name').value.trim();const emoji=document.getElementById('np-emoji').value.trim()||'🍞';const seuil=entierOu(document.getElementById('np-seuil').value,10);const base=parseInt(document.getElementById('np-base').value)||0;
     if(!name)return;
     if(editProductId){const p=S.products.find(x=>x.id===editProductId);if(p){p.name=name;p.emoji=emoji;p.seuil=seuil;p.base=base;}editProductId=null;toast('Produit modifié ✓');}
     else{const stock=parseInt(document.getElementById('np-stock').value)||0;S.products.push({id:'p_'+Date.now(),name,emoji,stockReel:stock,base,commande:0,seuil,recipeUrl:pendingPdfUrl||null});toast('Produit créé : '+name);}
@@ -3121,6 +3126,14 @@ document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='
 let tt;
 // Champ obligatoire vide : message sous le champ et curseur dedans, au lieu d'un bouton
 // qui ne fait rien (audit G4).
+// Nombre entier saisi, ou valeur par défaut si le champ est vide ou illisible. Garde 0
+// (avant, « || 10 » remplaçait un seuil de 0 par 10 : audit G1).
+function entierOu(valeur,defaut){
+  const t=String(valeur??'').trim();
+  if(t==='')return defaut;
+  const n=parseInt(t,10);
+  return Number.isNaN(n)?defaut:Math.max(0,n);
+}
 function champManquant(id,message){
   const champ=document.getElementById(id);
   if(!champ){toast(message);return;}

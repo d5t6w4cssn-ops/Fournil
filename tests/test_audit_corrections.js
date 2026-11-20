@@ -54,3 +54,33 @@ test('G4 (bug trouvé) : un produit du Labo créé après un premier essai sans 
   assert.ok(labo(a).products.some((p) => p.name === 'Paris-Brest'), 'dans le Labo');
   assert.ok(!etat(a).products.some((p) => p.name === 'Paris-Brest'), 'pas dans le Fournil');
 });
+
+test('G1 : seuil 0 accepté ; quantité non entière refusée avec un message (Fournil et Labo)', async (t) => {
+  const { a, w, doc } = await ouvrir(t);
+  w.eval("openModule('fournil');sw('stock');openCorrect('croissant')");
+  doc.getElementById('mc-stock').value = '12.7';
+  w.eval('saveCorrect()');
+  await a.pause(20);
+  assert.match(msg(doc, 'mc-stock'), /nombre entier/);
+  assert.equal(etat(a).products.find((p) => p.id === 'croissant').stockReel, 64, 'rien ajouté');
+  doc.getElementById('mc-stock').value = '12';
+  doc.getElementById('mc-seuil').value = '0';
+  w.eval('saveCorrect()');
+  await a.pause(20);
+  const c = etat(a).products.find((p) => p.id === 'croissant');
+  assert.equal(c.stockReel, 76);
+  assert.equal(c.seuil, 0, 'seuil 0 gardé');
+  // Labo : la quantité refusée ne fait pas perdre le mode Labo
+  w.eval("openModule('labo');swL('lstock');openLaboCorrect('lp_1')");
+  doc.getElementById('mc-stock').value = '2.5';
+  w.eval('saveCorrect()');
+  doc.getElementById('mc-stock').value = '3';
+  w.eval('saveCorrect()');
+  await a.pause(20);
+  assert.equal(labo(a).products.find((p) => p.id === 'lp_1').stockReel, 15);
+  assert.equal(etat(a).products.find((p) => p.id === 'croissant').stockReel, 76, 'rien dans le Fournil');
+  // création d'un produit avec seuil 0
+  w.eval("openModule('fournil');sw('settings');openM('mProduct');document.getElementById('np-name').value='Fougasse';document.getElementById('np-seuil').value='0';saveProduct()");
+  await a.pause(20);
+  assert.equal(etat(a).products.find((p) => p.name === 'Fougasse').seuil, 0);
+});
