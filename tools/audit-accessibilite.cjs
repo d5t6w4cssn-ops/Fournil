@@ -32,6 +32,7 @@ const ECRANS = {
   stats: "openModule('bureau');swB('stats')",
   'menu-plus': "openModule('fournil');sw('stock');document.querySelector('.nav-plus').click()",
   'fenetre-tache': "openModule('fournil');sw('tasks');openM('mTask')",
+  guide: 'openHelp()',
 };
 const TOUTES_VARIANTES = [
   { nom: 'mobile-clair', viewport: { width: 390, height: 844 }, theme: 'light' },

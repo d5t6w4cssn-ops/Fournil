@@ -137,3 +137,20 @@ test('D6 : quantités des matières premières affichées avec une virgule', asy
   assert.equal(doc.getElementById('msv-s-m_3').textContent, '1,2');
   assert.equal(JSON.parse(a.fake.docs.get('boulangerie/state').state).matieres.find((m) => m.id === 'm_3').stock, 1.2, 'donnée inchangée (nombre)');
 });
+
+test('Guide (tâche 4) : bouton « ? », premier pas, une section par module, sommaire sans changer l’adresse', async (t) => {
+  const { w, doc } = await ouvrir(t);
+  doc.querySelector('.bouton-guide').click();
+  const g = doc.getElementById('helpOverlay');
+  assert.equal(g.style.display, 'flex');
+  assert.match(g.textContent, /Premier pas en 3 minutes/);
+  for (const id of ['g-stock', 'g-saisie', 'g-magasin', 'g-recettes', 'g-taches', 'g-historique', 'g-labo', 'g-matieres', 'g-fournisseurs', 'g-tournee', 'g-journal', 'g-reglages', 'g-synchro', 'g-journee']) {
+    assert.ok(doc.getElementById(id), id);
+  }
+  assert.ok(doc.querySelectorAll('#helpOverlay .guide-ex').length >= 12, 'un exemple concret par module');
+  const adresse = w.location.href;
+  doc.querySelector('.guide-toc a[href="#g-tournee"]').click();
+  assert.equal(w.location.href, adresse, "l'adresse ne change pas");
+  doc.querySelector('#helpOverlay .sheet-close').click();
+  assert.equal(g.style.display, 'none');
+});

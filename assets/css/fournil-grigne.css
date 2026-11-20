@@ -589,3 +589,38 @@ h1.home-logo, h1.hdr-logo, h1.login-marque { font-weight: 400; margin: 0; }
 .notes-panel:not(.open) { visibility: hidden; }
 .notes-panel { transition: transform .3s ease, visibility 0s linear .3s; }
 .notes-panel.open { transition: transform .3s ease, visibility 0s; }
+
+/* ========== Guide d'utilisation (bouton « ? »), repris du guide de Grigne ========== */
+.guide-fond { position: fixed; inset: 0; z-index: 500; align-items: flex-end; justify-content: center; background: var(--backdrop); }
+.guide-fenetre {
+  display: flex; flex-direction: column; width: 100%; max-width: 620px; max-height: 90svh;
+  background: var(--cream); color: var(--ink); border-top: 3px solid var(--accent); border-radius: 20px 20px 0 0;
+  animation: mup .25s ease;
+}
+@media (min-width: 860px) { .guide-fond { align-items: center; } .guide-fenetre { border-radius: 20px; } }
+.guide-fenetre .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 12px 12px 20px; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+.guide-fenetre .sheet-head h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0; }
+.guide-fenetre .sheet-close { background: none; border: none; color: var(--muted2); font-size: 28px; line-height: 1; cursor: pointer; padding: 4px 12px; min-width: 44px; min-height: 44px; }
+.guide-fenetre .sheet-body { overflow-y: auto; padding: 14px 20px 36px; font-size: 15px; line-height: 1.55; }
+.guide-fenetre .sheet-body p { margin: 0; }
+.guide-fenetre .sheet-body p + p { margin-top: 8px; }
+.guide-toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 18px; }
+.guide-toc a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: 14px; text-decoration: none; }
+.guide-toc a:hover { border-color: var(--accent); }
+.guide-fenetre section { scroll-margin-top: 12px; }
+.guide-fenetre h3 { margin: 0 0 8px; font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--ink); }
+.guide-fenetre h4 { margin: 14px 0 6px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep); }
+.guide-first { position: relative; padding: 20px 16px 16px; border-radius: var(--radius); background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
+.guide-first::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; background: var(--accent); }
+.guide-steps { counter-reset: etape; list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.guide-steps li { counter-increment: etape; position: relative; padding-left: 46px; }
+.guide-steps li::before { content: counter(etape); position: absolute; left: 0; top: -2px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent-deep); font-family: var(--serif); font-size: 18px; }
+.guide-tool { margin-top: 28px; padding-top: 22px; border-top: 1px dashed var(--line); }
+.guide-ex { padding: 12px 14px; border-radius: 14px; border: 1px solid var(--accent-line); background: var(--accent-soft); }
+.guide-traps { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 6px; }
+.guide-traps li { position: relative; padding-left: 26px; }
+.guide-traps li::before { content: "!"; position: absolute; left: 0; top: 2px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 12px; font-weight: 700; }
+.guide-note { margin-top: 12px !important; padding: 12px 14px; background: var(--total-bg); border-left: 3px solid var(--accent); font-size: 14px; color: var(--muted); }
+.bouton-guide { font-family: var(--serif); font-size: 22px !important; line-height: 1; cursor: pointer; border-radius: 50%; display: grid; place-items: center; }
+/* Accueil : les boutons (déconnexion, guide) ne passent plus sous le bouton Actualiser */
+.home-header > div:first-child { padding-right: 56px; }

@@ -542,7 +542,7 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
       <h1 class="home-logo">🥐 Fournil<em>Gestion de boulangerie</em></h1>
       <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
         <button onclick="doLogout()" title="Déconnexion" style="background:rgba(196,154,108,0.15);border:1px solid rgba(196,154,108,0.25);border-radius:50%;width:34px;height:34px;color:var(--ocre-light);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">⏻</button>
-        <button onclick="openHelp()" style="background:rgba(196,154,108,0.15);border:1px solid rgba(196,154,108,0.25);border-radius:50%;width:34px;height:34px;color:var(--ocre-light);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">ℹ️</button>
+        <button onclick="openHelp()" class="bouton-guide" aria-label="Guide d'utilisation" title="Guide d'utilisation">?</button>
       </div>
     </div>
     <div class="home-date" id="homeDate"></div>
@@ -586,101 +586,142 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
   </div>
 </div>
 
-<!-- Panel Aide -->
-<div id="helpOverlay" style="display:none;position:fixed;inset:0;background:rgba(34,21,8,0.7);z-index:500;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeHelp()">
-  <div style="background:var(--paper);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:88svh;display:flex;flex-direction:column;animation:mup 0.25s ease">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 18px 12px;border-bottom:1px solid rgba(196,154,108,0.15);flex-shrink:0">
-      <div style="font-family:var(--serif);font-size:18px;color:var(--ink)">ℹ️ Guide d'utilisation</div>
-      <button onclick="closeHelp()" style="background:none;border:none;color:var(--brown-light);font-size:22px;cursor:pointer">✕</button>
+<!-- Guide d'utilisation (bouton « ? ») : premier pas, puis une section par module avec un exemple -->
+<div id="helpOverlay" class="guide-fond" style="display:none" onclick="if(event.target===this)closeHelp()">
+  <div class="guide-fenetre" role="dialog" aria-modal="true" aria-labelledby="guideTitre">
+    <div class="sheet-head">
+      <h2 id="guideTitre">Guide d'utilisation</h2>
+      <button type="button" class="sheet-close" onclick="closeHelp()" aria-label="Fermer le guide">×</button>
     </div>
-    <div style="overflow-y:auto;padding:16px 18px 40px;flex:1">
+    <div class="sheet-body" tabindex="0">
+      <nav class="guide-toc" aria-label="Sommaire du guide">
+        <a href="#g-premier">Premier pas</a><a href="#g-stock">Stock</a><a href="#g-saisie">Saisie rapide</a><a href="#g-magasin">Magasin</a><a href="#g-recettes">Recettes</a><a href="#g-taches">Tâches</a><a href="#g-historique">Historique</a><a href="#g-labo">Labo</a><a href="#g-matieres">Matières</a><a href="#g-fournisseurs">Fournisseurs</a><a href="#g-tournee">Tournée</a><a href="#g-journal">Journal</a><a href="#g-reglages">Réglages</a><a href="#g-synchro">Synchronisation</a><a href="#g-journee">Nouvelle journée</a>
+      </nav>
 
-      <div style="margin-bottom:20px">
-        <div style="font-family:var(--serif);font-size:15px;color:var(--brown);margin-bottom:10px">🍞 Module Fournil</div>
+      <section class="guide-first" id="g-premier" aria-labelledby="g-premier-t">
+        <h3 id="g-premier-t">Premier pas en 3 minutes</h3>
+        <ol class="guide-steps">
+          <li><strong>Choisis un écran.</strong> En bas (sur ordinateur, à gauche) : Stock, Recettes, Tâches, Labo, et « Plus » pour tout le reste (Magasin, Bureau, Réglages…).</li>
+          <li><strong>Entre ton stock du matin.</strong> Stock → Saisie rapide : tape « 40 viennoises, 300 croissants », touche « Voir l'aperçu », vérifie, puis « Enregistrer ».</li>
+          <li><strong>Prépare la journée.</strong> Magasin : pour chaque produit, la base / jour (ce qui part chaque jour) et les commandes du jour. Le Stock affiche alors ce qui reste disponible.</li>
+          <li><strong>Vérifie que c'est enregistré.</strong> En haut de l'écran, « Synchronisé » veut dire que tout est arrivé sur le serveur.</li>
+        </ol>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">❄️ Stock</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Affiche le stock disponible au congélateur. La carte alterne entre le stock restant et ce qui a été sorti. Appuie sur ✏️ pour ajouter de la production — la quantité s'additionne au stock existant. Les boutons ↑ ↓ permettent de réordonner les produits.</div></div>
+      <section class="guide-tool" id="g-stock" aria-labelledby="g-stock-t">
+        <h3 id="g-stock-t">Stock</h3>
+        <p>Chaque carte montre le stock disponible au congélateur (stock moins la base / jour et les commandes) et ce qui sort aujourd'hui. Sous chaque produit : − et + pour corriger d'une pièce, et « Retrait avec motif » pour une perte, une casse, un don ou une dégustation.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Une plaque de 6 brioches tombe : « Retrait avec motif » sur Brioche, 6, motif « Casse ». Le stock baisse de 6 et l'historique garde la raison.</p>
+        <h4>Pièges courants</h4>
+        <ul class="guide-traps">
+          <li>Le stock ne descend jamais sous 0 : si tu retires plus que ce qu'il y a, l'appli te prévient avant.</li>
+          <li>✏️ sert à ajouter une production et à régler le seuil d'alerte (0 possible).</li>
+        </ul>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🛒 Magasin</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Swipe gauche/droite sur chaque carte pour alterner entre <b>Base/jour</b> (sortie fixe quotidienne) et <b>Commande du jour</b> (extra). Le total se soustrait automatiquement du stock au changement de journée.</div></div>
+      <section class="guide-tool" id="g-saisie" aria-labelledby="g-saisie-t">
+        <h3 id="g-saisie-t">Saisie rapide (texte ou voix)</h3>
+        <p>En haut du Stock : choisis AJOUTER ou RETIRER, puis écris ou dicte (bouton micro) tout en une fois. L'appli reconnaît chaque produit, même au pluriel, sans accents ou avec une petite faute, et montre un aperçu avant d'enregistrer.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">« 40 viennoises, 50 chaussons, 200 pains au chocolat, 300 croissants » : quatre lignes, avec l'ancien et le nouveau stock. « Chausson » n'existe pas encore : il porte le badge « nouveau produit » et sera créé.</p>
+        <h4>Pièges courants</h4>
+        <ul class="guide-traps">
+          <li>« -20 croissants » retire cette ligne, même en mode AJOUTER.</li>
+          <li>Un nombre sans produit (« 25 ») ou un nom trop vague (« 30 pains ») est signalé : choisis le produit ou retire la ligne.</li>
+        </ul>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">✅ Tâches</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Les tâches <b>Auto</b> apparaissent quand un stock est bas — cocher une tâche auto ouvre une fenêtre pour saisir la quantité produite. Les tâches manuelles se créent avec <b>+</b> avec une catégorie (🧼 Nettoyage, 🔧 Maintenance, 📦 Production…). Les tâches venant de la Gestion ont un badge violet 📋. Les tâches validées sont archivées en bas par catégorie. Boutons ↑ ↓ pour réordonner.</div></div>
+      <section class="guide-tool" id="g-magasin" aria-labelledby="g-magasin-t">
+        <h3 id="g-magasin-t">Magasin</h3>
+        <p>Pour chaque produit, la base / jour et les commandes du jour. Le total part du stock à la nouvelle journée.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Croissant : base 40, commande 6 du Café du Marché. Total 46 : demain matin, 46 croissants seront retirés du stock.</p>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🧮 Recettes</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Convertisseur de recettes, <b>partagé avec le Labo</b> — une recette ajoutée d'un côté est visible immédiatement de l'autre, sur tous les appareils. Onglet <b>Bibliothèque</b> pour enregistrer une recette (à la main ou en important un PDF avec texte sélectionnable) et onglet <b>Calculateur</b> pour demander n'importe quel poids ou nombre de pièces. L'historique des calculs peut être supprimé ligne par ligne (🗑️).</div></div>
+      <section class="guide-tool" id="g-recettes" aria-labelledby="g-recettes-t">
+        <h3 id="g-recettes-t">Recettes</h3>
+        <p>Les recettes sont partagées entre le Fournil et le Labo. Outils : Bibliothèque, Calcul, Température de base, Levain, Hydratation, Produit en croix. « Mes recettes : exporter / importer » échange tes recettes avec Grigne.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Calcul → Baguette de tradition → Poids total 15 kg : le tampon affiche 15 kg de pâte et la liste à peser, en commençant par la farine.</p>
+        <h4>Pièges courants</h4>
+        <ul class="guide-traps">
+          <li>Garde le mot « farine » dans le nom de chaque farine : c'est la base des calculs.</li>
+        </ul>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📈 Historique</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Toutes les sorties et rechargements par produit et par date. Filtre par produit avec les boutons en haut. Bouton <b>🗑️ Tout effacer</b> pour vider l'historique du filtre actif (avec confirmation), ou 🗑️ sur une ligne pour supprimer une seule entrée.</div></div>
+      <section class="guide-tool" id="g-taches" aria-labelledby="g-taches-t">
+        <h3 id="g-taches-t">Tâches et notes de l'équipe</h3>
+        <p>Les tâches automatiques (« Réapprovisionner… ») apparaissent quand un produit passe sous son seuil. Les tâches du jour se rangent par catégorie. La bulle 💬 ouvre les notes de l'équipe, écrites ou vocales.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">« + » → « Nettoyer le laminoir », catégorie Nettoyage. Une fois fait, coche-la : elle passe dans l'historique des tâches.</p>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📅 Calendrier</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Vue mensuelle avec code couleur de charge : 🟢 léger, 🟠 chargé, 🔴 surcharge selon le nombre de pièces commandées. Appuie sur ⚙️ Seuils pour personnaliser les limites. Les commandes à livrer le lendemain apparaissent en rouge pour anticiper la production.</div></div>
+      <section class="guide-tool" id="g-historique" aria-labelledby="g-historique-t">
+        <h3 id="g-historique-t">Historique et calendrier</h3>
+        <p>L'historique liste, jour par jour, les sorties, les rechargements, les retraits avec motif et les saisies rapides. Le calendrier colore chaque jour selon la charge des commandes.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Touche « Croissant » dans les filtres pour ne voir que ses mouvements de la semaine.</p>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">⚙️ Produits</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Ajoute, modifie (✏️) ou supprime des produits. Boutons ↑ ↓ pour réordonner.</div></div>
+      <section class="guide-tool" id="g-labo" aria-labelledby="g-labo-t">
+        <h3 id="g-labo-t">Labo pâtisserie</h3>
+        <p>Le Labo a son propre stock, son magasin, ses tâches et son historique, avec ses onglets en haut de l'écran. Les recettes sont les mêmes que celles du Fournil.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Labo → Stock → Tarte aux fraises : + pour chaque tarte sortie du four.</p>
+        <h4>Pièges courants</h4>
+        <ul class="guide-traps">
+          <li>Dans le Labo, ajoute tes tâches avec l'onglet Tâches du Labo : « Tâches » dans la barre du bas ouvre celles du Fournil.</li>
+        </ul>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">💬 Notes d'équipe</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">La bulle marron en bas à droite ouvre les notes. Messages texte signés + zone de notes libres. Bouton 🎙️ <b>Journal vocal</b> : enregistre jusqu'à 30s, le message audio est conservé et écoutable. Bouton <b>Retranscrire</b> pour convertir en texte.</div></div>
-      </div>
+      <section class="guide-tool" id="g-matieres" aria-labelledby="g-matieres-t">
+        <h3 id="g-matieres-t">Matières premières</h3>
+        <p>Farine, beurre, levure… avec leur unité, leur seuil et leur date limite (DLC). « Utiliser » retire ce que tu consommes ; + enregistre une livraison.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Livraison de 20 kg de beurre : appuie 20 fois sur + du Beurre AOP, ou fais un « Retrait avec motif » pour corriger une erreur.</p>
+      </section>
 
-      <div style="margin-bottom:20px">
-        <div style="font-family:var(--serif);font-size:15px;color:#7BB8F0;margin-bottom:10px">📋 Module Gestion</div>
+      <section class="guide-tool" id="g-fournisseurs" aria-labelledby="g-fournisseurs-t">
+        <h3 id="g-fournisseurs-t">Commandes fournisseurs</h3>
+        <p>La liste « À commander cette semaine » compare le stock à la consommation prévue de chaque matière.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Beurre : 8 kg en stock, 20 kg par semaine → 12 kg à commander. « Copier la liste de commande » la met dans le presse-papiers pour un message ou un e-mail.</p>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🌾 Matières premières</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Suivi des stocks de farine, beurre, levure… Saisis la quantité à utiliser et appuie sur <b>Utiliser</b>. Bouton ✏️ pour modifier une matière. Alertes DLC en orange (&lt;7 jours) ou rouge (expiré). Boutons ↑ ↓ pour réordonner.</div></div>
+      <section class="guide-tool" id="g-tournee" aria-labelledby="g-tournee-t">
+        <h3 id="g-tournee-t">Tournée et commandes clients</h3>
+        <p>Une commande client a un nom, une adresse, une date et un détail. « Envoyer au fournil » crée une tâche pour le boulanger ; quand il la coche, la commande passe à « Validée ».</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Café du Marché, demain 7 h, « 40 croissants, 20 pains au chocolat » → Envoyer au fournil. « Lancer la tournée » ouvre l'itinéraire de toutes les livraisons.</p>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📦 Fournisseurs</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Calcul automatique des commandes selon la consommation hebdomadaire vs stock actuel. Bouton <b>📋 Copier la liste</b> pour envoyer la commande par SMS ou email au fournisseur.</div></div>
+      <section class="guide-tool" id="g-journal" aria-labelledby="g-journal-t">
+        <h3 id="g-journal-t">Journal et statistiques</h3>
+        <p>Le journal garde, jour par jour, la production et une observation, enregistrée toute seule pendant que tu tapes. Les statistiques résument les 7 derniers jours.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">« Pousse longue ce matin, four à 200 °C » : ‹ et › pour relire les jours précédents.</p>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🧁 Commandes clients</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Crée une commande avec nom, adresse, date et détail des produits. Bouton ✏️ pour modifier. Bouton <b>📤 Envoyer au fournil</b> crée une tâche automatique côté boulanger. Quand la tâche est validée, le statut passe en Validé ici en temps réel. Bouton <b>🗺️ Lancer la tournée</b> ouvre Google Maps avec toutes les adresses optimisées.</div></div>
+      <section class="guide-tool" id="g-reglages" aria-labelledby="g-reglages-t">
+        <h3 id="g-reglages-t">Réglages</h3>
+        <p>Ajoute, modifie ou supprime les produits ; ↑ ↓ pour les ranger. En bas : « Remettre tout le stock à zéro » (Fournil, Labo et matières ; les produits et les recettes restent).</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Nouveau produit : « Chausson aux pommes », seuil 10, base / jour 24. Il apparaît aussitôt dans le Stock et le Magasin.</p>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📋 Journal de production</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Note les quantités produites par produit chaque jour + observations libres (température du four, problème de pousse…). Navigue entre les jours avec les flèches ‹ ›.</div></div>
+      <section class="guide-tool" id="g-synchro" aria-labelledby="g-synchro-t">
+        <h3 id="g-synchro-t">Synchronisation et hors ligne</h3>
+        <p>Chaque saisie est gardée sur l'appareil, puis envoyée au serveur. En haut : « Synchronisé » (tout est arrivé), « Pas encore envoyé », « Hors ligne » (envoi au retour du réseau) ou « Erreur d'envoi » avec un message et le bouton « Réessayer ».</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Plus de réseau au fond du fournil : tu ajoutes une tâche, l'en-tête affiche « Hors ligne · pas encore envoyé ». Dès que le téléphone retrouve le réseau, il passe à « Synchronisé ».</p>
+      </section>
 
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📊 Stats hebdomadaires</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Résumé des 7 derniers jours : quantité sortie du congélateur et quantité produite par produit.</div></div>
-      </div>
-
-      <div style="margin-bottom:20px">
-        <div style="font-family:var(--serif);font-size:15px;color:#C080FF;margin-bottom:10px">🍰 Module Labo Pâtisserie</div>
-
-        <div style="font-size:13px;color:var(--ink);line-height:1.5;margin-bottom:10px">Le Labo a exactement les mêmes fonctionnalités que le Fournil, mais pour la pâtisserie. Les données sont totalement séparées — les produits, stocks et historiques pâtisserie sont indépendants de la boulangerie.</div>
-
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">❄️ Stock</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Même fonctionnement que le Fournil — flip animé, indicateurs colorés, bouton ✏️ pour réapprovisionner, boutons ↑ ↓ pour réordonner.</div></div>
-
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">🛒 Magasin</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Sorties journalières pâtisserie — base/jour et commandes du jour avec swipe gauche/droite.</div></div>
-
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">✅ Tâches</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Tâches automatiques quand un stock pâtisserie est bas, tâches manuelles avec catégories, historique des tâches effectuées.</div></div>
-
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📈 Histo & 📅 Calendrier</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Historique des sorties et rechargements pâtisserie. Calendrier dédié avec les événements du labo.</div></div>
-
-        <div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">📖 Recettes</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">La même bibliothèque de recettes que le Fournil — mêmes recettes, même calculateur, synchronisés en temps réel entre les deux modules.</div></div>
-
-        <div style="margin-bottom:0"><div style="font-weight:600;font-size:13px;color:var(--brown-mid);margin-bottom:4px">⚙️ Produits</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">Ajoute, modifie ou supprime tes produits pâtisserie (entremets, tartes, macarons…). Produits par défaut fournis au démarrage.</div></div>
-      </div>
-
-      <div style="background:var(--cream);border-radius:12px;padding:12px 14px">
-        <div style="font-weight:600;font-size:12px;color:var(--brown-mid);margin-bottom:6px">💡 Astuces</div>
-        <div style="font-size:12px;color:var(--brown-light);line-height:1.7">
-          • Ajoute l'appli à l'écran d'accueil iPhone : Safari → Partager → Sur l'écran d'accueil<br>
-          • Les données sont synchronisées en temps réel entre tous les appareils via Firebase<br>
-          • Bouton 🔄 en haut à gauche pour forcer une actualisation immédiate depuis n'importe quel écran<br>
-          • Le point vert en haut de l'accueil = synchronisation active<br>
-          • Boutons ↑ ↓ pour réordonner produits, tâches, matières et commandes<br>
-          • Le Labo et le Fournil ont des données séparées — la Gestion est commune aux deux<br>
-          • Le calendrier affiche la charge de travail en couleur selon les commandes clients<br>
-          • La tournée GPS ouvre Google Maps avec l'itinéraire optimisé automatiquement<br>
-          • Journal vocal : appuie 🎙️ dans les notes, parle 30s, puis "Retranscrire" pour le texte
-        </div>
-      </div>
-
+      <section class="guide-tool" id="g-journee" aria-labelledby="g-journee-t">
+        <h3 id="g-journee-t">Nouvelle journée</h3>
+        <p>Chaque matin, les sorties de la veille (base / jour et commandes) sont retirées du stock toutes seules. Si l'appli n'a pas été ouverte depuis plusieurs jours, elle te demande combien de jours retirer (1 proposé, 0 si personne n'a travaillé).</p>
+        <p class="guide-note">Affichage : bouton lune / soleil pour le mode sombre, « Aa » pour la Lecture facile (police plus lisible).</p>
+      </section>
     </div>
   </div>
 </div>
@@ -3169,6 +3210,7 @@ function champManquant(id,message){
 }
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2500);}
 
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.guide-toc a');if(!a)return;e.preventDefault();const c=document.getElementById(a.getAttribute('href').slice(1));if(c)c.scrollIntoView({block:'start'});});
 function openHelp(){const el=document.getElementById('helpOverlay');if(el){el.style.display='flex';}}
 function closeHelp(){const el=document.getElementById('helpOverlay');if(el){el.style.display='none';}}
 
