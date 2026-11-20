@@ -1,3 +1,5 @@
+// Test unitaire repris de Grigne (~/grigne/tests/unit), chemins adaptés à recettes/src :
+// vérifie que les calculs du module Recettes donnent exactement les mêmes résultats.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { makeExampleRecipes } from '../../recettes/src/core/examples.js';

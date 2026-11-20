@@ -1,0 +1,131 @@
+# Architecture de Fournil
+
+## Vue d'ensemble
+
+Fournil est une seule page web (`index.html`), servie telle quelle par GitHub Pages, sans
+étape de construction. Le navigateur charge :
+
+1. `assets/js/theme.js` et `assets/js/date.js` dans `<head>` (thème et date de Paris dès le
+   premier rendu) ;
+2. Firebase 9.23 « compat » (bibliothèque de Google, chargée depuis gstatic) ;
+3. le **script principal**, en fin de `index.html` : état, écrans, enregistrement ;
+4. les modules ajoutés autour de lui, sans modifier ses fonctions :
+   `recettes/recettes.js`, `assets/js/synchro.js`, `assets/js/jour.js`,
+   `assets/js/saisie-rapide.js`, `assets/js/stock.js`, `assets/js/navigation.js`.
+
+Ces modules se branchent sur les fonctions existantes (`openModule`, `sw`, `swL`, `swB`,
+`renderStock`, `initFirebase`…) en les enveloppant : la logique d'origine reste en place.
+
+## Modules (ce que voit l'utilisateur)
+
+| Module | Écrans | Fonctions principales |
+|---|---|---|
+| Fournil | Stock, Magasin, Recettes, Tâches, Historique, Calendrier, Réglages | `sw(onglet)`, `renderStock`, `renderMagasin`, `renderTasks`… |
+| Labo pâtisserie | ses propres onglets (stock, magasin, recettes, tâches, historique, calendrier, réglages) | `swL(onglet)`, `renderLabo…` |
+| Bureau | Matières premières, Fournisseurs, Tournée (commandes clients), Journal, Stats | `swB(onglet)`, `renderMatieres`, `renderCmdClients`… |
+| Recettes | Bibliothèque, Calcul, Température, Levain, Hydratation, Produit en croix (écrans de Grigne) | `recettes/recettes.js` |
+
+Navigation : barre du bas sur mobile (Stock, Recettes, Tâches, Labo, Plus), barre latérale
+sur ordinateur (`assets/js/navigation.js`) ; le bouton retour du téléphone revient à l'écran
+précédent.
+
+## Rôle de chaque fichier
+
+| Fichier | Rôle |
+|---|---|
+| `index.html` | page unique : HTML des écrans, styles d'origine, script principal |
+| `assets/css/fournil-grigne.css` | style de Grigne (palette claire et sombre, Lecture facile), chargé après les styles d'origine |
+| `assets/css/fonts.css`, `assets/fonts/` | polices hébergées avec le site (Young Serif, Hanken Grotesk, OpenDyslexic) |
+| `assets/img/encre*.svg` | masques d'usure du tampon des recettes |
+| `assets/js/theme.js` | thème clair / sombre et Lecture facile, mémorisés sur l'appareil |
+| `assets/js/date.js` | date du jour à l'heure de Paris, jours précédent / suivant |
+| `assets/js/navigation.js` | barre du bas / barre latérale, menu « Plus », bouton retour |
+| `assets/js/synchro.js` | état réel de l'enregistrement, bandeau d'erreur, « Réessayer » |
+| `assets/js/jour.js` | passage au jour suivant (sorties de la veille, plusieurs jours manqués) |
+| `assets/js/stock.js` | remise à zéro, − / +, retrait avec motif, saisie rapide (interface) |
+| `assets/js/saisie-rapide.js` | reconnaissance du texte de la saisie rapide (fonctions pures) |
+| `recettes/src/` | fichiers de Grigne copiés **sans modification** (vérifié par un test) |
+| `recettes/adaptation/` | ce qui est propre à Fournil : lecture / écriture de `boulangerie/recettes`, PDF, export / import, styles |
+| `recettes/recettes.js`, `recettes/recettes.css` | **générés** par `tools/importer-grigne.mjs` (ne pas modifier à la main) |
+| `vendor/pdfjs/` | PDF.js 3.11.174 (fichiers officiels), chargé seulement au premier import de PDF |
+| `firebase.json`, `firebase/` | règles de sécurité Firestore (actuelles et précédentes) |
+| `tests/` | tests (jsdom et Chromium) avec un faux Firebase |
+| `tools/` | outils : captures, audit d'accessibilité, vérification du site, import de Grigne |
+| `docs/` | format d'échange des recettes, héritage du style de Grigne, code mort |
+
+## Données dans Firestore
+
+Projet `fournils-5e5d1`, collection `boulangerie`, trois documents. Chaque document range
+son contenu sous forme de **texte JSON** dans un seul champ.
+
+| Document | Champ | Contenu |
+|---|---|---|
+| `boulangerie/state` | `state` | l'état du Fournil et du Bureau (`S`) |
+| `boulangerie/labo` | `state` | l'état du Labo (`L`) |
+| `boulangerie/recettes` | `recipes`, `calcHistory` | recettes et historique des calculs (partagés Fournil et Labo) |
+
+Contenu de `S` (Fournil et Bureau) :
+
+```text
+products[]     { id, name, emoji, stockReel, base, commande, seuil, recipeUrl? }
+tasks[]        { id, text, done, auto, cat, pid?, fromGestion?, cmdId? }
+lastDate       "AAAA-MM-JJ" : dernier passage au jour suivant (heure de Paris)
+history[]      { id, date, type, pid, name, emoji, qty, … }  630 lignes au plus
+                 type : sortie, recharge, ajustement (delta), retrait (motif, note),
+                        raz (remise à zéro), saisie (lignes[] de la saisie rapide)
+notes[]        { id, author, text, time, audioUrl?, isVocal?, transcription? }
+boulangers[], freeNotes
+journal        { "AAAA-MM-JJ": { obs, produits: { idProduit: quantité } } }
+histoTaches[]  { id, text, cat, date, time }  200 lignes au plus
+matieres[]     { id, name, emoji, unit, stock, seuil, conso, dlc, consoDuJour? }
+cmdClients[]   { id, nom, adresse, date, heure, detail, status, createdAt }
+seuilsCharge   { low, mid }
+thermos[]      ancienne fonction (retirée), gardée pour ne pas changer le format
+```
+
+`L` (Labo) : `products[]`, `tasks[]`, `lastDate`, `history[]`, `histoTaches[]`, mêmes formes.
+
+Recettes : `{ id, name, ingredients: [{ id, name, qtyG }], notes, tb }`, quantités en
+grammes ; format d'échange avec Grigne dans [docs/format-export.md](docs/format-export.md).
+
+Limite à surveiller : un document Firestore ne peut pas dépasser 1 Mo ; estimation et
+propositions dans [docs/taille-des-donnees.md](docs/taille-des-donnees.md).
+
+## Synchronisation et hors ligne
+
+- **Lecture** : écoute en temps réel des trois documents (`onSnapshot`) ; chaque nouvelle
+  version remplace l'état en mémoire et redessine l'écran ouvert.
+- **Écriture** : `save()` (Fournil), `saveL()` (Labo) et `recettes/adaptation/state.js`
+  envoient le document entier. Chaque envoi est suivi jusqu'à la confirmation du serveur
+  par `assets/js/synchro.js`.
+- **Hors ligne** : la persistance de Firestore est activée (`enablePersistence`, onglets
+  synchronisés). Une saisie faite sans réseau est gardée sur l'appareil, même après
+  fermeture, puis envoyée au retour du réseau.
+- **État affiché** dans chaque en-tête : « Synchronisé » (tout est arrivé), « Pas encore
+  envoyé », « Hors ligne », « Erreur d'envoi » (bandeau avec la cause et « Réessayer »).
+- **Passage au jour suivant** (`assets/js/jour.js`) : sur les données reçues, dans une
+  transaction Firestore pour ne jamais retirer deux fois les sorties si deux appareils
+  s'ouvrent en même temps ; hors ligne, appliqué sur l'appareil.
+- **Dernier écrit gagnant** : deux appareils qui modifient le même document au même moment
+  peuvent s'écraser, puisque le document est envoyé en entier. Le temps réel rend ce cas rare.
+
+## Sécurité
+
+- **Règles Firestore** (`firebase/firestore-fournil.rules`) : seul le compte du
+  propriétaire (identifiant précis) lit et écrit `boulangerie/*` ; tout le reste est refusé.
+- **Comptes** : connexion par e-mail et mot de passe (Firebase Auth). L'inscription libre
+  est désactivée ; un compte se crée à la main dans la console.
+- **Configuration Firebase** dans `index.html` : publique par nature (clé web), la
+  protection vient des règles. Bonne pratique conseillée : restreindre la clé aux adresses
+  du site dans la console Google Cloud.
+- **Échappement à l'affichage** : tout texte venu des données passe par `esc()` avant
+  d'entrer dans du HTML, et tout identifiant mis dans un `onclick` par `escJ()`.
+  `tests/test_echappement.js` piège toutes les données et ouvre tous les écrans.
+- **CSP** : Fournil n'a **pas encore** de politique de sécurité du contenu (Content
+  Security Policy), car le code utilise des gestionnaires `onclick` et des styles écrits
+  dans le HTML. En ajouter une demande de déplacer ces gestionnaires dans les scripts
+  (chantier proposé, voir le rapport).
+- **Dépendances** : aucune à l'exécution, à part Firebase (Google) et PDF.js (hébergé avec
+  le site). `node_modules` ne sert qu'aux tests.
+- **Accessibilité** : aucune violation axe (WCAG 2.1 A et AA) sur tous les écrans, en clair,
+  en sombre et en Lecture facile (`tools/audit-accessibilite.cjs`).
