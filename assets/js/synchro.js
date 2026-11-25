@@ -14,7 +14,7 @@
     connecte: false, // données reçues au moins une fois
     persistance: 'inconnue',
   };
-  const NOMS = { state: 'Fournil', labo: 'Labo', recettes: 'Recettes' };
+  const NOMS = { state: 'Fournil', stock: 'Stock', labo: 'Labo', recettes: 'Recettes', calculs: 'Calculs' };
 
   function messageErreur(e) {
     const code = (e && e.code) || '';
@@ -49,10 +49,11 @@
   }
 
   // Écritures en attente signalées par Firestore (aussi celles d'avant un rechargement).
-  function surveiller(base) {
+  // docs : documents lisibles par ce compte (assets/js/acces.js, selon le rôle).
+  function surveiller(base, docs = ['state', 'labo', 'recettes']) {
     if (!base || surveiller.fait) return;
     surveiller.fait = true;
-    Object.keys(NOMS).forEach((d) => {
+    docs.forEach((d) => {
       try {
         base.collection('boulangerie').doc(d).onSnapshot({ includeMetadataChanges: true }, (snap) => {
           etat.enAttente[d] = !!(snap && snap.metadata && snap.metadata.hasPendingWrites);
@@ -163,7 +164,10 @@
     if (typeof f === 'function') {
       window.initFirebase = function (...args) {
         const r = f.apply(this, args);
-        try { surveiller(typeof db !== 'undefined' ? db : null); } catch (e) { /* hors ligne au démarrage */ }
+        // avec acces.js, les écoutes de suivi démarrent une fois le rôle connu
+        if (!window.fournilAcces) {
+          try { surveiller(typeof db !== 'undefined' ? db : null); } catch (e) { /* hors ligne au démarrage */ }
+        }
         return r;
       };
     }

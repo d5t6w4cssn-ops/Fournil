@@ -1,7 +1,7 @@
 // Point d'entrée du module Recettes de Fournil : les écrans de Grigne (copiés sans
 // modification dans recettes/src/ui) branchés sur boulangerie/recettes par state.js.
 // Partagé par le Fournil et le Labo (même section #tab-recettes, mêmes données).
-import { state, init, applyRemote, isEditing, onSaveStatus } from './state.js';
+import { state, init, applyRemote, isEditing, onSaveStatus, appliquerCalculs } from './state.js';
 import { renderLibrary } from './ui/library.js';
 import { renderCalculator } from './ui/calculator.js';
 import { renderTB } from './ui/tb.js';
@@ -9,6 +9,7 @@ import { renderLevain } from './ui/levain.js';
 import { renderHydra } from './ui/hydra.js';
 import { renderCroix } from './ui/cross.js';
 import { renderEchange } from './echange.js';
+import { renderSaisieCalculs } from './saisie-calculs.js';
 
 const TABS = ['library', 'calculator', 'tb', 'levain', 'hydra', 'croix'];
 const RENDERERS = {
@@ -36,6 +37,7 @@ function render() {
   });
   RENDERERS[state.tab]();
   if (state.tab === 'library') renderEchange(render);
+  if (state.tab === 'calculator') renderSaisieCalculs(render);
 }
 
 function setupTabs() {
@@ -73,6 +75,11 @@ if (root) {
   window.rcApplyRemote = (data) => {
     applyRemote(data);
     if (!isEditing()) render();
+  };
+  // Calculs partagés (rôle « équipe », assets/js/acces.js) : liste reçue, ou null.
+  window.rcAppliquerCalculs = (liste) => {
+    appliquerCalculs(liste);
+    if (!isEditing() && state.tab === 'calculator') render();
   };
   // Pour les autres modules (ex. ouverture de l'onglet) : redessine l'écran en cours.
   window.rcRender = render;

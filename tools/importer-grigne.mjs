@@ -34,13 +34,24 @@ const AUTRES_COPIES = [
   ['assets/img/encre-legere.svg', 'assets/img/encre-legere.svg'],
 ];
 // Fichiers de Grigne remplacés par une adaptation Fournil (même interface).
-const ADAPTATIONS = ['state.js', 'pdf.js', 'echange.js', 'app.js'];
+const ADAPTATIONS = ['state.js', 'pdf.js', 'echange.js', 'app.js', 'fiche.js', 'saisie-calculs.js'];
 const VERIFIER = process.argv.includes('--verifier');
 // Remplacements faits à l'assemblage, sans toucher aux copies de recettes/src (qui restent
 // identiques à Grigne). Chacun doit trouver son texte exactement une fois.
 const REMPLACEMENTS = {
   // le texte en arc en bas du tampon : « FOURNIL » dans Fournil (décision du 20 novembre 2026)
   'ui/dom.js': [['>GRIGNE</textPath>', '>FOURNIL</textPath>']],
+  // allergènes sur chaque recette de la Bibliothèque (recettes/adaptation/fiche.js)
+  'ui/library.js': [
+    ["import { state, saveRecipes } from '../state.js';", "import { state, saveRecipes } from '../state.js';\nimport { decorerRecette } from '../fiche.js';"],
+    ['  row.querySelector(\'.calc-btn\').onclick = () => openInCalculator(r);', '  decorerRecette(row, r);\n  row.querySelector(\'.calc-btn\').onclick = () => openInCalculator(r);'],
+  ],
+  // feuilles de calcul : auteur des calculs partagés, PDF, allergènes (recettes/adaptation/fiche.js)
+  'ui/calculator.js': [
+    ["import { state, saveHistory } from '../state.js';", "import { state, saveHistory } from '../state.js';\nimport { decorerCalcul, decorerResultat } from '../fiche.js';"],
+    ['    list.appendChild(row);\n  });\n  hroot.appendChild(list);', '    decorerCalcul(row, h);\n    list.appendChild(row);\n  });\n  hroot.appendChild(list);'],
+    ["  if (coefficient) {\n    rroot.querySelector('.save-calc-btn')", "  decorerResultat(rroot, recipe, s, calc);\n  if (coefficient) {\n    rroot.querySelector('.save-calc-btn')"],
+  ],
 };
 let differences = 0;
 function ecrireSortie(relatif, contenu) {

@@ -52,9 +52,13 @@
 
   const MODULES = {
     fournil: {
-      nom: 'Fournil', doc: 'state', prefixe: 'h_',
-      get: () => S,
-      set: (v) => { S = v; normalizeState(); },
+      // après la migration « équipe », le stock du Fournil est dans boulangerie/stock
+      // (assets/js/acces.js) ; avant, tout est dans boulangerie/state
+      nom: 'Fournil', prefixe: 'h_',
+      get doc() { return window.fournilAcces ? window.fournilAcces.jour.doc() : 'state'; },
+      get: () => (window.fournilAcces ? window.fournilAcces.jour.get() : S),
+      set: (v, serveur) => { if (window.fournilAcces) window.fournilAcces.jour.set(v, serveur); else { S = v; normalizeState(); } },
+      pret: () => !window.fournilAcces || window.fournilAcces.jour.pret(),
       enregistrer: () => save(),
       afficher: () => { if (activeModule === 'fournil') render(); },
     },
@@ -94,7 +98,7 @@
         }
       }
       if (resultat) {
-        m.set(resultat.etat);
+        m.set(resultat.etat, true);
       } else {
         const actuel = m.get();
         if (actuel.lastDate === auj) return;
@@ -124,6 +128,7 @@
   function verifierSiRecu(mod) {
     if (!recu[mod]) return;
     const m = MODULES[mod];
+    if (m.pret && !m.pret()) return; // équipe avant la migration : rien à faire ici
     let etat;
     try { etat = m.get(); } catch (e) { return; }
     if (!etat) return;

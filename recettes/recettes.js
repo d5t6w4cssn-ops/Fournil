@@ -32,6 +32,9 @@ __modules["state.js"] = (function () {
 //   recipes     : JSON texte d'une liste { id, name, ingredients: [{ id, name, qtyG }], notes, tb? }
 //   calcHistory : JSON texte d'une liste { id, timestamp, recipeName, label, targetG, coefficient, basis, breakdown }
 // Rien n'est nettoyé ni réécrit à la lecture : une donnée inattendue est gardée telle quelle.
+// Rôle « équipe » (assets/js/acces.js) : après la migration, les calculs enregistrés sont
+// partagés, un document par calcul dans la collection calculs/ (auteur et prénom) ; le champ
+// calcHistory n'est plus utilisé. L'équipe ne peut pas modifier les recettes.
 const { uid } = __modules["core/text.js"];
 
 const STORAGE_KEY = 'fournil-recettes-v1';
@@ -123,13 +126,62 @@ async function ecrire(champ, valeur, cacheKey) {
   }
 }
 
+const acces = () => window.fournilAcces || null;
+const message = (t) => { if (typeof toast === 'function') toast(t); };
+let dernieresRecettes = null; // dernière version reçue du serveur
+let partage = null; // calculs partagés (collection calculs/) ; null : ancien format
+let historiqueAncien = []; // champ calcHistory (ancien format)
+const envoyes = new Map(); // calculs déjà envoyés, pas encore revenus du serveur (id → calcul)
+
 /** Enregistre les recettes (renvoie une promesse : true si Firestore a accepté). */
 function saveRecipes() {
+  const a = acces();
+  if (a && !a.peutModifierRecettes()) {
+    if (dernieresRecettes) state.recipes = JSON.parse(JSON.stringify(dernieresRecettes));
+    message('Les recettes sont en consultation seulement : demande au responsable pour les modifier.');
+    return Promise.resolve(false);
+  }
   return ecrire('recipes', state.recipes, STORAGE_KEY);
 }
 /** Enregistre l'historique des calculs. */
 function saveHistory() {
-  return ecrire('calcHistory', state.history, HISTORY_KEY);
+  const a = acces();
+  if (!partage || !a) return ecrire('calcHistory', state.history, HISTORY_KEY);
+  // calculs partagés : on compare avec la dernière liste reçue
+  const connus = new Set(partage.map((c) => c.id));
+  const ajoutes = state.history.filter((c) => !connus.has(c.id) && !envoyes.has(c.id));
+  if (ajoutes.length) {
+    // Un calcul ajouté (Grigne garde 20 lignes : celles qui tombent ne sont pas supprimées)
+    ajoutes.forEach((c) => {
+      a.creerCalcul(c);
+      envoyes.set(c.id, c);
+    });
+    state.history = [...state.history.filter((c) => !connus.has(c.id)), ...partage];
+    return Promise.resolve(true);
+  }
+  const gardes = new Set(state.history.map((c) => c.id));
+  const retires = [...partage, ...envoyes.values()].filter((c) => !gardes.has(c.id));
+  retires.forEach((c) => envoyes.delete(c.id));
+  let refuse = false;
+  retires.forEach((c) => {
+    if (!a.supprimerCalcul(c)) refuse = true;
+  });
+  if (refuse) {
+    message('Tu ne peux supprimer que tes propres calculs.');
+    state.history = partage.filter((c) => gardes.has(c.id) || !a.peutSupprimerCalcul(c));
+  }
+  return Promise.resolve(!refuse);
+}
+
+/**
+ * Calculs partagés reçus (assets/js/acces.js) : liste triée du plus récent au plus ancien,
+ * ou null pour revenir à l'ancien format (champ calcHistory).
+ */
+function appliquerCalculs(liste) {
+  partage = Array.isArray(liste) ? liste : null;
+  if (partage) partage.forEach((c) => envoyes.delete(c.id));
+  state.history = partage ? partage.slice() : historiqueAncien.slice();
+  ecrireCache(HISTORY_KEY, state.history);
 }
 
 /** Vrai quand l'utilisateur est en train de modifier une recette (on ne change pas la liste sous ses doigts). */
@@ -146,6 +198,7 @@ function applyRemote(data) {
       const r = JSON.parse(data.recipes);
       if (Array.isArray(r)) {
         state.recipes = r;
+        dernieresRecettes = JSON.parse(JSON.stringify(r));
         change = true;
       }
     }
@@ -156,8 +209,11 @@ function applyRemote(data) {
     if (data && typeof data.calcHistory === 'string') {
       const h = JSON.parse(data.calcHistory);
       if (Array.isArray(h)) {
-        state.history = h;
-        change = true;
+        historiqueAncien = h;
+        if (!partage) {
+          state.history = h;
+          change = true;
+        }
       }
     }
   } catch {
@@ -182,7 +238,7 @@ async function reloadFromServer() {
     return false;
   }
 }
-return { state, onSaveStatus, init, saveRecipes, saveHistory, isEditing, applyRemote, reloadFromServer };
+return { state, onSaveStatus, init, saveRecipes, saveHistory, appliquerCalculs, isEditing, applyRemote, reloadFromServer };
 })();
 
 // ===== recettes/src/core/units.js (copie de Grigne) =====
@@ -305,6 +361,155 @@ function computeScaling(recipe, calc) {
   return { referenceTotalG, flourG, usesFlourBasis, scale1kg, referenceBasisG, coefficient, targetG, factor };
 }
 return { isFlour, getFlourWeightG, getTotalG, computeTargetG, computeScaling };
+})();
+
+// ===== recettes/adaptation/fiche.js =====
+__modules["fiche.js"] = (function () {
+// Ajouts de Fournil sur les écrans de Grigne, sans modifier les fichiers copiés :
+// tools/importer-grigne.mjs insère quelques appels dans ui/calculator.js et ui/library.js.
+//   decorerCalcul(ligne, calcul)  : chaque calcul enregistré (auteur, droit de suppression,
+//                                   allergènes, bouton PDF)
+//   decorerResultat(zone, recette, mise, calc) : la feuille en cours (allergènes, bouton PDF)
+//   decorerRecette(ligne, recette) : chaque recette de la Bibliothèque (allergènes)
+// Les allergènes viennent de assets/js/allergenes.js, le PDF de assets/js/fiche-pdf.js :
+// il est fabriqué et téléchargé sur l'appareil, rien n'est envoyé en ligne.
+const { state } = __modules["state.js"];
+const { esc } = __modules["core/text.js"];
+const { isFlour } = __modules["core/recipe-math.js"];
+const { fixed } = __modules["core/units.js"];
+
+const acces = () => window.fournilAcces || null;
+const allergenes = (ingredients) => (window.FournilAllergenes ? window.FournilAllergenes.allergenes(ingredients) : []);
+const grammes = (g) => (window.FournilSaisieCalculs ? window.FournilSaisieCalculs.grammes(g) : `${g} g`);
+
+// ---------- allergènes ----------
+/** Bloc HTML des allergènes d'une liste d'ingrédients ({ name }). */
+function blocAllergenes(ingredients, compact = false) {
+  const liste = allergenes(ingredients);
+  const avert = window.FournilAllergenes ? window.FournilAllergenes.AVERTISSEMENT : '';
+  return `<div class="rc-allergenes" role="note">
+    <span class="rc-allergenes-k">Allergènes</span>
+    ${liste.length
+      ? `<ul class="rc-allergenes-liste">${liste.map((a) => `<li title="${esc(a.ingredients.join(', '))}">${esc(a.nom)}</li>`).join('')}</ul>`
+      : '<span class="rc-allergenes-aucun">aucun repéré</span>'}
+    ${compact ? '' : `<p class="rc-allergenes-avert">${esc(avert)}</p>`}
+  </div>`;
+}
+
+// ---------- PDF ----------
+const dateLisible = () => new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' });
+const dateFichier = () => (window.FournilDate ? window.FournilDate.dateParis() : new Date().toISOString().slice(0, 10));
+
+/**
+ * Données de la fiche à partir d'un calcul (même forme que les calculs enregistrés) :
+ * { recipeName, label, targetG, coefficient, basis, breakdown: [{ name, grams }], pieces? }
+ */
+function ficheDepuisCalcul(c) {
+  const recette = state.recipes.find((r) => r.name === c.recipeName) || null;
+  const lignes = (c.breakdown || []).map((b) => ({ name: b.name, grams: b.grams }));
+  const farines = lignes.filter((l) => isFlour(l));
+  const autres = lignes.filter((l) => !isFlour(l));
+  const infos = [];
+  if (Array.isArray(c.pieces) && c.pieces.length) {
+    c.pieces.forEach((p) => infos.push(`${p.count} ${p.label || 'pièce(s)'} × ${grammes(p.weight)} = ${grammes(p.count * p.weight)}`));
+  }
+  if (c.coefficient) infos.push(`Coefficient ×${fixed(c.coefficient, 2)}${c.basis === 'farine' ? ` (${grammes(c.coefficient * 1000)} de farine)` : ''}`);
+  const a = acces();
+  const qui = (c.auteurPrenom || (a && a.utilisateur().prenom) || '').trim();
+  return {
+    titre: c.recipeName || 'Feuille de calcul',
+    sousTitre: `${c.label ? `${c.label} · ` : ''}Feuille de calcul · ${dateLisible()}`,
+    infos,
+    ingredients: [...farines.map((l) => ({ nom: l.name, quantite: grammes(l.grams), enPremier: true })), ...autres.map((l) => ({ nom: l.name, quantite: grammes(l.grams) }))],
+    total: c.targetG ? grammes(c.targetG) : '',
+    allergenes: allergenes((recette ? recette.ingredients : lignes)),
+    avertissement: window.FournilAllergenes ? window.FournilAllergenes.AVERTISSEMENT : '',
+    notes: recette && recette.notes ? recette.notes : '',
+    pied: ['Fournil', qui, new Date().toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' })].filter(Boolean).join(' · '),
+  };
+}
+
+/** Fabrique le PDF d'un calcul et le télécharge sur l'appareil. */
+function telechargerPdf(calcul) {
+  const P = window.FournilFichePdf;
+  if (!P) return false;
+  const fiche = ficheDepuisCalcul(calcul);
+  const octets = P.octets(P.creerPdf(fiche));
+  const blob = new Blob([octets], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = P.nomFichier(fiche.titre, dateFichier());
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  if (typeof toast === 'function') toast('Fiche PDF téléchargée ✓');
+  return true;
+}
+
+const boutonPdf = (titre) => `<button type="button" class="btn-soft rc-pdf-btn" aria-label="Fiche PDF de ${esc(titre)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 13v5M10 13h1.5a1.5 1.5 0 0 1 0 3H10"/></svg> PDF</button>`;
+
+// ---------- décorations ----------
+/** Calcul enregistré : auteur, Supprimer seulement si permis, allergènes et PDF dans le détail. */
+function decorerCalcul(ligne, calcul) {
+  const a = acces();
+  if (calcul && calcul.auteurPrenom) {
+    const meta = ligne.querySelector('.meta');
+    if (meta) meta.insertAdjacentHTML('beforeend', ` · <span class="rc-auteur">par ${esc(calcul.auteurPrenom)}</span>`);
+  }
+  if (a && calcul && calcul.auteurUid && !a.peutSupprimerCalcul(calcul)) {
+    const del = ligne.querySelector('.del-btn');
+    if (del) del.remove();
+  }
+  const detail = ligne.querySelector('.calc-detail');
+  if (detail && calcul) {
+    const recette = state.recipes.find((r) => r.name === calcul.recipeName);
+    detail.insertAdjacentHTML('beforeend', `${blocAllergenes(recette ? recette.ingredients : calcul.breakdown)}<div class="rc-pdf-ligne">${boutonPdf(calcul.label || calcul.recipeName)}</div>`);
+    detail.querySelector('.rc-pdf-btn').onclick = (e) => { e.stopPropagation(); telechargerPdf(calcul); };
+  }
+}
+
+/** Feuille en cours (résultat du calcul de Grigne). */
+function decorerResultat(zone, recette, mise, calc) {
+  const carte = zone.querySelector('.result-card');
+  if (!carte || !recette) return;
+  const ref = carte.querySelector('.ref-line');
+  const html = blocAllergenes(recette.ingredients);
+  if (ref) ref.insertAdjacentHTML('beforebegin', html);
+  else carte.insertAdjacentHTML('beforeend', html);
+  if (!mise || !mise.factor) return;
+  const pieces = calc && calc.mode === 'pieces'
+    ? (calc.pieceRows || []).filter((p) => parseFloat(p.count) > 0 && parseFloat(p.weight) > 0)
+      .map((p) => ({ label: p.label, count: Number(String(p.count).replace(',', '.')), weight: Number(String(p.weight).replace(',', '.')) }))
+    : null;
+  const calcul = {
+    recipeName: recette.name,
+    label: null,
+    targetG: mise.targetG,
+    coefficient: mise.coefficient,
+    basis: mise.usesFlourBasis ? 'farine' : 'total',
+    breakdown: recette.ingredients.map((ing) => ({ name: ing.name, grams: ing.qtyG * mise.factor })),
+    pieces,
+  };
+  const rangee = carte.querySelector('.save-calc-row');
+  const bouton = document.createElement('div');
+  bouton.className = 'rc-pdf-ligne';
+  bouton.innerHTML = boutonPdf(recette.name);
+  bouton.querySelector('button').onclick = () => {
+    const nom = carte.querySelector('.calc-label-input');
+    telechargerPdf({ ...calcul, label: nom && nom.value.trim() ? nom.value.trim() : null });
+  };
+  if (rangee) rangee.insertAdjacentElement('afterend', bouton);
+  else carte.appendChild(bouton);
+}
+
+/** Recette de la Bibliothèque : allergènes sous les pastilles. */
+function decorerRecette(ligne, recette) {
+  const chips = ligne.querySelector('.meta.chips');
+  if (chips && recette) chips.insertAdjacentHTML('afterend', blocAllergenes(recette.ingredients, true));
+}
+return { blocAllergenes, ficheDepuisCalcul, telechargerPdf, decorerCalcul, decorerResultat, decorerRecette };
 })();
 
 // ===== recettes/src/core/parse.js (copie de Grigne) =====
@@ -630,6 +835,7 @@ return { icons, nextId, byId, el, intro, amount, stamp, resultCard, waitLine, qt
 // ===== recettes/src/ui/library.js (copie de Grigne) =====
 __modules["ui/library.js"] = (function () {
 const { state, saveRecipes } = __modules["state.js"];
+const { decorerRecette } = __modules["fiche.js"];
 const { esc, uid } = __modules["core/text.js"];
 const { formatGrams, toGrams, numVal } = __modules["core/units.js"];
 const { getFlourWeightG, getTotalG, isFlour } = __modules["core/recipe-math.js"];
@@ -777,6 +983,7 @@ function buildRecipeRow(r) {
       nb.setAttribute('aria-expanded', String(!nd.hidden));
     };
   }
+  decorerRecette(row, r);
   row.querySelector('.calc-btn').onclick = () => openInCalculator(r);
   row.querySelector('.edit-btn').onclick = () => {
     state.editingId = r.id;
@@ -1050,6 +1257,7 @@ return { renderLibrary };
 // ===== recettes/src/ui/calculator.js (copie de Grigne) =====
 __modules["ui/calculator.js"] = (function () {
 const { state, saveHistory } = __modules["state.js"];
+const { decorerCalcul, decorerResultat } = __modules["fiche.js"];
 const { esc, uid } = __modules["core/text.js"];
 const { formatGrams, fixed, numVal, NNBSP } = __modules["core/units.js"];
 const { getFlourWeightG, getTotalG, computeScaling, isFlour } = __modules["core/recipe-math.js"];
@@ -1309,6 +1517,7 @@ function renderResults() {
       }
     </article>
   `;
+  decorerResultat(rroot, recipe, s, calc);
   if (coefficient) {
     rroot.querySelector('.save-calc-btn').onclick = () => {
       const labelInput = rroot.querySelector('.calc-label-input');
@@ -1378,6 +1587,7 @@ function renderHistory() {
       saveHistory();
       renderHistory();
     };
+    decorerCalcul(row, h);
     list.appendChild(row);
   });
   hroot.appendChild(list);
@@ -2093,12 +2303,242 @@ function buildEchangeCard(){
 return { renderEchange };
 })();
 
+// ===== recettes/adaptation/saisie-calculs.js =====
+__modules["saisie-calculs.js"] = (function () {
+// Saisie rapide des calculs, en haut de l'écran Calcul (texte ou dictée), comme celle du
+// Stock : « 30 pains sportifs à 400 g, 20 campagnes à 500 g ».
+// 1. Aperçu : chaque ligne reconnue ; une recette au nom identique est reprise, une recette
+//    ambiguë ou inconnue est DEMANDÉE (liste à choisir), jamais devinée.
+// 2. Une feuille de calcul par recette (pas de total global), calculée avec les fonctions
+//    de Grigne (computeScaling, mode « pièces × poids »), poids non arrondis.
+// 3. Sur chaque feuille : PDF, allergènes, « Enregistrer » (calculs enregistrés, partagés
+//    avec l'équipe après la migration).
+// Reconnaissance du texte : assets/js/saisie-calculs.js (window.FournilSaisieCalculs).
+const { state, saveHistory } = __modules["state.js"];
+const { esc, uid } = __modules["core/text.js"];
+const { computeScaling, isFlour } = __modules["core/recipe-math.js"];
+const { fixed } = __modules["core/units.js"];
+const { blocAllergenes, telechargerPdf } = __modules["fiche.js"];
+
+const S = { texte: '', lignes: [], feuilles: null, enregistrees: new Set() };
+let rendreTout = () => {};
+const F = () => window.FournilSaisieCalculs;
+const message = (t) => { if (typeof toast === 'function') toast(t); };
+
+/** Affiche la carte (appelé à chaque affichage de l'écran Calcul). */
+function renderSaisieCalculs(rendre) {
+  rendreTout = rendre || rendreTout;
+  const zone = document.getElementById('rc-saisie-calculs');
+  if (!zone || !F()) return;
+  if (!zone.querySelector('.rc-saisie')) construire(zone);
+  dessinerApercu();
+  dessinerFeuilles();
+}
+
+function construire(zone) {
+  const voix = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  zone.innerHTML = `
+    <section class="card rc-saisie" aria-labelledby="rcSaisieTitre">
+      <h3 class="section-title" id="rcSaisieTitre">Saisie rapide</h3>
+      <p class="sub">Écris ou dicte les pièces à faire, par exemple « 30 pains sportifs à 400 g, 20 campagnes à 500 g ». Tu obtiens une feuille de calcul par recette.</p>
+      <label class="sr-only" for="rcSaisieTexte">Pièces à calculer</label>
+      <div class="rc-saisie-champ">
+        <textarea id="rcSaisieTexte" rows="2" placeholder="Ex. 30 pains sportifs à 400 g, 20 campagnes à 500 g"></textarea>
+        <button type="button" class="icon-btn rc-saisie-micro" aria-pressed="false" aria-label="Dicter" ${voix ? '' : 'disabled title="La dictée n’est pas disponible sur ce navigateur"'}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+      </div>
+      <button type="button" class="btn-dark rc-saisie-analyser">Préparer les feuilles</button>
+      <div class="rc-saisie-apercu" aria-live="polite"></div>
+      <div class="rc-saisie-feuilles"></div>
+    </section>`;
+  const champ = zone.querySelector('#rcSaisieTexte');
+  champ.value = S.texte;
+  champ.oninput = () => { S.texte = champ.value; };
+  zone.querySelector('.rc-saisie-analyser').onclick = () => analyser(champ.value);
+  zone.querySelector('.rc-saisie-micro').onclick = dicter;
+}
+
+// ---------- dictée (même principe que la saisie rapide du Stock) ----------
+let ecoute = null;
+function dicter() {
+  const btn = document.querySelector('#rc-saisie-calculs .rc-saisie-micro');
+  if (ecoute) { ecoute.stop(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { message('La dictée n’est pas disponible sur ce navigateur'); return; }
+  const r = new SR();
+  r.lang = 'fr-FR';
+  r.continuous = false;
+  r.interimResults = false;
+  ecoute = r;
+  btn.setAttribute('aria-pressed', 'true');
+  message('Je t’écoute…');
+  r.onresult = (e) => {
+    const dit = Array.from(e.results).map((x) => x[0].transcript).join(' ').trim();
+    const champ = document.getElementById('rcSaisieTexte');
+    champ.value = champ.value.trim() ? `${champ.value.trim()}, ${dit}` : dit;
+    S.texte = champ.value;
+    champ.focus();
+  };
+  r.onerror = (e) => message(e && e.error === 'not-allowed' ? 'Autorise le micro pour dicter' : 'Dictée interrompue, réessaie');
+  r.onend = () => { ecoute = null; btn.setAttribute('aria-pressed', 'false'); };
+  r.start();
+}
+
+// ---------- aperçu ----------
+let compteur = 0;
+function analyser(texte) {
+  S.texte = texte;
+  S.feuilles = null;
+  S.enregistrees = new Set();
+  S.lignes = F().analyser(texte).map((l) => {
+    const ligne = { ...l, id: ++compteur, recetteId: '', candidats: [], statut: '' };
+    if (!l.erreur) {
+      const r = F().rapprocher(l.nom, state.recipes);
+      ligne.statut = r.statut;
+      if (r.statut === 'trouve') ligne.recetteId = r.recette.id;
+      else ligne.candidats = r.candidats.map((c) => c.id);
+    }
+    return ligne;
+  });
+  if (!S.lignes.length) message('Écris par exemple « 30 pains sportifs à 400 g »');
+  dessinerApercu();
+  dessinerFeuilles();
+}
+
+function probleme(l) {
+  if (l.erreur) return F().MESSAGES[l.erreur] || 'Ligne illisible : corrige le texte.';
+  if (!l.recetteId) {
+    return l.statut === 'ambigu'
+      ? `« ${l.nom} » : plusieurs recettes possibles, choisis la bonne.`
+      : `« ${l.nom} » : recette inconnue, choisis-la dans la liste ou retire la ligne.`;
+  }
+  return null;
+}
+
+function dessinerApercu() {
+  const z = document.querySelector('#rc-saisie-calculs .rc-saisie-apercu');
+  if (!z) return;
+  if (!S.lignes.length) { z.innerHTML = ''; return; }
+  const options = (l) => {
+    const proposees = state.recipes.filter((r) => l.candidats.includes(r.id));
+    return `<option value="">— choisir la recette —</option>${
+      proposees.map((r) => `<option value="${esc(r.id)}" ${r.id === l.recetteId ? 'selected' : ''}>${esc(r.name)} (proposée)</option>`).join('')}${
+      state.recipes.filter((r) => !l.candidats.includes(r.id)).map((r) => `<option value="${esc(r.id)}" ${r.id === l.recetteId ? 'selected' : ''}>${esc(r.name)}</option>`).join('')}`;
+  };
+  const bloque = S.lignes.some((l) => probleme(l));
+  z.innerHTML = `<ul class="rc-saisie-lignes">${S.lignes.map((l) => {
+    const pb = probleme(l);
+    return `<li class="rc-saisie-ligne${pb ? ' a-corriger' : ''}" data-ligne="${l.id}">
+      <div class="rc-saisie-lu"><strong>${l.nombre ?? '?'}</strong> ${esc(l.nom || l.texte)}${l.poidsG ? ` × ${esc(F().grammes(l.poidsG))}` : ''}</div>
+      ${l.erreur ? '' : `<label class="sr-only" for="rcSaisieRec${l.id}">Recette pour « ${esc(l.nom)} »</label>
+      <select id="rcSaisieRec${l.id}" class="rc-saisie-recette">${options(l)}</select>`}
+      <button type="button" class="icon-btn rc-saisie-retirer" aria-label="Retirer cette ligne">×</button>
+      ${pb ? `<p class="rc-saisie-pb">${esc(pb)}</p>` : ''}
+    </li>`;
+  }).join('')}</ul>
+  <button type="button" class="btn-dark rc-saisie-voir" ${bloque ? 'disabled' : ''}>${bloque ? 'Corrige les lignes en rouge' : `Voir ${nbFeuilles() > 1 ? `les ${nbFeuilles()} feuilles` : 'la feuille'}`}</button>`;
+  z.querySelectorAll('.rc-saisie-ligne').forEach((li) => {
+    const l = S.lignes.find((x) => x.id === Number(li.dataset.ligne));
+    const sel = li.querySelector('select');
+    if (sel) sel.onchange = () => { l.recetteId = sel.value; S.feuilles = null; dessinerApercu(); dessinerFeuilles(); };
+    li.querySelector('.rc-saisie-retirer').onclick = () => {
+      S.lignes = S.lignes.filter((x) => x !== l);
+      S.feuilles = null;
+      dessinerApercu();
+      dessinerFeuilles();
+    };
+  });
+  const voir = z.querySelector('.rc-saisie-voir');
+  voir.onclick = () => {
+    if (S.lignes.some((l) => probleme(l))) return;
+    S.feuilles = calculerFeuilles();
+    dessinerFeuilles();
+    document.querySelector('#rc-saisie-calculs .rc-feuille')?.focus();
+  };
+}
+
+const nbFeuilles = () => new Set(S.lignes.filter((l) => l.recetteId).map((l) => l.recetteId)).size;
+
+// ---------- feuilles ----------
+/** Une feuille par recette : mêmes calculs que l'écran Calcul de Grigne (pièces × poids). */
+function calculerFeuilles() {
+  return F().feuilles(S.lignes).map((f) => {
+    const recette = state.recipes.find((r) => r.id === f.recetteId);
+    if (!recette) return null;
+    const calc = { mode: 'pieces', pieceRows: f.pieces.map((p) => ({ label: p.label, count: String(p.count), weight: String(p.weight) })) };
+    const m = computeScaling(recette, calc);
+    return {
+      cle: uid(),
+      recette,
+      calcul: {
+        recipeName: recette.name,
+        label: null,
+        targetG: m.targetG,
+        coefficient: m.coefficient,
+        basis: m.usesFlourBasis ? 'farine' : 'total',
+        breakdown: recette.ingredients.map((ing) => ({ name: ing.name, grams: ing.qtyG * m.factor })),
+        pieces: f.pieces,
+      },
+    };
+  }).filter(Boolean);
+}
+
+function dessinerFeuilles() {
+  const z = document.querySelector('#rc-saisie-calculs .rc-saisie-feuilles');
+  if (!z) return;
+  if (!S.feuilles || !S.feuilles.length) { z.innerHTML = ''; return; }
+  const g = (n) => esc(F().grammes(n));
+  z.innerHTML = `${S.feuilles.map((f, i) => {
+    const c = f.calcul;
+    const lignes = c.breakdown.map((b) => ({ ...b, farine: isFlour(b) }));
+    const ordre = [...lignes.filter((l) => l.farine), ...lignes.filter((l) => !l.farine)];
+    const fait = S.enregistrees.has(f.cle);
+    return `<article class="result-card rc-feuille" tabindex="-1" aria-label="Feuille de calcul ${i + 1} : ${esc(c.recipeName)}" data-feuille="${esc(f.cle)}">
+      <p class="result-k">Feuille ${i + 1} sur ${S.feuilles.length}</p>
+      <h3 class="result-title">${esc(c.recipeName)}</h3>
+      <ul class="rc-feuille-pieces">${c.pieces.map((p) => `<li>${esc(String(p.count))} ${esc(p.label)} × ${g(p.weight)} = <strong>${g(p.count * p.weight)}</strong></li>`).join('')}</ul>
+      <ol class="weigh">${ordre.map((l, j) => `<li class="${l.farine ? 'lead' : ''}"><span class="n">${l.farine && j === 0 ? '<span class="lead-k">En premier</span>' : ''}${esc(l.name)}</span><span class="q">${g(l.grams)}</span></li>`).join('')}</ol>
+      <div class="ref-line">Total pâte crue : <strong>${g(c.targetG)}</strong>${c.coefficient ? ` · coefficient ×${esc(fixed(c.coefficient, 2))}` : ''}</div>
+      ${blocAllergenes(f.recette.ingredients)}
+      <div class="rc-feuille-actions">
+        <button type="button" class="btn-soft rc-pdf-btn" data-action="pdf">PDF</button>
+        <button type="button" class="btn-dark" data-action="enregistrer" ${fait ? 'disabled' : ''}>${fait ? 'Enregistré ✓' : 'Enregistrer ce calcul'}</button>
+      </div>
+    </article>`;
+  }).join('')}
+  ${S.feuilles.length > 1 ? `<button type="button" class="btn-dark rc-saisie-tout" ${S.feuilles.every((f) => S.enregistrees.has(f.cle)) ? 'disabled' : ''}>Enregistrer les ${S.feuilles.length} feuilles</button>` : ''}`;
+  z.querySelectorAll('.rc-feuille').forEach((art) => {
+    const f = S.feuilles.find((x) => x.cle === art.dataset.feuille);
+    art.querySelector('[data-action=pdf]').onclick = () => telechargerPdf(f.calcul);
+    art.querySelector('[data-action=enregistrer]').onclick = () => enregistrer([f]);
+  });
+  const tout = z.querySelector('.rc-saisie-tout');
+  if (tout) tout.onclick = () => enregistrer(S.feuilles.filter((f) => !S.enregistrees.has(f.cle)));
+}
+
+/** Ajoute les feuilles aux calculs enregistrés (même forme que ceux de Grigne, plus pieces). */
+function enregistrer(liste) {
+  if (!liste.length) return;
+  const maintenant = Date.now();
+  liste.slice().reverse().forEach((f, i) => {
+    state.history.unshift({ id: uid(), timestamp: maintenant + i, ...f.calcul });
+    S.enregistrees.add(f.cle);
+  });
+  state.history = state.history.slice(0, Math.max(20, liste.length));
+  saveHistory();
+  message(liste.length > 1 ? `${liste.length} calculs enregistrés ✓` : 'Calcul enregistré ✓');
+  rendreTout();
+}
+return { renderSaisieCalculs };
+})();
+
 // ===== recettes/adaptation/app.js =====
 __modules["app.js"] = (function () {
 // Point d'entrée du module Recettes de Fournil : les écrans de Grigne (copiés sans
 // modification dans recettes/src/ui) branchés sur boulangerie/recettes par state.js.
 // Partagé par le Fournil et le Labo (même section #tab-recettes, mêmes données).
-const { state, init, applyRemote, isEditing, onSaveStatus } = __modules["state.js"];
+const { state, init, applyRemote, isEditing, onSaveStatus, appliquerCalculs } = __modules["state.js"];
 const { renderLibrary } = __modules["ui/library.js"];
 const { renderCalculator } = __modules["ui/calculator.js"];
 const { renderTB } = __modules["ui/tb.js"];
@@ -2106,6 +2546,7 @@ const { renderLevain } = __modules["ui/levain.js"];
 const { renderHydra } = __modules["ui/hydra.js"];
 const { renderCroix } = __modules["ui/cross.js"];
 const { renderEchange } = __modules["echange.js"];
+const { renderSaisieCalculs } = __modules["saisie-calculs.js"];
 
 const TABS = ['library', 'calculator', 'tb', 'levain', 'hydra', 'croix'];
 const RENDERERS = {
@@ -2133,6 +2574,7 @@ function render() {
   });
   RENDERERS[state.tab]();
   if (state.tab === 'library') renderEchange(render);
+  if (state.tab === 'calculator') renderSaisieCalculs(render);
 }
 
 function setupTabs() {
@@ -2170,6 +2612,11 @@ if (root) {
   window.rcApplyRemote = (data) => {
     applyRemote(data);
     if (!isEditing()) render();
+  };
+  // Calculs partagés (rôle « équipe », assets/js/acces.js) : liste reçue, ou null.
+  window.rcAppliquerCalculs = (liste) => {
+    appliquerCalculs(liste);
+    if (!isEditing() && state.tab === 'calculator') render();
   };
   // Pour les autres modules (ex. ouverture de l'onglet) : redessine l'écran en cours.
   window.rcRender = render;

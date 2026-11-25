@@ -10,10 +10,10 @@ Aucune action sur le vrai Firebase.
 |---|---|
 | 0. Branches `avant-equipe` et `nuit-equipe` | fait |
 | 1. Supprimer la fenêtre « plusieurs jours » | fait (commit « Étape 1 ») |
-| 2. Rôle « équipe » + règles + migration | en cours : règles + migration écrites et testées sur l'émulateur ; reste l'appli (écrans, enregistrement) |
-| 3. Saisie rapide des calculs | à faire |
-| 4. Bouton PDF des feuilles de calcul | à faire |
-| 5. Allergènes | à faire |
+| 2. Rôle « équipe » + règles + migration | fait (appli + règles + migration testées) ; publication et migration réelles : à valider par toi |
+| 3. Saisie rapide des calculs | en cours (écrit et branché, tests de l'écran à écrire) |
+| 4. Bouton PDF des feuilles de calcul | en cours (écrit et branché, tests de l'écran à écrire) |
+| 5. Allergènes | en cours (écrit et branché, tests de l'écran à écrire) |
 | 6. Outils levain / produit en croix / température | à faire |
 | Fin : ESLint, tests, CI, docs | à faire |
 
@@ -41,6 +41,28 @@ Aucune action sur le vrai Firebase.
 - **Émulateur** : il demande Java 21 ; l'ordinateur a Java 17. J'ai installé un Java 21
   portable dans `~/.local/jdk21` (rien dans le système). Pour lancer les tests des règles :
   `JAVA_HOME=~/.local/jdk21/jdk-21.0.13.1+2 PATH=$JAVA_HOME/bin:$PATH npm run test:regles`.
+
+- **Étape 2, appli** (`assets/js/acces.js`) : l'administrateur garde tout. L'équipe voit
+  seulement Stock, Historique et Recettes (consultation + calculs). Le reste est caché, les
+  fonctions sont bloquées dans l'appli, et refusées par les règles. Avant la migration,
+  l'appli marche exactement comme avant pour toi ; l'équipe voit « pas encore prêt ».
+- **Plusieurs personnes en même temps sur le stock** : chaque enregistrement du stock se
+  fait dans une transaction qui **fusionne** (stock du serveur + mon changement), pour ne
+  jamais perdre l'ajout d'un collègue. Hors ligne, l'enregistrement part au retour du réseau
+  et remplace alors la version du serveur (limite connue, rare).
+- **Historique du stock** : chaque nouvelle ligne garde le prénom et l'heure (« par Léa ·
+  14:32 »). Les sorties automatiques du matin n'ont pas d'auteur. L'équipe ne peut pas
+  supprimer de lignes d'historique (bouton caché et fonction bloquée).
+- **Prénoms** : chaque membre a une fiche `membres/{uid}` avec son prénom (que tu remplis
+  dans Réglages → Équipe). Ton prénom à toi : « Responsable » tant que tu ne l'as pas mis.
+- **Équipe et produits** : l'équipe ne crée pas de produit (ni dans Réglages, ni par la
+  saisie rapide : un produit inconnu doit être choisi dans la liste) ; elle ne change pas
+  l'ordre des produits ni les seuils.
+- **Seuils bas** : le seuil existait déjà par produit (Réglages → produit). Alerte quand un
+  produit **passe** sous son seuil (même règle que la pastille « Faible » : disponible ≤
+  seuil) : message + bandeau « Stock bas » en haut du Stock, aussi quand c'est un autre
+  appareil qui fait passer sous le seuil.
+- **Déconnexion** : la page se recharge, pour ne rien garder en mémoire du compte précédent.
 
 ## Ce qui bloque
 

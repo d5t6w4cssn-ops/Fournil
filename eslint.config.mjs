@@ -12,6 +12,7 @@ const FOURNIL = Object.fromEntries([
   'save', 'saveL', 'refresh', 'genAutoTasks', 'render', 'renderLabo', 'renderStock', 'renderLaboStock',
   'renderMatieres', 'renderSettings', 'normalizeState', 'normalizeLabo', 'openModule', 'goHome', 'sw', 'swL',
   'swB', 'openHelp', 'closeHelp', 'doLogout', 'closePdfViewer', 'closeNotesPanel', 'FournilDate', 'laboTab',
+  'updateSyncIndicator', 'renderHisto', 'renderNotes', 'envoyer',
 ].map((n) => [n, 'writable']));
 // Fonctions de l'appli appelées dans la page par les tests et les outils (page.evaluate).
 const PAGE = Object.fromEntries([
@@ -37,7 +38,7 @@ export default [
   {
     // adaptation Fournil des écrans de Grigne (modules ES assemblés par tools/importer-grigne.mjs)
     files: ['recettes/adaptation/**/*.js'],
-    languageOptions: { ecmaVersion: 2022, sourceType: 'module', globals: { ...globals.browser, db: 'readonly' } },
+    languageOptions: { ecmaVersion: 2022, sourceType: 'module', globals: { ...globals.browser, db: 'readonly', toast: 'readonly' } },
     rules: { ...COMMUNES, eqeqeq: ['error', 'smart'], 'no-var': 'error', 'no-eval': 'error' },
   },
   {

@@ -14,7 +14,7 @@
 (function (racine, fabrique) {
   const api = fabrique();
   if (typeof module === 'object' && module.exports) module.exports = api;
-  else racine.FournilEquipe = api;
+  if (racine && racine.document) racine.FournilEquipe = api; // navigateur (même si « module » existe)
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
@@ -113,7 +113,8 @@
   function signerNouvelles(history, idsConnus, auteur, maintenant) {
     let n = 0;
     (history || []).forEach((h) => {
-      if (!h || idsConnus.has(h.id) || h.par) return;
+      // les sorties du passage au jour suivant sont automatiques : pas d'auteur
+      if (!h || idsConnus.has(h.id) || h.par || h.type === 'sortie') return;
       if (auteur && auteur.prenom) h.par = auteur.prenom;
       if (auteur && auteur.uid) h.parUid = auteur.uid;
       if (!h.t) h.t = maintenant;

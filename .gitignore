@@ -31,3 +31,6 @@ service-account*.json
 # Systèmes
 .DS_Store
 Thumbs.db
+
+# Modèles de référence (photos personnelles) : gardés sur cet ordinateur, jamais publiés
+reference/

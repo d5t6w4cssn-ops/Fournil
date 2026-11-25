@@ -160,7 +160,7 @@
     p[c.champ] = arrondi(actuel + pas);
     const h = c.histo();
     const dernier = h[0];
-    if (dernier && dernier.type === 'ajustement' && dernier.pid === id && dernier.cat === cat && dernier.date === today() && Date.now() - (dernier.t || 0) < 120000) {
+    if (dernier && dernier.type === 'ajustement' && dernier.pid === id && dernier.cat === cat && dernier.date === today() && Date.now() - (dernier.t || 0) < 120000 && (!window.fournilAcces || window.fournilAcces.estDeMoi(dernier))) {
       dernier.delta = arrondi((dernier.delta || 0) + pas);
       dernier.qty = Math.abs(dernier.delta);
       dernier.t = Date.now();
@@ -284,6 +284,7 @@
   const quantiteLigne = (l) => Number(String(l.quantite ?? '').replace(',', '.'));
   let compteurLigne = 0;
   const NOUVEAU = '__nouveau__';
+  const peutCreer = () => !window.fournilAcces || window.fournilAcces.peutCreerProduit();
 
   function carteSaisie() {
     const sec = document.getElementById('tab-stock');
@@ -363,7 +364,9 @@
       if (l.nom && l.erreur !== 'sans-quantite') {
         const r = F.rapprocher(l.nom, S.products || []);
         if (r.statut === 'trouve') ligne.produitId = r.produit.id;
-        else if (r.statut === 'nouveau') { ligne.produitId = NOUVEAU; ligne.nouveauNom = F.nomProduit(l.nom); }
+        // l'équipe ne crée pas de produit (réglage du responsable) : elle choisit dans la liste
+        else if (r.statut === 'nouveau' && peutCreer()) { ligne.produitId = NOUVEAU; ligne.nouveauNom = F.nomProduit(l.nom); }
+        else if (r.statut === 'nouveau') { ligne.inconnu = true; }
         else { ligne.candidats = r.candidats.map((c) => c.produit.id); ligne.ambigu = true; }
       }
       if (l.erreur === 'sans-quantite') ligne.nouveauNom = F.nomProduit(l.nom);
@@ -385,7 +388,9 @@
     if (l.quantite === null || l.quantite === '' || !Number.isFinite(q)) return 'Quantité manquante : indique un nombre ou retire la ligne.';
     if (q <= 0) return 'La quantité doit être supérieure à 0.';
     if (!Number.isInteger(q)) return 'Indique un nombre entier de pièces.';
+    if (!l.produitId && l.inconnu) return 'Produit inconnu : choisis-le dans la liste ou retire la ligne (seul le responsable crée des produits).';
     if (!l.produitId) return l.ambigu ? 'Plusieurs produits possibles : choisis le bon.' : 'Nombre sans produit : choisis le produit ou retire la ligne.';
+    if (l.produitId === NOUVEAU && !peutCreer()) return 'Seul le responsable peut créer un produit : choisis-en un dans la liste.';
     if (l.produitId === NOUVEAU && !String(l.nouveauNom || '').trim()) return 'Donne un nom au nouveau produit.';
     return null;
   }
@@ -415,7 +420,7 @@
       const opts = [`<option value="">— choisir un produit —</option>`]
         .concat((l.ambigu ? options.filter((o) => l.candidats.includes(o.id)) : []).map((o) => `<option value="${esc(o.id)}" ${o.id === l.produitId ? 'selected' : ''}>${esc(o.label)} (proposé)</option>`))
         .concat(options.map((o) => `<option value="${esc(o.id)}" ${o.id === l.produitId ? 'selected' : ''}>${esc(o.label)}</option>`))
-        .concat([`<option value="${NOUVEAU}" ${l.produitId === NOUVEAU ? 'selected' : ''}>＋ Nouveau produit…</option>`]);
+        .concat(peutCreer() ? [`<option value="${NOUVEAU}" ${l.produitId === NOUVEAU ? 'selected' : ''}>＋ Nouveau produit…</option>`] : []);
       html += `
         <li class="saisie-ligne${pb ? ' a-corriger' : ''}" data-ligne="${l.id}">
           <p class="saisie-origine">« ${esc(l.texte)} »</p>

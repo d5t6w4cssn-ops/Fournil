@@ -624,3 +624,56 @@ h1.home-logo, h1.hdr-logo, h1.login-marque { font-weight: 400; margin: 0; }
 .place-barre { height: 10px; margin: 6px 0 14px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
 .place-barre span { display: block; height: 100%; background: var(--accent); }
 .place-sons { margin-top: 4px; }
+
+/* ========== Rôle « équipe » (assets/js/acces.js) ==========
+   Cachés pour l'équipe ; les gardes de acces.js et les règles Firestore les bloquent aussi. */
+body.role-equipe .module-labo,
+body.role-equipe .module-bureau,
+body.role-equipe #hdrFournil .tab[onclick="sw('magasin')"],
+body.role-equipe #hdrFournil .tab-wrap,
+body.role-equipe #hdrFournil .tab[onclick="sw('calendrier')"],
+body.role-equipe #hdrFournil .tab[onclick="sw('settings')"],
+body.role-equipe [data-nav="magasin"],
+body.role-equipe [data-nav="taches"],
+body.role-equipe [data-nav="calendrier"],
+body.role-equipe [data-nav="labo"],
+body.role-equipe [data-nav="matieres"],
+body.role-equipe [data-nav="fournisseurs"],
+body.role-equipe [data-nav="tournee"],
+body.role-equipe [data-nav="journal"],
+body.role-equipe [data-nav="stats"],
+body.role-equipe [data-nav="reglages"],
+body.role-equipe .nav-groupe,
+body.role-equipe #notesBubble,
+body.role-equipe #fab,
+body.role-equipe #stockList .move-btn,
+body.role-equipe .histo-del-btn,
+body.role-equipe .histo-clear-btn,
+body.role-equipe #panel-library .lib-add,
+body.role-equipe #panel-library .edit-btn,
+body.role-equipe #panel-library .del-btn,
+body.role-equipe #panel-library .empty-actions,
+body.role-equipe #panel-library .rc-import-btn { display: none !important; }
+
+/* Compte sans accès / données pas prêtes */
+.acces-message { position: fixed; inset: 0; z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px; background: var(--paper, #f6efe4); }
+.acces-carte { max-width: 420px; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--cream); color: var(--ink); }
+.acces-carte h2 { margin: 0 0 10px; font-family: var(--serif); font-size: 22px; }
+.acces-carte p { margin: 0 0 16px; font-size: 16px; line-height: 1.5; }
+.acces-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Alerte de seuil bas, en haut du Stock */
+.alerte-seuil { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin: 0 0 12px; padding: 12px 14px; border: 2px solid var(--err); border-radius: 14px; background: var(--cream); color: var(--ink); }
+.alerte-seuil strong { color: var(--err); }
+.alerte-seuil ul { margin: 4px 0 0; padding-left: 18px; }
+.alerte-fermer { min-width: 44px; min-height: 44px; border: 0; background: none; color: var(--err); font-size: 24px; cursor: pointer; }
+
+/* Historique : qui et quand */
+.histo-auteur { font-size: 13px; color: var(--muted); }
+
+/* Réglages → Équipe */
+.equipe-ligne { display: flex; gap: 8px; align-items: center; margin: 6px 0 12px; }
+.equipe-ligne .minput { flex: 1; margin-bottom: 0; }
+.equipe-liste { list-style: none; margin: 0 0 12px; padding: 0; }
+.equipe-liste li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.equipe-liste small { color: var(--muted); }

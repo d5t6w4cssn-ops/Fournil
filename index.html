@@ -835,7 +835,7 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
     </div>
 
     <section class="tabpanel" role="tabpanel" id="panel-library" aria-labelledby="tablbl-library" tabindex="-1"><h2 class="screen-title">Bibliothèque</h2><div id="rc-library-view"></div><div id="rc-echange-view"></div></section>
-    <section class="tabpanel" role="tabpanel" id="panel-calculator" aria-labelledby="tablbl-calculator" tabindex="-1" hidden><h2 class="sr-only">Calculateur</h2><div id="rc-calculator-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-calculator" aria-labelledby="tablbl-calculator" tabindex="-1" hidden><h2 class="sr-only">Calculateur</h2><div id="rc-saisie-calculs"></div><div id="rc-calculator-view"></div></section>
     <section class="tabpanel" role="tabpanel" id="panel-tb" aria-labelledby="tablbl-tb" tabindex="-1" hidden><h2 class="screen-title">Température de base</h2><div id="rc-tb-view"></div></section>
     <section class="tabpanel" role="tabpanel" id="panel-levain" aria-labelledby="tablbl-levain" tabindex="-1" hidden><h2 class="screen-title">Levain</h2><div id="rc-levain-view"></div></section>
     <section class="tabpanel" role="tabpanel" id="panel-hydra" aria-labelledby="tablbl-hydra" tabindex="-1" hidden><h2 class="screen-title">Hydratation</h2><div id="rc-hydra-view"></div></section>
@@ -1153,40 +1153,10 @@ function initFirebase() {
         .catch(e => window.fournilSynchro && window.fournilSynchro.persistance(e));
     } catch (e) { if (window.fournilSynchro) window.fournilSynchro.persistance(e); }
 
-    // Écoute temps réel — Fournil
-    db.collection('boulangerie').doc('state').onSnapshot(snap => {
-      if (snap.exists) {
-        const remote = snap.data().state;
-        if (remote) {
-          S = JSON.parse(remote);
-          normalizeState();
-          if (activeModule === 'fournil') render();
-          if (tab === 'notes') renderNotes();
-          // Passage au jour suivant, sur les vraies données (assets/js/jour.js)
-          if (window.fournilJour) window.fournilJour.verifier('fournil');
-        }
-      }
-      updateSyncIndicator(true);
-    }, err => { console.warn('Firestore erreur', err); updateSyncIndicator(false); });
-
-    // Écoute temps réel — Labo
-    db.collection('boulangerie').doc('labo').onSnapshot(snap => {
-      if (snap.exists) {
-        const remote = snap.data().state;
-        if (remote) {
-          L = JSON.parse(remote);
-          normalizeLabo();
-          if (activeModule === 'labo') renderLabo();
-          if (window.fournilJour) window.fournilJour.verifier('labo');
-        }
-      }
-    }, () => {});
-
-    // Écoute temps réel — Recettes (partagées entre tous les appareils)
-    db.collection('boulangerie').doc('recettes').onSnapshot(snap => {
-      if (snap.exists && window.rcApplyRemote) window.rcApplyRemote(snap.data());
-    }, () => {});
-
+    // Écoutes temps réel selon le rôle (administrateur ou équipe) : assets/js/acces.js.
+    // La connexion peut aboutir avant le chargement de acces.js : il démarrera alors tout seul.
+    if (window.fournilAcces) window.fournilAcces.demarrer(db);
+    else window.fournilAccesEnAttente = db;
     updateSyncIndicator(true);
   } catch(e) {
     console.warn('Firebase indisponible, mode local', e);
@@ -1205,9 +1175,11 @@ function envoyer(docId, donnees) {
   return envoi;
 }
 
+// Enregistrement du Fournil selon le rôle et le format des données : assets/js/acces.js
+// (le stock va dans boulangerie/stock après la migration « équipe »).
 async function save() {
   try {
-    if (db) envoyer('state', { state: JSON.stringify(S) });
+    if (db) window.fournilAcces.enregistrerFournil();
   } catch(e) { console.warn('Erreur save', e); }
 }
 
@@ -1389,15 +1361,7 @@ async function actualiserApp() {
   if (btn) btn.classList.add('spinning');
   try {
     if (db) {
-      const [snapState, snapLabo, snapRec] = await Promise.all([
-        db.collection('boulangerie').doc('state').get({ source: 'server' }),
-        db.collection('boulangerie').doc('labo').get({ source: 'server' }),
-        db.collection('boulangerie').doc('recettes').get({ source: 'server' })
-      ]);
-      if (snapState.exists && snapState.data().state) { S = JSON.parse(snapState.data().state); normalizeState(); }
-      if (snapLabo.exists && snapLabo.data().state) { L = JSON.parse(snapLabo.data().state); normalizeLabo(); }
-      if (window.fournilJour) { window.fournilJour.verifier('fournil'); window.fournilJour.verifier('labo'); }
-      if (snapRec.exists && window.rcApplyRemote) window.rcApplyRemote(snapRec.data());
+      await window.fournilAcces.actualiser();
 
       if (activeModule === 'fournil') render();
       if (activeModule === 'labo') renderLabo();
@@ -1651,7 +1615,7 @@ function renderLaboHisto(){
   if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-icon">📈</div>Aucun historique encore.</div>';return;}
   const byDate={};entries.forEach(h=>{if(!byDate[h.date])byDate[h.date]=[];byDate[h.date].push(h);});
   const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-  el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${histoClasse(h)}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${esc(histoLibelle(h))}</div></div><div class="histo-qty">${esc(histoQuantite(h))}</div></div>`).join('')}</div>`).join('');
+  el.innerHTML=Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${histoClasse(h)}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${esc(histoLibelle(h))}</div>${histoAuteur(h)}</div><div class="histo-qty">${esc(histoQuantite(h))}</div></div>`).join('')}</div>`).join('');
 }
 function setLaboHistoFilter(pid){laboHistoFilter=pid;renderLaboHisto();}
 
@@ -2162,7 +2126,13 @@ function renderHisto(){
   entries.forEach(h=>{if(!byDate[h.date])byDate[h.date]=[];byDate[h.date].push(h);});
   const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
   const clearBtn=`<button class="histo-clear-btn" onclick="clearHisto()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg> Tout effacer</button>`;
-  el.innerHTML=clearBtn+Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${histoClasse(h)}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${esc(histoLibelle(h))}</div></div><div class="histo-qty">${esc(histoQuantite(h))}</div><button class="histo-del-btn" aria-label="Supprimer" onclick="delHistoEntry(${escJ(h.id)})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg></button></div>`).join('')}</div>`).join('');
+  el.innerHTML=clearBtn+Object.entries(byDate).map(([date,items])=>`<div class="histo-day"><div class="histo-day-title">${fmt(date)}</div>${items.map(h=>`<div class="histo-entry ${histoClasse(h)}"><span class="histo-emoji">${esc(h.emoji)}</span><div class="histo-info"><div class="histo-name">${esc(h.name)}</div><div class="histo-type">${esc(histoLibelle(h))}</div>${histoAuteur(h)}</div><div class="histo-qty">${esc(histoQuantite(h))}</div><button class="histo-del-btn" aria-label="Supprimer" onclick="delHistoEntry(${escJ(h.id)})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2m-1 0v14a1 1 0 01-1 1H9a1 1 0 01-1-1V6h8z"/></svg></button></div>`).join('')}</div>`).join('');
+}
+// Qui et à quelle heure (lignes ajoutées depuis le rôle « équipe »)
+function histoAuteur(h){
+  const heure=h.t?new Date(h.t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'}):'';
+  if(!h.par&&!heure)return '';
+  return `<div class="histo-auteur">${h.par?'par '+esc(h.par):''}${h.par&&heure?' · ':''}${esc(heure)}</div>`;
 }
 function setHistoFilter(pid){histoFilter=pid;renderHisto();}
 function delHistoEntry(id){
@@ -3250,11 +3220,18 @@ if (initFirebaseApp()) {
 }
 </script>
 
+<!-- Feuilles de calcul : saisie rapide des calculs, allergènes, fiche PDF (fonctions pures) -->
+<script src="assets/js/saisie-calculs.js"></script>
+<script src="assets/js/allergenes.js"></script>
+<script src="assets/js/fiche-pdf.js"></script>
 <!-- Module Recettes : écrans de Grigne branchés sur boulangerie/recettes -->
 <script src="recettes/recettes.js"></script>
 <!-- Stock : remise à zéro, − / + et retrait avec motif, saisie rapide -->
 <!-- État réel de l'enregistrement (synchronisé, pas encore envoyé, hors ligne, erreur) -->
 <script src="assets/js/synchro.js"></script>
+<!-- Rôles (administrateur / équipe), lecture et enregistrement des données -->
+<script src="assets/js/equipe-donnees.js"></script>
+<script src="assets/js/acces.js"></script>
 <!-- Passage au jour suivant (sorties de la veille, plusieurs jours manqués) -->
 <script src="assets/js/jour.js"></script>
 <script src="assets/js/saisie-rapide.js"></script>

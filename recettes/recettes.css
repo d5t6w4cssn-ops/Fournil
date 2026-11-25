@@ -746,3 +746,33 @@ html:has(#appArea:not([hidden])) #tab-recettes { scroll-padding-bottom: calc(88p
 /* Petit écran : le libellé caché de chaque outil (positionné en absolu par Grigne) reste dans
    la barre qui défile, au lieu d'élargir la page (audit G6). */
 #tab-recettes .tabs [role=tab] { position: relative; }
+
+/* ===== Allergènes (fiche.js) ===== */
+#tab-recettes .rc-allergenes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 10px 0; }
+#tab-recettes .rc-allergenes-k { font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+#tab-recettes .rc-allergenes-liste { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+#tab-recettes .rc-allergenes-liste li { padding: 3px 10px; border: 1.5px solid var(--err); border-radius: 999px; color: var(--err); font-size: 14px; font-weight: 600; }
+#tab-recettes .rc-allergenes-aucun { font-size: 14px; color: var(--muted); }
+#tab-recettes .rc-allergenes-avert { flex-basis: 100%; margin: 0; font-size: 12.5px; color: var(--muted); }
+
+/* ===== Bouton PDF et auteur des calculs (fiche.js) ===== */
+#tab-recettes .rc-pdf-ligne { display: flex; justify-content: flex-end; margin-top: 10px; }
+#tab-recettes .rc-pdf-btn { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; }
+#tab-recettes .rc-auteur { font-weight: 600; }
+
+/* ===== Saisie rapide des calculs (saisie-calculs.js) ===== */
+#tab-recettes .rc-saisie { margin-bottom: 20px; }
+#tab-recettes .rc-saisie-champ { display: flex; gap: 8px; align-items: stretch; margin: 10px 0; }
+#tab-recettes .rc-saisie-champ textarea { flex: 1; min-height: 56px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); color: var(--ink); font: inherit; font-size: 16px; }
+#tab-recettes .rc-saisie-micro { min-width: 48px; min-height: 48px; }
+#tab-recettes .rc-saisie-micro[aria-pressed="true"] { background: var(--err); color: var(--paper); }
+#tab-recettes .rc-saisie-lignes { list-style: none; margin: 14px 0; padding: 0; display: grid; gap: 8px; }
+#tab-recettes .rc-saisie-ligne { display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+#tab-recettes .rc-saisie-ligne.a-corriger { border-color: var(--err); }
+#tab-recettes .rc-saisie-lu { grid-column: 1; }
+#tab-recettes .rc-saisie-recette { grid-column: 1; min-height: 44px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--cream); color: var(--ink); font: inherit; }
+#tab-recettes .rc-saisie-retirer { grid-column: 2; grid-row: 1 / span 2; }
+#tab-recettes .rc-saisie-pb { grid-column: 1 / -1; margin: 0; color: var(--err); font-size: 14px; }
+#tab-recettes .rc-saisie-feuilles { display: grid; gap: 16px; margin-top: 16px; }
+#tab-recettes .rc-feuille-pieces { margin: 6px 0 10px; padding-left: 18px; }
+#tab-recettes .rc-feuille-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 12px; }

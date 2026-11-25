@@ -24,12 +24,13 @@ class ChargeurLocal extends ResourceLoader {
 }
 const pause = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 
-async function chargerAppli({ recettes, etat, labo, preparer, configurerFirebase } = {}) {
+async function chargerAppli({ recettes, etat, labo, preparer, configurerFirebase, utilisateur, docs } = {}) {
   const initial = {};
   if (recettes) initial['boulangerie/recettes'] = { recipes: JSON.stringify(recettes) };
   if (etat) initial['boulangerie/state'] = { state: JSON.stringify(etat) };
   if (labo) initial['boulangerie/labo'] = { state: JSON.stringify(labo) };
-  const fake = createFakeFirebase(initial);
+  Object.assign(initial, docs || {}); // autres documents : boulangerie/stock, membres/…, calculs/…
+  const fake = createFakeFirebase(initial, { utilisateur });
   if (configurerFirebase) configurerFirebase(fake); // ex. persistance indisponible
   const erreurs = [];
   const telechargements = [];
@@ -112,7 +113,7 @@ async function chargerAppli({ recettes, etat, labo, preparer, configurerFirebase
   };
   const ecrituresRecettes = () => fake.writes.filter((w) => w.path === 'boulangerie/recettes' && 'recipes' in w.data);
 
-  return { dom, window, fake, erreurs, reseau, lib, carte, zone, exporter, choisirFichier, confirmer, recettesEnBase, ecrituresRecettes, pause };
+  return { dom, window, fake, erreurs, reseau, telechargements, lib, carte, zone, exporter, choisirFichier, confirmer, recettesEnBase, ecrituresRecettes, pause };
 }
 
 module.exports = { chargerAppli };

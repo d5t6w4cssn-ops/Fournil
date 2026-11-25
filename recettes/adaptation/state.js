@@ -4,6 +4,9 @@
 //   recipes     : JSON texte d'une liste { id, name, ingredients: [{ id, name, qtyG }], notes, tb? }
 //   calcHistory : JSON texte d'une liste { id, timestamp, recipeName, label, targetG, coefficient, basis, breakdown }
 // Rien n'est nettoyé ni réécrit à la lecture : une donnée inattendue est gardée telle quelle.
+// Rôle « équipe » (assets/js/acces.js) : après la migration, les calculs enregistrés sont
+// partagés, un document par calcul dans la collection calculs/ (auteur et prénom) ; le champ
+// calcHistory n'est plus utilisé. L'équipe ne peut pas modifier les recettes.
 import { uid } from './core/text.js';
 
 const STORAGE_KEY = 'fournil-recettes-v1';
@@ -95,13 +98,62 @@ async function ecrire(champ, valeur, cacheKey) {
   }
 }
 
+const acces = () => window.fournilAcces || null;
+const message = (t) => { if (typeof toast === 'function') toast(t); };
+let dernieresRecettes = null; // dernière version reçue du serveur
+let partage = null; // calculs partagés (collection calculs/) ; null : ancien format
+let historiqueAncien = []; // champ calcHistory (ancien format)
+const envoyes = new Map(); // calculs déjà envoyés, pas encore revenus du serveur (id → calcul)
+
 /** Enregistre les recettes (renvoie une promesse : true si Firestore a accepté). */
 export function saveRecipes() {
+  const a = acces();
+  if (a && !a.peutModifierRecettes()) {
+    if (dernieresRecettes) state.recipes = JSON.parse(JSON.stringify(dernieresRecettes));
+    message('Les recettes sont en consultation seulement : demande au responsable pour les modifier.');
+    return Promise.resolve(false);
+  }
   return ecrire('recipes', state.recipes, STORAGE_KEY);
 }
 /** Enregistre l'historique des calculs. */
 export function saveHistory() {
-  return ecrire('calcHistory', state.history, HISTORY_KEY);
+  const a = acces();
+  if (!partage || !a) return ecrire('calcHistory', state.history, HISTORY_KEY);
+  // calculs partagés : on compare avec la dernière liste reçue
+  const connus = new Set(partage.map((c) => c.id));
+  const ajoutes = state.history.filter((c) => !connus.has(c.id) && !envoyes.has(c.id));
+  if (ajoutes.length) {
+    // Un calcul ajouté (Grigne garde 20 lignes : celles qui tombent ne sont pas supprimées)
+    ajoutes.forEach((c) => {
+      a.creerCalcul(c);
+      envoyes.set(c.id, c);
+    });
+    state.history = [...state.history.filter((c) => !connus.has(c.id)), ...partage];
+    return Promise.resolve(true);
+  }
+  const gardes = new Set(state.history.map((c) => c.id));
+  const retires = [...partage, ...envoyes.values()].filter((c) => !gardes.has(c.id));
+  retires.forEach((c) => envoyes.delete(c.id));
+  let refuse = false;
+  retires.forEach((c) => {
+    if (!a.supprimerCalcul(c)) refuse = true;
+  });
+  if (refuse) {
+    message('Tu ne peux supprimer que tes propres calculs.');
+    state.history = partage.filter((c) => gardes.has(c.id) || !a.peutSupprimerCalcul(c));
+  }
+  return Promise.resolve(!refuse);
+}
+
+/**
+ * Calculs partagés reçus (assets/js/acces.js) : liste triée du plus récent au plus ancien,
+ * ou null pour revenir à l'ancien format (champ calcHistory).
+ */
+export function appliquerCalculs(liste) {
+  partage = Array.isArray(liste) ? liste : null;
+  if (partage) partage.forEach((c) => envoyes.delete(c.id));
+  state.history = partage ? partage.slice() : historiqueAncien.slice();
+  ecrireCache(HISTORY_KEY, state.history);
 }
 
 /** Vrai quand l'utilisateur est en train de modifier une recette (on ne change pas la liste sous ses doigts). */
@@ -118,6 +170,7 @@ export function applyRemote(data) {
       const r = JSON.parse(data.recipes);
       if (Array.isArray(r)) {
         state.recipes = r;
+        dernieresRecettes = JSON.parse(JSON.stringify(r));
         change = true;
       }
     }
@@ -128,8 +181,11 @@ export function applyRemote(data) {
     if (data && typeof data.calcHistory === 'string') {
       const h = JSON.parse(data.calcHistory);
       if (Array.isArray(h)) {
-        state.history = h;
-        change = true;
+        historiqueAncien = h;
+        if (!partage) {
+          state.history = h;
+          change = true;
+        }
       }
     }
   } catch {
