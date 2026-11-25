@@ -425,7 +425,8 @@
   }
   garder('openModule', ([m]) => {
     if (estEquipe() && m !== 'fournil') { toast('Le Labo et le Bureau sont réservés au responsable'); return ['fournil']; }
-    if (a.role === 'aucun' || a.role === 'inconnu') return false;
+    // compte sans accès, ou rôle pas encore connu (sauf sans Firebase du tout : mode dégradé d'origine)
+    if (a.role === 'aucun' || (a.role === 'inconnu' && typeof firebase !== 'undefined')) return false;
     return undefined;
   });
   garder('sw', ([t]) => (estEquipe() && ONGLETS_INTERDITS.includes(t) ? ['stock'] : undefined));
@@ -433,6 +434,14 @@
   garder('swB', () => (refuse() ? false : undefined));
   ['delHistoEntry', 'clearHisto', 'delProduct', 'openEditProduct', 'saveProduct', 'moveProduct', 'addTask', 'openNotesPanel', 'saveL'].forEach((nom) => {
     garder(nom, () => (estEquipe() ? false : undefined));
+  });
+  // ✏️ du Stock : l'équipe ajoute une production, mais ne change pas le seuil (réglage du responsable)
+  garder('saveCorrect', () => {
+    if (!estEquipe()) return undefined;
+    const p = (S.products || []).find((x) => x.id === correctId);
+    const champ = document.getElementById('mc-seuil');
+    if (p && champ) champ.value = String(p.seuil ?? '');
+    return undefined;
   });
   // Déconnexion : la page est rechargée pour ne rien garder du compte précédent en mémoire.
   garder('doLogout', () => {

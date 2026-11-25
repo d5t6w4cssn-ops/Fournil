@@ -270,7 +270,9 @@ test('Réglages → Équipe : préparer les données (migration), ajouter un mem
   assert.ok(carte(), 'carte Équipe');
   assert.match(carte().textContent, /pas encore préparées/);
   carte().querySelector('[data-equipe=migrer]').click();
-  await a.pause(80);
+  // attendre la fin de la migration et l'arrivée des nouvelles données (3 s au plus)
+  for (let i = 0; i < 300 && w.fournilAcces.mode() !== 'separe'; i++) await a.pause(10);
+  await a.pause(30);
   assert.ok(a.fake.docs.has('boulangerie/stock'), 'stock séparé');
   assert.ok([...a.fake.docs.keys()].some((k) => k.startsWith('sauvegardes/avant-equipe-')), 'sauvegarde faite');
   assert.ok(a.fake.docs.has('calculs/c_1'), 'calculs recopiés');
@@ -280,13 +282,15 @@ test('Réglages → Équipe : préparer les données (migration), ajouter un mem
   carte().querySelector('#equipeUid').value = 'NouveauUid1234';
   carte().querySelector('#equipePrenom').value = 'Nina';
   carte().querySelector('[data-equipe=ajouter]').click();
-  await a.pause(40);
+  for (let i = 0; i < 300 && !a.fake.docs.has('membres/NouveauUid1234'); i++) await a.pause(10);
+  await a.pause(30);
   assert.deepEqual(a.fake.docs.get('membres/NouveauUid1234'), { prenom: 'Nina', role: 'equipe' });
   w.eval("sw('settings')");
   assert.match(carte().textContent, /Nina/);
   // les données de l'appli n'ont pas bougé
   assert.equal(w.eval('S.products.length'), 5);
   assert.equal(w.eval('S.tasks.length'), 4);
+  await a.pause(100);
 });
 
 test('équipe : saisie rapide du stock sans création de produit', async (t) => {
@@ -310,4 +314,20 @@ test('équipe : saisie rapide du stock sans création de produit', async (t) => 
   assert.equal(stock(a).history[0].par, 'Léa');
   assert.deepEqual(a.fake.refus, []);
   await a.pause(100);
+});
+
+test('équipe : ✏️ ajoute une production sans changer le seuil', async (t) => {
+  const { a, w, doc } = await ouvrir(t, { utilisateur: LEA, docs: FICHE_LEA });
+  w.eval("sw('stock');openCorrect('brioche')");
+  doc.getElementById('mc-stock').value = '12';
+  doc.getElementById('mc-seuil').value = '0'; // même si le champ caché était modifié
+  w.eval('saveCorrect()');
+  await a.pause(60);
+  const p = stock(a).products.find((x) => x.id === 'brioche');
+  assert.equal(p.stockReel, 21);
+  assert.equal(p.seuil, 10, 'seuil inchangé');
+  assert.equal(stock(a).history[0].type, 'recharge');
+  assert.equal(stock(a).history[0].par, 'Léa');
+  assert.deepEqual(a.fake.refus, []);
+  await a.pause(60);
 });

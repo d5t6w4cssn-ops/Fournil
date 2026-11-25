@@ -9,13 +9,13 @@ Aucune action sur le vrai Firebase.
 | Étape | État |
 |---|---|
 | 0. Branches `avant-equipe` et `nuit-equipe` | fait |
-| 1. Supprimer la fenêtre « plusieurs jours » | fait (commit « Étape 1 ») |
-| 2. Rôle « équipe » + règles + migration | fait (appli + règles + migration testées) ; publication et migration réelles : à valider par toi |
-| 3. Saisie rapide des calculs | en cours (écrit et branché, tests de l'écran à écrire) |
-| 4. Bouton PDF des feuilles de calcul | en cours (écrit et branché, tests de l'écran à écrire) |
-| 5. Allergènes | en cours (écrit et branché, tests de l'écran à écrire) |
-| 6. Outils levain / produit en croix / température | à faire |
-| Fin : ESLint, tests, CI, docs | à faire |
+| 1. Supprimer la fenêtre « plusieurs jours » | fait |
+| 2. Rôle « équipe » + règles + migration | fait : appli, règles et migration testées (émulateur) ; **publication et migration réelles : à toi de les lancer** |
+| 3. Saisie rapide des calculs | fait |
+| 4. Bouton PDF des feuilles de calcul | fait |
+| 5. Allergènes | fait |
+| 6. Outils levain / produit en croix / température | déjà présents (copies exactes de Grigne) ; ouverts à l'équipe, testés |
+| Fin : ESLint, tests, CI, docs | fait (voir « Vérifications finales ») |
 
 ## Décisions prises
 
@@ -64,6 +64,106 @@ Aucune action sur le vrai Firebase.
   appareil qui fait passer sous le seuil.
 - **Déconnexion** : la page se recharge, pour ne rien garder en mémoire du compte précédent.
 
+- **Étape 3, saisie rapide des calculs** (en haut de Recettes → Calcul, texte ou micro) :
+  - formats compris : « 30 pains sportifs à 400 g », « 8 × 1,2 kg de pain de campagne »,
+    « 10 brioches de 250g », nombres en lettres, dictée sans virgules ;
+  - une **feuille par recette** (deux lignes de la même recette vont sur la même feuille),
+    **aucun total global** ;
+  - recette reprise seulement si le nom est **identique** (sans tenir compte des accents,
+    majuscules, pluriels et petits mots « de, du, au… ») ; sinon la ligne est en rouge et
+    l'appli **demande** : les recettes proches sont proposées en tête de liste, mais rien
+    n'est choisi tout seul. Ligne sans poids ou sans unité (« à 400 ») : demandé aussi ;
+  - mêmes calculs que l'écran Calcul de Grigne (mode « pièces × poids ») ;
+  - **poids non arrondis** : affichés au gramme près avec les décimales (« 5 406,797 g »).
+    Seules les traces de calcul de l'ordinateur au-delà du milligramme sont ôtées ;
+  - « Enregistrer » ajoute la feuille aux calculs enregistrés (avec le détail des pièces).
+- **Étape 4, PDF** : bouton « PDF » sur la feuille en cours de Grigne, sur chaque feuille de
+  la saisie rapide et dans le détail de chaque calcul enregistré.
+  - Le modèle est la photo `Feuille de recettes.PNG`, copiée dans `reference/` à la racine
+    du projet. Ce dossier est **ignoré par git** : il n'est ni envoyé sur GitHub ni publié.
+  - Style repris : page blanche, **pastille dorée** en haut au centre avec les initiales,
+    **deux grands épis** en trait beige derrière le texte (un peu plus clairs que sur la
+    photo pour que le texte reste lisible).
+  - **Initiales « SB »** dans la pastille (tu parles de « ta fiche SB » ; sur la photo, les
+    lettres manuscrites sont difficiles à lire). À changer facilement : constante
+    `INITIALES` dans `assets/js/fiche-pdf.js`.
+  - **Logo des épis redessiné** en SVG propre : `assets/img/epis.svg`, fait des mêmes tracés
+    que le PDF (`node tools/dessiner-epis.cjs` le régénère ; un test vérifie qu'ils sont égaux).
+  - Le PDF est fabriqué **dans le téléphone, sans bibliothèque** (polices standard des PDF :
+    Helvetica, Times) et **téléchargé** ; rien n'est envoyé ni stocké en ligne.
+  - Contenu : nom de la recette, nom du calcul et date, pièces (« 20 campagnes × 500 g =
+    10 000 g »), coefficient, ingrédients (farines en premier, en gras), total de pâte crue,
+    allergènes, étapes de la recette, pied « Fournil · prénom · date ». Plusieurs pages si
+    la recette est longue.
+- **Étape 5, allergènes** : les **14 allergènes** de la réglementation européenne (INCO),
+  repérés d'après les noms des ingrédients, affichés sur la feuille en cours, chaque feuille
+  de la saisie rapide, le détail des calculs enregistrés, **chaque recette de la
+  Bibliothèque**, et dans le PDF (avec les ingrédients en cause). Détection **prudente** :
+  « farine de riz », « lait de coco », « beurre de cacao », « noix de coco »… ne déclenchent
+  rien ; « chocolat » sans précision n'est pas deviné (« chocolat au lait » → lait). Une
+  phrase rappelle de vérifier les étiquettes des fournisseurs.
+- **Étape 6** : calcul du levain, produit en croix et température de l'eau de coulage
+  (« Température de base » : eau = base − labo − farine) **existaient déjà** dans Fournil :
+  ce sont les fichiers de Grigne copiés à l'identique (vérifié fichier par fichier, et par
+  `tests/test_recettes_grigne.js`). Rien à réécrire ; l'équipe y a accès (test ajouté).
+- **✏️ du Stock pour l'équipe** : elle peut ajouter une production, mais le champ « seuil »
+  est caché et le seuil ne change pas.
+
+## Vérifications finales
+
+- ESLint : aucune erreur.
+- Tests : **172 / 172** (`npm test`), dont les nouveaux : `test_equipe.js` (rôle équipe dans
+  l'appli), `test_equipe_donnees.js`, `test_feuilles.js`, `test_saisie_calculs.js`,
+  `test_allergenes.js`, `test_fiche_pdf.js`, `test_outils.js`, et l'échappement étendu.
+- Règles et migration sur l'émulateur : **10 / 10** (`npm run test:regles`) ; essai de
+  migration sur copie : 7 / 7 vérifications (`npm run migration:essai`).
+- CI GitHub (branche `nuit-equipe`) : voir ci-dessous.
+
 ## Ce qui bloque
 
-## Ce que tu dois valider le matin
+Rien de bloquant. Limites connues, notées pour plus tard :
+
+- **Stock = un seul document** : les règles vérifient sa forme, pas son contenu. Un membre de
+  l'équipe qui contournerait l'appli (outils de développeur) pourrait modifier tout le stock
+  ou effacer son historique — mais jamais les tâches, le Labo, le Bureau ni les recettes.
+  Pour aller plus loin : un document Firestore par mouvement de stock (gros chantier).
+- **Hors ligne** : un enregistrement du stock fait sans réseau remplace la version du serveur
+  à son retour (les autres enregistrements fusionnent). Rare avec le temps réel.
+- **Migration testée sur les données de démonstration**, pas sur une copie de tes vraies
+  données (les lire aurait été une action sur le vrai Firebase). Si tu veux l'essayer sur
+  une copie : exporte tes trois documents dans un fichier JSON, puis
+  `firebase emulators:exec --only firestore --project demo-fournil "node tools/migration-equipe.mjs copie.json"`
+  (l'outil refuse de tourner ailleurs que sur l'émulateur).
+- **Java 21** pour l'émulateur : installé en portable dans `~/.local/jdk21` (l'ordinateur a
+  Java 17). Sans lui, `npm run test:regles` refuse de démarrer. Dans la CI, Java 21 est
+  installé automatiquement.
+
+## Ce que tu dois valider le matin (dans cet ordre)
+
+Rien de tout cela n'a été fait cette nuit. L'ordre compte : chaque étape est sans risque
+pour la suivante.
+
+1. **Relire et essayer** la branche `nuit-equipe` (demande de fusion vers `main` sur GitHub,
+   ou en local). Sans migration, l'appli marche comme avant pour toi (seules différences :
+   plus de fenêtre « plusieurs jours », et les nouvelles lignes d'historique gardent ton
+   prénom et l'heure). Attention : ouverte en local, elle utilise tes vraies données.
+2. **Publier les règles** (elles laissent tout faire à ton compte, comme avant, donc l'appli
+   actuelle continue de marcher) :
+   `firebase deploy --only firestore:rules --project fournils-5e5d1`
+   (retour en arrière possible : remettre `firebase/firestore-avant-equipe.rules`).
+3. **Fusionner `nuit-equipe` dans `main`** (le site se met à jour tout seul).
+4. **Préparer les données** (la migration) : ferme Fournil sur tes autres appareils, puis
+   sur un seul : Réglages → Équipe → « Préparer les données pour l'équipe… ». Une copie
+   complète est faite avant (`sauvegardes/avant-equipe-…`). Ensuite, **recharge** Fournil sur
+   tes autres appareils. Retour possible : même carte → « Revenir à l'ancien format… ».
+   (Si les règles ne sont pas publiées, la préparation échoue sans rien changer.)
+5. **Créer les comptes de l'équipe** (2 ou 3) dans la console Firebase → Authentication →
+   « Ajouter un utilisateur » (e-mail + mot de passe que tu leur donnes). Copie l'**UID** de
+   chaque compte.
+6. Dans Fournil : Réglages → Équipe → colle l'UID + le prénom → « Ajouter », pour chacun.
+   Mets aussi **ton prénom** (sinon tu apparais comme « Responsable »).
+7. **Essai** : connecte-toi avec un compte de l'équipe sur un téléphone (Stock, Historique,
+   Recettes, Calcul, PDF) et vérifie qu'il ne voit ni les tâches, ni le Labo, ni le Bureau.
+8. Choix à confirmer : les initiales **« SB »** de la pastille du PDF, et le retrait d'**un
+   seul jour** de sorties quand l'appli n'a pas été ouverte pendant plusieurs jours.
+
