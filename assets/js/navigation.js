@@ -163,11 +163,11 @@
   // ---------- retour du téléphone (audit G5) ----------
   let enRetour = false;
   let dernierEcran = null;
-  // Ferme la fenêtre ouverte, s'il y en a une (la question « combien de jours ? » attend une réponse).
+  // Ferme la fenêtre ouverte, s'il y en a une.
   function fermerFenetre() {
     const feuille = document.getElementById('navPlus');
     if (feuille && !feuille.hidden) { feuille.hidden = true; return true; }
-    const ouverte = [...document.querySelectorAll('.overlay.open')].find((o) => o.id !== 'mJour');
+    const ouverte = document.querySelector('.overlay.open');
     if (ouverte) { ouverte.classList.remove('open'); return true; }
     const aide = document.getElementById('helpOverlay');
     if (aide && aide.style.display === 'flex') { closeHelp(); return true; }

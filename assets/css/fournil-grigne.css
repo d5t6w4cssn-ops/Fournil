@@ -552,12 +552,6 @@ body.avec-nav .hdr-back { display: none; }
 .bandeau-reessayer { min-height: 40px; padding: 6px 12px; border: 0; border-radius: 10px; background: var(--err); color: var(--paper); font-weight: 600; cursor: pointer; }
 .bandeau-fermer { min-width: 40px; min-height: 40px; border: 0; background: none; color: var(--err); font-size: 22px; cursor: pointer; }
 
-/* ========== Passage au jour suivant (assets/js/jour.js) ========== */
-.jour-choix { display: flex; align-items: center; gap: 8px; margin: 6px 0 12px; flex-wrap: wrap; }
-.jour-nb { width: 72px; min-height: 48px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--cream); color: var(--ink); font-family: var(--serif); font-size: 24px; text-align: center; }
-.jour-unite { font-size: 15px; color: var(--muted); }
-.jour-apercu .stock-liste { max-height: 180px; overflow-y: auto; }
-
 /* Message sous un champ obligatoire vide (champManquant) */
 .champ-erreur { margin: 6px 0 8px; font-size: 14px; color: var(--err); }
 .champ-erreur:empty { display: none; }
