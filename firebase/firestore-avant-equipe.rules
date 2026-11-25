@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Règles Firestore de Fournil (projet fournils-5e5d1).
+// Un seul compte autorisé : celui de l'utilisateur (stevenprojet19@gmail.com).
+// Tout le reste est refusé : autres comptes, visiteurs non connectés, autres collections.
+// Version publiée avant ce changement : firestore-avant-securite.rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function estProprietaire() {
+      return request.auth != null
+        && request.auth.uid == '7aqnISWywCZKEMiH7sYdsL14DI13';
+    }
+
+    match /boulangerie/{docId} {
+      allow read, write: if estProprietaire();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

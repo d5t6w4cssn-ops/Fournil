@@ -1,19 +1,89 @@
 rules_version = '2';
 
-// Règles Firestore de Fournil (projet fournils-5e5d1).
-// Un seul compte autorisé : celui de l'utilisateur (stevenprojet19@gmail.com).
-// Tout le reste est refusé : autres comptes, visiteurs non connectés, autres collections.
-// Version publiée avant ce changement : firestore-avant-securite.rules.
+// Règles Firestore de Fournil (projet fournils-5e5d1), avec le rôle « équipe ».
+// Version précédente (un seul compte) : firestore-avant-equipe.rules.
+//
+// - Administrateur : le compte de l'utilisateur (UID ci-dessous). Il lit et écrit tout.
+// - Équipe : un compte qui a un document membres/{uid} (créé par l'administrateur seul).
+//   Il lit les recettes (sans les modifier), lit et écrit le stock du Fournil, lit tous les
+//   calculs enregistrés, crée les siens et ne supprime que les siens.
+//   Il n'a AUCUN accès aux tâches, au Labo, au Bureau (boulangerie/state et boulangerie/labo).
+// - Tout le reste est refusé : visiteurs non connectés, comptes inconnus, autres collections.
+// Testées sur l'émulateur : tests/regles/test_regles.mjs (npm run test:regles).
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function estProprietaire() {
-      return request.auth != null
-        && request.auth.uid == '7aqnISWywCZKEMiH7sYdsL14DI13';
+    function connecte() {
+      return request.auth != null;
+    }
+    function estAdmin() {
+      return connecte() && request.auth.uid == '7aqnISWywCZKEMiH7sYdsL14DI13';
+    }
+    function fiche() {
+      return /databases/$(database)/documents/membres/$(request.auth.uid);
+    }
+    function estEquipe() {
+      return connecte() && exists(fiche()) && get(fiche()).data.role == 'equipe';
+    }
+    function estMembre() {
+      return estAdmin() || estEquipe();
+    }
+    // Contenu attendu d'un document « texte JSON » : un seul champ state, du texte.
+    function etatTexte() {
+      return request.resource.data.keys().hasOnly(['state'])
+        && request.resource.data.state is string
+        && request.resource.data.state.size() < 1000000;
     }
 
-    match /boulangerie/{docId} {
-      allow read, write: if estProprietaire();
+    // Tâches, Bureau, notes… : administrateur seul.
+    match /boulangerie/state {
+      allow read, write: if estAdmin();
+    }
+    // Labo : administrateur seul.
+    match /boulangerie/labo {
+      allow read, write: if estAdmin();
+    }
+    // Recettes : tout le monde (connu) les lit, seul l'administrateur les écrit.
+    match /boulangerie/recettes {
+      allow read: if estMembre();
+      allow write: if estAdmin();
+    }
+    // Stock du Fournil : l'équipe le lit et le met à jour (créé par la migration, administrateur).
+    match /boulangerie/stock {
+      allow read: if estMembre();
+      allow create, delete: if estAdmin();
+      allow update: if estAdmin() || (estEquipe() && etatTexte());
+    }
+    // Autres documents de boulangerie (s'il y en a un jour) : administrateur seul.
+    match /boulangerie/{autre} {
+      allow read, write: if estAdmin();
+    }
+
+    // Calculs enregistrés, partagés : chacun crée les siens sous son prénom ; chacun
+    // supprime les siens ; l'administrateur supprime tout. Personne ne les modifie.
+    match /calculs/{id} {
+      allow read: if estMembre();
+      allow create: if estMembre()
+        && request.resource.data.keys().hasOnly(['auteurUid', 'auteurPrenom', 'timestamp', 'calcul'])
+        && request.resource.data.auteurUid == request.auth.uid
+        && request.resource.data.calcul is string
+        && request.resource.data.calcul.size() < 100000
+        && request.resource.data.timestamp is number
+        && request.resource.data.auteurPrenom is string
+        && (estAdmin() || request.resource.data.auteurPrenom == get(fiche()).data.prenom);
+      allow update: if false;
+      allow delete: if estAdmin() || (estEquipe() && resource.data.auteurUid == request.auth.uid);
+    }
+
+    // Fiches des membres : l'administrateur les gère ; chacun lit la sienne (rôle, prénom).
+    match /membres/{uid} {
+      allow read: if estAdmin() || (connecte() && request.auth.uid == uid);
+      allow write: if estAdmin();
+    }
+
+    // Copies faites avant la migration : administrateur seul.
+    match /sauvegardes/{id} {
+      allow read, write: if estAdmin();
     }
 
     match /{document=**} {

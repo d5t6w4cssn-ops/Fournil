@@ -3,12 +3,15 @@
   "private": true,
   "description": "Tests de Fournil (jsdom + faux Firebase). Rien ici n'est utilisé par l'application.",
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/test_*.js tests/grigne/*.test.mjs"
+    "test": "node --test --test-concurrency=1 tests/test_*.js tests/grigne/*.test.mjs",
+    "test:regles": "firebase emulators:exec --only firestore --project demo-fournil \"node --test --test-concurrency=1 tests/regles/test_*.mjs\""
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
+    "@firebase/rules-unit-testing": "6.0.0",
     "axe-core": "4.14.0",
     "eslint": "9.39.5",
+    "firebase": "13.4.0",
     "globals": "17.13.0",
     "jsdom": "^25.0.1",
     "pixelmatch": "5.3.0",
