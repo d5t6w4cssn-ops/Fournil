@@ -567,7 +567,7 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
     </div>
     <div class="sheet-body" tabindex="0">
       <nav class="guide-toc" aria-label="Sommaire du guide">
-        <a href="#g-premier">Premier pas</a><a href="#g-stock">Stock</a><a href="#g-saisie">Saisie rapide</a><a href="#g-magasin">Magasin</a><a href="#g-recettes">Recettes</a><a href="#g-taches">Tâches</a><a href="#g-historique">Historique</a><a href="#g-labo">Labo</a><a href="#g-matieres">Matières</a><a href="#g-fournisseurs">Fournisseurs</a><a href="#g-tournee">Tournée</a><a href="#g-journal">Journal</a><a href="#g-reglages">Réglages</a><a href="#g-synchro">Synchronisation</a><a href="#g-journee">Nouvelle journée</a>
+        <a href="#g-premier">Premier pas</a><a href="#g-stock">Stock</a><a href="#g-saisie">Saisie rapide</a><a href="#g-magasin">Magasin</a><a href="#g-recettes">Recettes</a><a href="#g-feuilles">Feuilles de calcul</a><a href="#g-equipe">Équipe</a><a href="#g-taches">Tâches</a><a href="#g-historique">Historique</a><a href="#g-labo">Labo</a><a href="#g-matieres">Matières</a><a href="#g-fournisseurs">Fournisseurs</a><a href="#g-tournee">Tournée</a><a href="#g-journal">Journal</a><a href="#g-reglages">Réglages</a><a href="#g-synchro">Synchronisation</a><a href="#g-journee">Nouvelle journée</a>
       </nav>
 
       <section class="guide-first" id="g-premier" aria-labelledby="g-premier-t">
@@ -589,6 +589,7 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
         <ul class="guide-traps">
           <li>Le stock ne descend jamais sous 0 : si tu retires plus que ce qu'il y a, l'appli te prévient avant.</li>
           <li>✏️ sert à ajouter une production et à régler le seuil d'alerte (0 possible).</li>
+          <li>Quand un produit passe sous son seuil, un bandeau « Stock bas » s'affiche en haut du Stock, sur tous les téléphones.</li>
         </ul>
       </section>
 
@@ -619,6 +620,29 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
         <h4>Pièges courants</h4>
         <ul class="guide-traps">
           <li>Garde le mot « farine » dans le nom de chaque farine : c'est la base des calculs.</li>
+        </ul>
+      </section>
+
+      <section class="guide-tool" id="g-feuilles" aria-labelledby="g-feuilles-t">
+        <h3 id="g-feuilles-t">Feuilles de calcul : saisie rapide, PDF, allergènes</h3>
+        <p>En haut de Recettes → Calcul : écris ou dicte toutes les pièces à faire. Tu obtiens une feuille par recette, avec les poids exacts (sans arrondi) et les allergènes. Le bouton « PDF » télécharge une fiche à imprimer ; « Enregistrer » la garde dans les calculs enregistrés, partagés avec l'équipe.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">« 30 pains sportifs à 400 g, 20 campagnes à 500 g » : deux feuilles, une pour le pain sportif (12 kg de pâte), une pour la campagne (10 kg).</p>
+        <h4>Pièges courants</h4>
+        <ul class="guide-traps">
+          <li>Si un nom ressemble à plusieurs recettes, ou à aucune, l'appli te demande de choisir : elle ne devine jamais.</li>
+          <li>Les allergènes sont repérés d'après les noms des ingrédients : vérifie toujours les étiquettes de tes fournisseurs.</li>
+        </ul>
+      </section>
+
+      <section class="guide-tool" id="g-equipe" aria-labelledby="g-equipe-t">
+        <h3 id="g-equipe-t">Équipe</h3>
+        <p>Les membres de l'équipe ont leur propre compte. Ils voient le Stock (ajouter, retirer), l'Historique du stock et les Recettes (consultation et calculs), mais ni les tâches, ni le Labo, ni le Bureau. Chaque mouvement de stock garde le prénom et l'heure.</p>
+        <h4>Exemple</h4>
+        <p class="guide-ex">Réglages → Équipe : colle l'identifiant (UID) du compte créé dans la console Firebase et le prénom « Léa », puis « Ajouter ».</p>
+        <h4>Pièges courants</h4>
+        <ul class="guide-traps">
+          <li>Chacun ne supprime que ses propres calculs ; le responsable peut supprimer ceux de tout le monde.</li>
         </ul>
       </section>
 

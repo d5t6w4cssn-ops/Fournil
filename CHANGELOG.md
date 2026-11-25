@@ -2,6 +2,30 @@
 
 Les dates sont celles de la mise en ligne (ou de la branche, si ce n'est pas encore en ligne).
 
+## Nuit du 25 au 26 novembre 2026 (branche `nuit-equipe`, pas encore en ligne)
+
+- **Plus de fenêtre « plusieurs jours »** à l'ouverture : quand l'appli n'a pas été ouverte
+  depuis plusieurs jours, un seul jour de sorties est retiré, avec un petit message.
+- **Rôle « équipe »** (2 ou 3 personnes) : Stock (ajouter / retirer, saisie rapide),
+  Historique du stock, Recettes en consultation et tous les calculs. Tâches, Labo, Bureau,
+  Magasin, Calendrier et Réglages sont cachés et refusés par les règles Firestore.
+  Réglages → **Équipe** (responsable) : ton prénom, les membres, la préparation des données.
+- **Stock à plusieurs** : les ajouts et retraits faits en même temps sur deux téléphones
+  sont tous gardés (fusion à l'enregistrement).
+- **Historique du stock** : qui a ajouté ou retiré quoi, et à quelle heure.
+- **Alerte de stock bas** : quand un produit passe sous son seuil (message et bandeau en
+  haut du Stock).
+- **Calculs enregistrés partagés**, avec le prénom de l'auteur ; chacun supprime les siens,
+  le responsable peut supprimer tous les calculs.
+- **Saisie rapide des calculs** (texte ou dictée) : « 30 pains sportifs à 400 g, 20
+  campagnes à 500 g » → une feuille de calcul par recette ; un nom de recette ambigu ou
+  inconnu est demandé, jamais deviné ; poids non arrondis.
+- **Fiche PDF** sur chaque feuille de calcul, dans le style de la fiche « SB » (pastille
+  dorée, deux épis de blé redessinés en SVG) ; téléchargée sur l'appareil, rien en ligne.
+- **Allergènes** affichés automatiquement sur chaque feuille, chaque recette et dans le PDF.
+- Calcul du levain, produit en croix et température de l'eau de coulage : déjà présents
+  (repris de Grigne à l'identique), ouverts à l'équipe.
+
 ## 20 novembre 2026
 
 - **Messages vocaux** : seule la transcription en texte est enregistrée, plus aucun son dans

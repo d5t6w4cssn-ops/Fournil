@@ -31,7 +31,8 @@ export function blocAllergenes(ingredients, compact = false) {
 
 // ---------- PDF ----------
 const dateLisible = () => new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' });
-const dateFichier = () => (window.FournilDate ? window.FournilDate.dateParis() : new Date().toISOString().slice(0, 10));
+// date du jour à l'heure de Paris (assets/js/date.js), « AAAA-MM-JJ »
+const dateFichier = () => (window.FournilDate ? window.FournilDate.dateParis() : new Date().toLocaleDateString('fr-CA', { timeZone: 'Europe/Paris' }));
 
 /**
  * Données de la fiche à partir d'un calcul (même forme que les calculs enregistrés) :

@@ -4,7 +4,8 @@
   "description": "Tests de Fournil (jsdom + faux Firebase). Rien ici n'est utilisé par l'application.",
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/test_*.js tests/grigne/*.test.mjs",
-    "test:regles": "firebase emulators:exec --only firestore --project demo-fournil \"node --test --test-concurrency=1 tests/regles/test_*.mjs\""
+    "test:regles": "firebase emulators:exec --only firestore --project demo-fournil \"node --test --test-concurrency=1 tests/regles/test_*.mjs\"",
+    "migration:essai": "firebase emulators:exec --only firestore --project demo-fournil \"node tools/migration-equipe.mjs\""
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

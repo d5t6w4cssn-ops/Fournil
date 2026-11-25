@@ -83,6 +83,22 @@ Dans Recettes → Bibliothèque, carte « Mes recettes : exporter / importer » 
   confirmation, ajoute sans jamais écraser (doublon identique ignoré, nom pris →
   « Nom (importée) »), affiche un bilan. Les règles suivent `~/grigne/src/js/core/export.js`.
 
+## Rôle « équipe » et feuilles de calcul (nuit du 25 novembre 2026, branche `nuit-equipe`)
+
+- Rôles dans `assets/js/acces.js` : administrateur = UID `7aqnISWywCZKEMiH7sYdsL14DI13` ;
+  équipe = fiche `membres/{uid}` `{ prenom, role: 'equipe' }` (Stock, Historique, Recettes
+  en consultation + calculs). `initFirebase`, `save` et `actualiserApp` lui délèguent.
+- Après la migration (in-app, Réglages → Équipe ; `migrerBase` dans
+  `assets/js/equipe-donnees.js`) : stock dans `boulangerie/stock`, calculs dans `calculs/{id}`,
+  sauvegarde dans `sauvegardes/`. Avant : format d'origine, tout marche comme avant.
+- Règles testées sur l'émulateur : `npm run test:regles` (Java 21 :
+  `~/.local/jdk21/jdk-21.0.13.1+2`) ; essai de migration : `npm run migration:essai`.
+- Feuilles de calcul : `recettes/adaptation/fiche.js` (auteur, allergènes, PDF) et
+  `saisie-calculs.js` (saisie rapide), branchés dans les copies de Grigne par les
+  REMPLACEMENTS de `tools/importer-grigne.mjs`. Pur : `assets/js/saisie-calculs.js`,
+  `allergenes.js`, `fiche-pdf.js` (PDF fait main, logo `assets/img/epis.svg` produit par
+  `node tools/dessiner-epis.cjs`). Modèle de la fiche : `reference/` (ignoré par git).
+
 ## Tests
 
 ```bash

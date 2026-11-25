@@ -10,8 +10,10 @@ Fournil est une seule page web (`index.html`), servie telle quelle par GitHub Pa
 2. Firebase 9.23 « compat » (bibliothèque de Google, chargée depuis gstatic) ;
 3. le **script principal**, en fin de `index.html` : état, écrans, enregistrement ;
 4. les modules ajoutés autour de lui, sans modifier ses fonctions :
-   `recettes/recettes.js`, `assets/js/synchro.js`, `assets/js/jour.js`,
-   `assets/js/saisie-rapide.js`, `assets/js/stock.js`, `assets/js/navigation.js`.
+   `assets/js/saisie-calculs.js`, `assets/js/allergenes.js`, `assets/js/fiche-pdf.js`,
+   `recettes/recettes.js`, `assets/js/synchro.js`, `assets/js/equipe-donnees.js`,
+   `assets/js/acces.js`, `assets/js/jour.js`, `assets/js/saisie-rapide.js`,
+   `assets/js/stock.js`, `assets/js/donnees.js`, `assets/js/navigation.js`.
 
 Ces modules se branchent sur les fonctions existantes (`openModule`, `sw`, `swL`, `swB`,
 `renderStock`, `initFirebase`…) en les enveloppant : la logique d'origine reste en place.
@@ -43,20 +45,29 @@ précédent.
 | `assets/js/synchro.js` | état réel de l'enregistrement, bandeau d'erreur, « Réessayer » |
 | `assets/js/jour.js` | passage au jour suivant (sorties de la veille, plusieurs jours manqués) |
 | `assets/js/stock.js` | remise à zéro, − / +, retrait avec motif, saisie rapide (interface) |
+| `assets/js/acces.js` | rôles (administrateur / équipe), lecture et enregistrement des données, stock partagé, alertes de seuil bas, Réglages → Équipe |
+| `assets/js/equipe-donnees.js` | séparation du stock, fusion, calculs partagés, migration (fonctions de données, sans la page) |
+| `assets/js/saisie-calculs.js` | reconnaissance du texte de la saisie rapide des calculs (fonctions pures) |
+| `assets/js/allergenes.js` | les 14 allergènes réglementaires, déduits des noms d'ingrédients (fonctions pures) |
+| `assets/js/fiche-pdf.js` | fiche PDF d'une feuille de calcul et logo des épis, sans bibliothèque (fonctions pures) |
+| `assets/img/epis.svg` | logo des épis, produit par `tools/dessiner-epis.cjs` |
 | `assets/js/saisie-rapide.js` | reconnaissance du texte de la saisie rapide (fonctions pures) |
 | `recettes/src/` | fichiers de Grigne copiés **sans modification** (vérifié par un test) |
-| `recettes/adaptation/` | ce qui est propre à Fournil : lecture / écriture de `boulangerie/recettes`, PDF, export / import, styles |
+| `recettes/adaptation/` | ce qui est propre à Fournil : lecture / écriture de `boulangerie/recettes` et des calculs partagés, import PDF, export / import, feuilles de calcul (`fiche.js` : auteur, allergènes, bouton PDF ; `saisie-calculs.js` : saisie rapide), styles |
 | `recettes/recettes.js`, `recettes/recettes.css` | **générés** par `tools/importer-grigne.mjs` (ne pas modifier à la main) |
 | `vendor/pdfjs/` | PDF.js 3.11.174 (fichiers officiels), chargé seulement au premier import de PDF |
 | `firebase.json`, `firebase/` | règles de sécurité Firestore (actuelles et précédentes) |
+| `reference/` | modèles personnels (photo de la fiche « SB ») : **ignoré par git**, jamais publié |
 | `tests/` | tests (jsdom et Chromium) avec un faux Firebase |
 | `tools/` | outils : captures, audit d'accessibilité, vérification du site, import de Grigne |
 | `docs/` | format d'échange des recettes, héritage du style de Grigne, code mort |
 
 ## Données dans Firestore
 
-Projet `fournils-5e5d1`, collection `boulangerie`, trois documents. Chaque document range
-son contenu sous forme de **texte JSON** dans un seul champ.
+Projet `fournils-5e5d1`. Les documents de `boulangerie` rangent leur contenu sous forme de
+**texte JSON** dans un seul champ.
+
+**Avant la migration « équipe »** (format d'origine) :
 
 | Document | Champ | Contenu |
 |---|---|---|
@@ -64,13 +75,32 @@ son contenu sous forme de **texte JSON** dans un seul champ.
 | `boulangerie/labo` | `state` | l'état du Labo (`L`) |
 | `boulangerie/recettes` | `recipes`, `calcHistory` | recettes et historique des calculs (partagés Fournil et Labo) |
 
+**Après la migration « équipe »** (Réglages → Équipe → « Préparer les données pour
+l'équipe », administrateur seul ; `migrerBase` dans `assets/js/equipe-donnees.js`) : le stock
+est rangé à part, pour que les règles puissent l'ouvrir à l'équipe sans ouvrir le reste.
+
+| Document | Champ | Contenu | Qui |
+|---|---|---|---|
+| `boulangerie/state` | `state`, `migreEquipe` | `S` **sans** `products`, `history`, `lastDate` | administrateur |
+| `boulangerie/stock` | `state` | `{ products, history, lastDate }` du Fournil | administrateur + équipe |
+| `boulangerie/labo` | `state` | inchangé | administrateur |
+| `boulangerie/recettes` | `recipes` (+ `calcHistory` gardé en secours, plus utilisé) | recettes | lecture : tous ; écriture : administrateur |
+| `calculs/{id}` | `auteurUid`, `auteurPrenom`, `timestamp`, `calcul` (texte JSON) | un calcul enregistré, partagé | lecture : tous ; création : chacun les siens ; suppression : les siens, ou tout pour l'administrateur |
+| `membres/{uid}` | `prenom`, `role` (`'equipe'`) | membres de l'équipe | écrit par l'administrateur ; chacun lit le sien |
+| `sauvegardes/{id}` | copies des documents | copie complète faite juste avant la migration | administrateur |
+
+L'appli recompose `S` à partir de `state` et `stock` (`assets/js/acces.js`) : le reste du
+code ne voit pas la différence. La migration peut être annulée (Réglages → Équipe →
+« Revenir à l'ancien format… », `annulerMigration`).
+
 Contenu de `S` (Fournil et Bureau) :
 
 ```text
 products[]     { id, name, emoji, stockReel, base, commande, seuil, recipeUrl? }
 tasks[]        { id, text, done, auto, cat, pid?, fromGestion?, cmdId? }
 lastDate       "AAAA-MM-JJ" : dernier passage au jour suivant (heure de Paris)
-history[]      { id, date, type, pid, name, emoji, qty, … }  630 lignes au plus
+history[]      { id, date, type, pid, name, emoji, qty, par?, parUid?, t?, … }  630 lignes au plus
+                 par / parUid / t : prénom, compte et heure (ms) de qui a fait le mouvement
                  type : sortie, recharge, ajustement (delta), retrait (motif, note),
                         raz (remise à zéro), saisie (lignes[] de la saisie rapide)
 notes[]        { id, author, text, time, isVocal?, transcription?, audioUrl? }
@@ -107,13 +137,29 @@ propositions dans [docs/taille-des-donnees.md](docs/taille-des-donnees.md).
 - **Passage au jour suivant** (`assets/js/jour.js`) : sur les données reçues, dans une
   transaction Firestore pour ne jamais retirer deux fois les sorties si deux appareils
   s'ouvrent en même temps ; hors ligne, appliqué sur l'appareil.
-- **Dernier écrit gagnant** : deux appareils qui modifient le même document au même moment
-  peuvent s'écraser, puisque le document est envoyé en entier. Le temps réel rend ce cas rare.
+- **Stock à plusieurs** (après la migration) : chaque enregistrement du stock se fait dans
+  une transaction qui **fusionne** la version du serveur avec mes changements
+  (`fusionnerStock` : stock du serveur + mon écart, jamais sous 0 ; mes lignes d'historique
+  devant les autres). Les envois partent l'un après l'autre. Hors ligne, la version de
+  l'appareil part au retour du réseau (dernier écrit gagnant, cas rare).
+- **Dernier écrit gagnant** pour les autres documents (tâches, Labo, recettes) : deux
+  appareils qui modifient le même document au même moment peuvent s'écraser, puisque le
+  document est envoyé en entier. Le temps réel rend ce cas rare.
 
 ## Sécurité
 
-- **Règles Firestore** (`firebase/firestore-fournil.rules`) : seul le compte du
-  propriétaire (identifiant précis) lit et écrit `boulangerie/*` ; tout le reste est refusé.
+- **Rôles** : l'**administrateur** (le compte du propriétaire, identifiant précis) a tout ;
+  l'**équipe** (compte avec une fiche `membres/{uid}`, rôle `equipe`) voit le Stock,
+  l'Historique du stock et les Recettes (consultation et calculs). Tâches, Labo, Bureau,
+  Magasin, Calendrier, Réglages : cachés dans l'appli (`acces.js`) **et** refusés par les
+  règles. Un compte connecté sans fiche ne voit rien.
+- **Règles Firestore** (`firebase/firestore-fournil.rules`, testées sur l'émulateur par
+  `tests/regles/test_regles.mjs`) : voir le tableau des données ci-dessus ; tout le reste
+  est refusé. Version précédente (un seul compte) : `firebase/firestore-avant-equipe.rules`.
+- **Limite connue** : le stock est un seul document texte ; les règles vérifient sa forme
+  (un champ `state` texte) mais pas son contenu. Un membre de l'équipe qui contournerait
+  l'appli pourrait donc modifier tout le stock ou son historique (pas les tâches, le Labo,
+  le Bureau ni les recettes). Pour aller plus loin : un document par mouvement de stock.
 - **Comptes** : connexion par e-mail et mot de passe (Firebase Auth). L'inscription libre
   est désactivée ; un compte se crée à la main dans la console.
 - **Configuration Firebase** dans `index.html` : publique par nature (clé web), la

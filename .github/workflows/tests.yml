@@ -32,3 +32,25 @@ jobs:
         run: npm test
         env:
           TZ: Europe/Paris
+
+  # Règles Firestore et migration « équipe », sur l'émulateur Firestore seulement
+  # (projet fictif demo-fournil : aucun lien avec la vraie base, rien n'est publié).
+  regles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Dépendances de test
+        run: npm ci
+      - name: Outil Firebase (émulateur uniquement)
+        run: npm install --global firebase-tools@15.36.0
+      - name: Règles et migration sur l'émulateur
+        run: npm run test:regles

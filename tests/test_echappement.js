@@ -52,7 +52,7 @@ function donnees() {
 
 test('aucun texte des données ne peut injecter du HTML ou du JavaScript', async () => {
   const d = donnees();
-  const a = await chargerAppli({ recettes: d.recettes, etat: d.S });
+  const a = await chargerAppli({ recettes: d.recettes, etat: d.S, docs: { 'membres/piegeUid0001': { prenom: P('membres.prenom'), role: 'equipe' } } });
   a.fake.externalSet('boulangerie/labo', { state: JSON.stringify(d.L) });
   a.fake.externalSet('boulangerie/recettes', { calcHistory: JSON.stringify(d.calcHistory) });
   const w = a.window;
@@ -103,6 +103,24 @@ test('aucun texte des données ne peut injecter du HTML ou du JavaScript', async
     await ecran(`recettes/${t}`, () => { doc.querySelector(`#tab-recettes .tabs [data-tab="${t}"]`).click(); });
   }
   await ecran('recettes/calc-etapes', () => { const b = doc.querySelector('#rc-calculator-view .notes-toggle, #rc-calculator-view button[aria-label*="tape"]'); if (b) b.click(); });
+  // Feuilles de calcul : saisie rapide (nom inconnu, puis recette choisie), feuille, détail des calculs enregistrés
+  await ecran('recettes/saisie-apercu', () => {
+    doc.querySelector('#tab-recettes .tabs [data-tab="calculator"]').click();
+    doc.getElementById('rcSaisieTexte').value = `3 ${P('saisie.nom')} à 400 g`;
+    doc.querySelector('#rc-saisie-calculs .rc-saisie-analyser').click();
+  });
+  await ecran('recettes/saisie-feuille', () => {
+    const sel = doc.querySelector('#rc-saisie-calculs .rc-saisie-recette');
+    sel.value = sel.options[1].value;
+    sel.dispatchEvent(new w.Event('change'));
+    doc.querySelector('#rc-saisie-calculs .rc-saisie-voir').click();
+    doc.querySelector('#rc-saisie-calculs .rc-feuille [data-action=pdf]').click();
+  });
+  await ecran('recettes/calculs-detail', () => {
+    doc.querySelectorAll('#rc-calculator-view .history-item .row-toggle').forEach((b) => b.click());
+    doc.querySelectorAll('#rc-calculator-view .rc-pdf-btn').forEach((b) => b.click());
+  });
+  await ecran('fournil/reglages-equipe', () => { w.eval("openModule('fournil');sw('settings')"); });
 
   // Cliquer sur tous les boutons d'action en ligne : aucun ne doit exécuter le piège.
   // (on neutralise les effets de bord : confirm → false, prompt → null)
@@ -135,4 +153,35 @@ test("le PDF d'un produit n'accepte qu'un vrai PDF, jamais une adresse javascrip
   assert.equal(a.window.__piege, undefined);
   await a.pause(20);
   a.window.close();
+});
+
+test('rôle équipe : les prénoms, calculs partagés et lignes d’historique piégés restent du texte', async () => {
+  const E = require('../assets/js/equipe-donnees.js');
+  const d = donnees();
+  const m = E.preparerMigration({ state: { state: JSON.stringify({ ...d.S, history: [...d.S.history, { id: 'h_lea', date: today, type: 'ajustement', pid: 'p', name: P('H.name'), emoji: 'x', delta: 1, qty: 1, par: P('H.par'), t: Date.now() }] }) } });
+  const calcul = E.calculVersDoc({ ...d.calcHistory[0], id: 'c_piege' }, { uid: 'samUid000001', prenom: P('calcul.auteurPrenom') });
+  const a = await chargerAppli({
+    utilisateur: { uid: 'leaUid000001' },
+    docs: {
+      'boulangerie/stock': m.stock, 'boulangerie/state': m.state, 'boulangerie/recettes': { recipes: JSON.stringify(d.recettes) },
+      'calculs/c_piege': calcul.doc, 'membres/leaUid000001': { prenom: 'Léa', role: 'equipe' },
+    },
+  });
+  const w = a.window;
+  const doc = w.document;
+  await a.pause(60);
+  const trouves = new Set();
+  const releve = (nom) => doc.querySelectorAll('[data-piege]').forEach((el) => trouves.add(`${nom} → ${el.getAttribute('data-piege')}`));
+  for (const t of ['stock', 'histo', 'recettes']) { w.eval(`sw('${t}')`); await a.pause(5); releve(t); }
+  doc.querySelector('#tab-recettes .tabs [data-tab="calculator"]').click();
+  doc.querySelectorAll('#rc-calculator-view .history-item .row-toggle').forEach((b) => b.click());
+  releve('calculs');
+  w.eval("S.products.forEach(p=>{p.stockReel=0});save()");
+  await a.pause(30);
+  releve('alerte');
+  await a.pause(60);
+  const executes = w.__piege || [];
+  w.close();
+  assert.deepEqual([...trouves].sort(), [], 'HTML injecté');
+  assert.deepEqual(executes, [], 'JavaScript exécuté depuis les données');
 });

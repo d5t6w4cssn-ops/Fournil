@@ -73,3 +73,8 @@
 #tab-recettes .rc-saisie-feuilles { display: grid; gap: 16px; margin-top: 16px; }
 #tab-recettes .rc-feuille-pieces { margin: 6px 0 10px; padding-left: 18px; }
 #tab-recettes .rc-feuille-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+/* poids non arrondis (plus longs) : le nom passe au-dessus du poids si la place manque */
+#tab-recettes .rc-feuille .weigh li { flex-wrap: wrap; }
+#tab-recettes .rc-feuille .weigh .n { flex: 1 1 9em; }
+#tab-recettes .rc-feuille .weigh .q { margin-left: auto; font-size: 24px; }
+#tab-recettes .rc-feuille .weigh .lead .q { font-size: 32px; }
