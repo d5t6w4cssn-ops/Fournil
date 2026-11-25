@@ -117,7 +117,9 @@ Aucune action sur le vrai Firebase.
   `test_allergenes.js`, `test_fiche_pdf.js`, `test_outils.js`, et l'échappement étendu.
 - Règles et migration sur l'émulateur : **10 / 10** (`npm run test:regles`) ; essai de
   migration sur copie : 7 / 7 vérifications (`npm run migration:essai`).
-- CI GitHub (branche `nuit-equipe`) : voir ci-dessous.
+- CI GitHub (branche `nuit-equipe`) : **verte** — travaux « tests » (ESLint, fichiers
+  générés, 172 tests) et « regles » (émulateur) réussis.
+- `main` n'a pas bougé (toujours au commit `7a30a63` du 20 novembre).
 
 ## Ce qui bloque
 
@@ -167,3 +169,4 @@ pour la suivante.
 8. Choix à confirmer : les initiales **« SB »** de la pastille du PDF, et le retrait d'**un
    seul jour** de sorties quand l'appli n'a pas été ouverte pendant plusieurs jours.
 
+NUIT TERMINÉE
