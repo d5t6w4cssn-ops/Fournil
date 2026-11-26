@@ -2,6 +2,13 @@
 
 Les dates sont celles de la mise en ligne (ou de la branche, si ce n'est pas encore en ligne).
 
+## 26 novembre 2026 (branche `sans-retrait-plusieurs-jours`)
+
+- **Plus aucun retrait automatique quand l'appli est restée fermée plusieurs jours** : le
+  stock reste tel quel, seuls la date et les commandes sont remises à zéro, avec un petit
+  message (« 3 jours sans ouverture, stock inchangé »). Un seul jour manqué : inchangé, les
+  sorties de la veille sont retirées.
+
 ## Nuit du 25 au 26 novembre 2026 (branche `nuit-equipe`, pas encore en ligne)
 
 - **Plus de fenêtre « plusieurs jours »** à l'ouverture : quand l'appli n'a pas été ouverte

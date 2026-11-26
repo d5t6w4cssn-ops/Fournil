@@ -45,16 +45,17 @@ test('un jour manqué : sorties de la veille retirées tout seul (Fournil et Lab
   assert.equal(a.fake.nbTransactions(), 2, 'une transaction par module');
 });
 
-test('plusieurs jours : plus aucune question, un seul jour de sorties retiré', async (t) => {
+test('plusieurs jours : aucune fenêtre, aucun retrait du stock', async (t) => {
   const { a, doc } = await ouvrir(t, { joursFournil: 3 });
   assert.equal(ouverte(doc), false, 'aucune fenêtre');
   assert.equal(doc.querySelectorAll('.overlay.open').length, 0);
   const s = etat(a);
   assert.equal(s.lastDate, AUJ);
-  assert.equal(stock(s, 'croissant'), 18, 'un seul jour : 64 − 46');
-  const sorties = s.history.filter((h) => h.type === 'sortie' && h.pid === 'croissant' && h.id.includes('_j'));
-  assert.deepEqual(sorties.map((h) => [h.date, h.qty]), [[AUJ, 46]]);
-  assert.match(doc.getElementById('toast').textContent, /3 jours sans ouverture, un seul jour de sorties retiré/);
+  assert.equal(stock(s, 'croissant'), 64, 'stock inchangé');
+  assert.ok(s.products.every((p) => p.commande === 0), 'commandes remises à 0');
+  const sorties = s.history.filter((h) => h.type === 'sortie' && h.id.includes('_j'));
+  assert.equal(sorties.length, 0, 'aucune sortie ajoutée');
+  assert.match(doc.getElementById('toast').textContent, /3 jours sans ouverture, stock inchangé/);
 });
 
 test('deux appareils : si l’autre a déjà passé la journée, rien n’est retiré deux fois', async (t) => {
@@ -80,10 +81,11 @@ test('hors ligne : appliqué sur l’appareil, envoyé au retour du réseau', as
   assert.equal(stock(etat(a), 'croissant'), 18);
 });
 
-test('Fournil et Labo en retard de plusieurs jours : aucune question, un jour retiré de chaque', async (t) => {
+test('Fournil et Labo en retard de plusieurs jours : aucune question, rien retiré', async (t) => {
   const { a, doc } = await ouvrir(t, { joursFournil: 2, joursLabo: 5 });
   assert.equal(ouverte(doc), false);
   assert.equal(labo(a).lastDate, AUJ);
   assert.equal(etat(a).lastDate, AUJ);
-  assert.equal(stock(labo(a), 'lp_1'), 4, 'tarte : 12 − (6 + 2), un seul jour');
+  assert.equal(stock(labo(a), 'lp_1'), 12, 'tarte : stock inchangé');
+  assert.equal(stock(etat(a), 'croissant'), 64, 'croissants : stock inchangé');
 });

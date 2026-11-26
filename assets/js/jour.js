@@ -4,8 +4,8 @@
 // Maintenant : vérifié à chaque arrivée des données (Fournil et Labo), au retour sur l'appli
 // et chaque minute (changement de date appli ouverte).
 // - 1 jour manqué : comme avant, appliqué tout seul (sorties = base + commandes).
-// - Plusieurs jours : plus de question (fenêtre retirée le 26 novembre 2026, demande de
-//   l'utilisateur) : un seul jour de sorties est retiré, comme le faisait l'appli d'origine,
+// - Plusieurs jours : aucune fenêtre et aucun retrait du stock (demande de l'utilisateur,
+//   26 novembre 2026) : seules la date, les commandes et les tâches auto sont remises à zéro,
 //   et un message le dit.
 // - En ligne : dans une transaction Firestore, pour ne jamais retirer deux fois les mêmes
 //   sorties si deux appareils s'ouvrent en même temps. Hors ligne : sur l'appareil, envoyé
@@ -108,8 +108,8 @@
       }
       m.afficher();
       if (resultat.deja) toast(`${m.nom} : la journée a déjà été passée sur un autre appareil ✓`);
+      else if (k === 0 && manques > 1) toast(`${m.nom} : ${manques} jours sans ouverture, stock inchangé`);
       else if (k === 0) toast(`${m.nom} : nouvelle journée, stock inchangé`);
-      else if (k === 1 && manques > 1) toast(`${m.nom} : ${manques} jours sans ouverture, un seul jour de sorties retiré du stock ✓`);
       else if (k === 1) toast(`${m.nom} : nouvelle journée, sorties d'hier retirées du stock ✓`);
       else toast(`${m.nom} : ${k} jours de sorties retirés du stock ✓`);
     } finally {
@@ -138,7 +138,8 @@
     if (!etat.lastDate) { appliquer(mod, 0); return; }
     const n = joursEntre(etat.lastDate, auj);
     if (n <= 0) return; // date de l'appareil en retard : on ne touche à rien
-    appliquer(mod, 1, n);
+    // un seul jour manqué : sorties de la veille retirées ; plusieurs : stock inchangé
+    appliquer(mod, n === 1 ? 1 : 0, n);
   }
 
   window.fournilJour = { verifier, passerJours, joursEntre, appliquer };
