@@ -1,4 +1,17 @@
-# Code mort de Fournil (liste seulement)
+# Code mort de Fournil
+
+**Mise à jour du 27 novembre 2026 (nuit 3, branche `nuit-3`)** : relevé refait (chaque classe
+de `assets/css/fournil-base.css` cherchée dans tout le projet, y compris les noms construits ;
+chaque fonction cherchée dans tout le projet, tests et outils compris). Supprimés, un par un,
+avec ESLint et tous les tests après chaque suppression, puis comparaison au pixel des
+72 captures : `.mat-card` (et variantes), `.mat-header`, `.mat-badges`, `.mat-stock-row`,
+`.mat-stock-val`, `.mat-ctrl`, `.mat-btn`, `.mat-in`, `.hebdo-card`, `.cal-day.other-month`.
+Déjà retirés avant (cette page ne le disait pas) : la copie locale `window.storage` et
+l'attente des Statistiques `.bureau-placeholder` (commit `77f79ff`), et 27 règles de styles
+entièrement recouvertes par la refonte (commit `cff28f2`, 20 novembre 2026).
+Aucune fonction JavaScript morte trouvée. Les éléments « à vérifier » ci-dessous restent en
+place, par prudence (encore reliés à du code).
+
 
 Établi le 18 novembre 2026, sur la branche `refonte`. **Rien de cette liste n'a été supprimé** :
 seul l'ancien code des recettes, remplacé par les écrans de Grigne, l'a été (commit `15d2a5b`).

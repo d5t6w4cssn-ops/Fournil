@@ -2,6 +2,26 @@
 
 Les dates sont celles de la mise en ligne (ou de la branche, si ce n'est pas encore en ligne).
 
+## Nuit du 26 au 27 novembre 2026 (branche `nuit-3`, pas encore en ligne)
+
+- **Saisie rapide des calculs plus facile à trouver** : bouton « Saisie rapide des calculs »
+  en haut de Recettes → Bibliothèque ; il ouvre le Calculateur, curseur dans le champ.
+- **Sécurité : Content-Security-Policy** (balise `<meta>`) : la page ne charge et ne
+  contacte que ses propres fichiers, Firebase et la météo. Testée dans Chromium sur tous
+  les écrans et avec le vrai code Firebase sur les émulateurs (connexion, synchro, hors ligne).
+- **Rangement** : les styles d'origine sortent de `index.html` vers
+  `assets/css/fournil-base.css` (sans modification, vérifié au pixel sur 72 captures) ;
+  styles jamais utilisés supprimés (`.mat-*`, `.hebdo-card`, `.cal-day.other-month`).
+- **Branches** : 8 branches déjà fusionnées supprimées, chacune archivée par un tag
+  `archive/<nom>` (récupérable).
+
+## 26 novembre 2026 (en ligne)
+
+- **Mettre à jour noms et notes** (Recettes → Bibliothèque) : remplace le nom, les notes et
+  les noms d'ingrédients des recettes de même identifiant, seulement si ingrédients et
+  quantités sont identiques ; aperçu, puis sauvegarde complète téléchargée juste avant.
+- **Équipe** : un identifiant (UID) déjà utilisé est refusé au lieu d'écraser le membre.
+
 ## 26 novembre 2026 (branche `sans-retrait-plusieurs-jours`)
 
 - **Plus aucun retrait automatique quand l'appli est restée fermée plusieurs jours** : le

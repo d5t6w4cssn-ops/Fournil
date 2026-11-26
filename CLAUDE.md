@@ -110,6 +110,11 @@ npm install          # jsdom, uniquement pour les tests
 npm test             # lance tous les tests/test_*.js
 ```
 
+`npm run test:emulateur` : l'appli complète avec le vrai code Firebase sur les émulateurs
+Auth + Firestore (projet fictif, toute autre requête bloquée), sous la CSP de `index.html`
+(balise `<meta>`, détail dans `SECURITY.md`, vérifiée aussi par `tests/test_csp.js`).
+Styles d'origine : `assets/css/fournil-base.css`.
+
 `tests/fake-firebase.js` remplace Firebase (Auth + Firestore en mémoire) et bloque tout
 appel réseau. `tests/test_echange_grigne.js` vérifie aussi l'aller-retour avec le code de
 Grigne (`~/grigne/src/js/core/export.js`, importé en lecture seule).

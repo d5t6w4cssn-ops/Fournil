@@ -10,8 +10,8 @@ Branche de travail : `nuit-3`, partie de `main` à jour (`6351280`), poussée r�
 | 1. Recettes au propre (fiche avant/après) | fait |
 | 2. Saisie rapide des calculs | fait |
 | 3. CSP | fait |
-| 4. Nettoyage du dépôt | en cours |
-| Fin : ESLint, tests, CI, docs | reste |
+| 4. Nettoyage du dépôt | fait |
+| Fin : ESLint, tests, CI, docs | en cours |
 
 ## 1. Recettes au propre
 
@@ -79,6 +79,79 @@ sauvegarde complète juste avant d'écrire. Testé (4 tests) et essayé à blanc
 - `firebase.json` : ajout de la section `emulators` (Auth 9099, Firestore 8080, sans interface),
   nécessaire pour l'émulateur Auth. Ne change rien à la publication des règles.
 
+## 4. Nettoyage du dépôt
+
+### Monolithe
+
+Plus gros fichiers suivis (hors copies de Grigne, PDF.js et polices) : `index.html` 193 Ko,
+`package-lock.json` 128 Ko, `recettes/recettes.js` 121 Ko (généré), `recettes/recettes.css`
+65 Ko (généré), `assets/css/fournil-grigne.css` 50 Ko, `assets/js/acces.js` 28 Ko,
+`assets/js/stock.js` 28 Ko.
+
+- **Fait** : les styles d'origine (466 lignes du `<style>` de `index.html`) sont sortis, sans
+  aucune modification, dans `assets/css/fournil-base.css`, chargé au même endroit (même ordre
+  des styles). `index.html` passe de 193 à 156 Ko. Vérifié : ESLint, tous les tests, et
+  **72 captures** de tous les écrans (mobile et ordinateur, clair et sombre) comparées au pixel
+  avant / après : aucun écart visible (au plus 2 niveaux de couleur sur 255 sur un carré de
+  30 px, du lissage, déjà mesuré entre deux prises du même code).
+  - Ce découpage a fait échouer `tests/test_pdf.js` : son petit serveur envoyait les `.css`
+    avec un type inconnu, que Chromium ignore. Corrigé dans le test (types de GitHub Pages,
+    vérifiés : `text/css`). L'appli en ligne n'était pas concernée.
+- **Proposé, pas fait** : sortir le **script principal** (~2 100 lignes en fin de
+  `index.html`) dans `assets/js/principal.js`. Simple en apparence, mais il serait alors
+  vérifié par ESLint (beaucoup de corrections à prévoir), et des outils et tests lisent
+  `index.html`. Pas de gain de sécurité tant que les `onclick` restent. À faire dans une
+  session dédiée, avec le retrait des `onclick` (ce qui permettrait ensuite une CSP sans
+  `'unsafe-inline'`).
+
+### Code mort supprimé
+
+Méthode : chaque classe de `assets/css/fournil-base.css` cherchée dans tout le projet (HTML,
+JavaScript, généré compris, noms construits compris) ; chaque fonction cherchée partout, tests
+et outils compris. Un morceau à la fois, **ESLint + tous les tests (180) après chaque
+suppression**, tous verts :
+
+| Commit | Supprimé | Où |
+|---|---|---|
+| `ae96acd` | `.mat-card` (+ `::before`, `.low`, `.empty`, `.dlc-soon`), `.mat-header`, `.mat-badges`, `.mat-stock-row`, `.mat-stock-val`, `.mat-ctrl`, `.mat-btn` (+ `:active`), `.mat-in` (+ `:focus`) | `fournil-base.css` (écran Matières) |
+| `3837223` | `.hebdo-card` | `fournil-base.css` et sélecteur de `fournil-grigne.css` |
+| `d55ce1b` | `.cal-day.other-month` | `fournil-base.css` |
+
+- Aucune fonction JavaScript morte (les 5 candidates trouvées par la recherche automatique
+  sont appelées sous la forme `...nom(` dans `fiche-pdf.js`).
+- Déjà retirés lors de nuits précédentes (mais `docs/CODE-MORT.md` ne le disait pas : mis à
+  jour) : la copie locale `window.storage` et l'attente des Statistiques (`77f79ff`), et
+  27 règles de styles recouvertes par la refonte (`cff28f2`, 20 novembre).
+- **Pas touchés, par prudence** : les styles « recouverts par la refonte » et les éléments
+  « à vérifier » de `docs/CODE-MORT.md` (encore reliés à du code ou à affiner écran par écran).
+
+### Branches
+
+Vérifié avec `git branch --merged main` (local et GitHub). Avant chaque suppression : tag
+annoté `archive/<nom>` sur le dernier commit, poussé sur GitHub, puis vérification que le tag
+pointe bien sur ce commit. Suppression avec `git branch -d` (jamais `-D`), puis sur GitHub.
+
+| Branche supprimée | Dernier commit | Tag d'archive | Où |
+|---|---|---|---|
+| `equipe-uid-deja-utilise` | `1b819c8` | `archive/equipe-uid-deja-utilise` | locale seulement |
+| `export-import` | `c22b481` | `archive/export-import` | locale + GitHub |
+| `nuit-2` | `7a30a63` | `archive/nuit-2` | locale + GitHub |
+| `nuit-equipe` | `8010c99` | `archive/nuit-equipe` | locale + GitHub |
+| `recettes-mise-a-jour-notes` | `6351280` | `archive/recettes-mise-a-jour-notes` | locale seulement |
+| `refonte` | `b52f8a3` | `archive/refonte` | locale + GitHub |
+| `sans-retrait-plusieurs-jours` | `c01667c` | `archive/sans-retrait-plusieurs-jours` | locale seulement |
+| `securite` | `197c83c` | `archive/securite` | locale + GitHub |
+
+Pour en récupérer une : `git branch <nom> archive/<nom>`.
+
+| Branche gardée | Pourquoi |
+|---|---|
+| `main` | production (jamais touchée) |
+| `nuit-3` | travail de cette nuit |
+| `avant-equipe`, `avant-export-import` (locales et GitHub), `avant-nuit-2`, `avant-refonte`, `avant-securite`, `avant-stock-b1-b2` (GitHub) | branches de sauvegarde `avant-*` : gardées par règle |
+
+Aucune branche non fusionnée à part `nuit-3`.
+
 ## Décisions prises
 
 - Étape 1 : pas de nouveau code d'import, celui de ce soir répond déjà à la demande.
@@ -87,6 +160,13 @@ sauvegarde complète juste avant d'écrire. Testé (4 tests) et essayé à blanc
 - Étape 3 : CSP **sans** retirer `'unsafe-inline'` (scripts et styles). Le retirer casserait
   les ~140 boutons `onclick="…"` de l'appli ; c'est un chantier à part, noté dans
   `SECURITY.md`. Tout le reste est verrouillé (sources, connexions, objets, `base`, formulaires).
+- Étape 3 : `frame-src` autorise l'iframe d'authentification de Firebase
+  (`fournils-5e5d1.firebaseapp.com`) par précaution : la connexion par e-mail ne s'en sert
+  pas dans le test, mais Firebase peut la charger ; sans elle, la connexion pourrait casser.
+- Étape 4 : seul le découpage des styles a été fait (mécanique, vérifié au pixel) ; le script
+  principal reste dans `index.html` (proposition ci-dessus).
+- Étape 4 : seuls les styles prouvés inutilisés ont été supprimés ; tout ce qui restait
+  « probable » ou « à vérifier » est laissé.
 
 ## À valider par toi
 

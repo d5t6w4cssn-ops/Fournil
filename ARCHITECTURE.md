@@ -35,8 +35,9 @@ précédent.
 
 | Fichier | Rôle |
 |---|---|
-| `index.html` | page unique : HTML des écrans, styles d'origine, script principal |
-| `assets/css/fournil-grigne.css` | style de Grigne (palette claire et sombre, Lecture facile), chargé après les styles d'origine |
+| `index.html` | page unique : CSP (balise `<meta>`), HTML des écrans, script principal |
+| `assets/css/fournil-base.css` | styles d'origine de Fournil (sortis de `index.html` le 27 novembre 2026, sans modification) |
+| `assets/css/fournil-grigne.css` | style de Grigne (palette claire et sombre, Lecture facile), chargé après `fournil-base.css` |
 | `assets/css/fonts.css`, `assets/fonts/` | polices hébergées avec le site (Young Serif, Hanken Grotesk, OpenDyslexic) |
 | `assets/img/encre*.svg` | masques d'usure du tampon des recettes |
 | `assets/js/theme.js` | thème clair / sombre et Lecture facile, mémorisés sur l'appareil |
@@ -58,7 +59,7 @@ précédent.
 | `vendor/pdfjs/` | PDF.js 3.11.174 (fichiers officiels), chargé seulement au premier import de PDF |
 | `firebase.json`, `firebase/` | règles de sécurité Firestore (actuelles et précédentes) |
 | `reference/` | modèles personnels (photo de la fiche « SB ») : **ignoré par git**, jamais publié |
-| `tests/` | tests (jsdom et Chromium) avec un faux Firebase |
+| `tests/` | tests (jsdom et Chromium) avec un faux Firebase ; `tests/regles/` et `tests/emulateur/` sur les émulateurs |
 | `tools/` | outils : captures, audit d'accessibilité, vérification du site, import de Grigne |
 | `docs/` | format d'échange des recettes, héritage du style de Grigne, code mort |
 
@@ -168,10 +169,13 @@ propositions dans [docs/taille-des-donnees.md](docs/taille-des-donnees.md).
 - **Échappement à l'affichage** : tout texte venu des données passe par `esc()` avant
   d'entrer dans du HTML, et tout identifiant mis dans un `onclick` par `escJ()`.
   `tests/test_echappement.js` piège toutes les données et ouvre tous les écrans.
-- **CSP** : Fournil n'a **pas encore** de politique de sécurité du contenu (Content
-  Security Policy), car le code utilise des gestionnaires `onclick` et des styles écrits
-  dans le HTML. En ajouter une demande de déplacer ces gestionnaires dans les scripts
-  (chantier proposé, voir le rapport).
+- **CSP** (Content-Security-Policy, balise `<meta>` en tête de `index.html`) : seuls les
+  fichiers du site et Firebase 9.23 (gstatic) peuvent être chargés ; seuls Firestore,
+  Firebase Auth, Open-Meteo et Nominatim peuvent être contactés ; pas d'`eval` ni
+  d'objets. `'unsafe-inline'` reste nécessaire tant que le code utilise des `onclick` et des
+  styles écrits dans le HTML (détail et limites : `SECURITY.md`). Vérifiée par
+  `tests/test_csp.js` et `tests/emulateur/test_appli_emulateur.mjs` (vrai Firebase sur les
+  émulateurs Auth et Firestore : connexion, synchro, hors ligne ; `npm run test:emulateur`).
 - **Dépendances** : aucune à l'exécution, à part Firebase (Google) et PDF.js (hébergé avec
   le site). `node_modules` ne sert qu'aux tests.
 - **Accessibilité** : aucune violation axe (WCAG 2.1 A et AA) sur tous les écrans, en clair,
