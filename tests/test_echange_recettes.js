@@ -246,3 +246,81 @@ test('importer : le texte du fichier est échappé à l’affichage (aperçu, bi
   assert.equal(a.window.__pirate, 0, 'aucun script exécuté');
   a.window.close();
 });
+
+// ── Mettre à jour noms et notes (recettes de même identifiant, mêmes ingrédients) ──
+async function choisirMaj(a, texte, nom = 'corrige.json') {
+  const input = a.carte().querySelector('.rc-maj-input');
+  const file = new a.window.File([texte], nom, { type: 'application/json' });
+  Object.defineProperty(input, 'files', { value: [file], configurable: true });
+  const avant = a.zone().innerHTML;
+  input.dispatchEvent(new a.window.Event('change'));
+  for (let i = 0; i < 300 && a.zone().innerHTML === avant; i++) await a.pause(10);
+  await a.pause(10);
+}
+async function confirmerMaj(a) {
+  a.zone().querySelector('.rc-maj-ok').click();
+  for (let i = 0; i < 300 && !/Mise à jour terminée|rien n’a été mis à jour/.test(a.zone().textContent); i++) await a.pause(10);
+  await a.pause(10);
+}
+const CORRIGE = [
+  { ...EXISTANTES[0], name: 'Baguette de tradition', notes: 'Pointage\n1. 1 h.', ingredients: [ing('a', 'Farine T65 (Tradition)', 1000), ing('b', 'Eau', 680), ing('c', 'Sel fin', 20)] },
+  EXISTANTES[1], // identique : rien à faire
+  { ...EXISTANTES[2], notes: 'Cuisson\n1. 45 min.', ingredients: [ing('a', 'Farine de seigle', 999), ing('b', 'Eau', 800)] }, // quantité changée : refusée
+  nouvelle(1), // absente : ignorée, jamais ajoutée
+];
+
+test('mettre à jour : aperçu sans écriture, refus si les quantités diffèrent', async () => {
+  const a = await chargerAppli({ recettes: EXISTANTES });
+  const avant = a.fake.writes.length;
+  await choisirMaj(a, fichierGrigne(CORRIGE));
+  const t = a.zone().textContent.replace(/\s+/g, ' ');
+  assert.match(t, /1 recette à mettre à jour, 1 déjà à jour, 1 absente de ta bibliothèque/);
+  assert.match(t, /Baguette → Baguette de tradition \(notes, 2 noms d’ingrédients\)/);
+  assert.match(t, /Refusées : Pain de seigle \(ingrédients ou quantités différents\)/);
+  assert.equal(a.fake.writes.length, avant, 'aucune écriture avant confirmation');
+  a.zone().querySelector('.rc-import-cancel').click();
+  await a.pause(20);
+  assert.equal(a.fake.writes.length, avant);
+  a.window.close();
+});
+
+test('mettre à jour : sauvegarde téléchargée d’abord, puis seuls noms et notes changent', async () => {
+  const a = await chargerAppli({ recettes: EXISTANTES });
+  await choisirMaj(a, fichierGrigne(CORRIGE));
+  const nbTelech = a.telechargements.length;
+  await confirmerMaj(a);
+  assert.equal(a.telechargements.length, nbTelech + 1, 'une sauvegarde téléchargée');
+  const sauv = a.telechargements.at(-1);
+  assert.match(sauv.nom, /^fournil-recettes-sauvegarde-\d{4}-\d{2}-\d{2}-\d{2}h\d{2}\.json$/);
+  const texte = await new Promise((ok) => { const fr = new a.window.FileReader(); fr.onload = () => ok(fr.result); fr.readAsText(sauv.blob); });
+  assert.deepEqual(JSON.parse(texte).recipes.map((r) => r.name), ['Baguette', 'Brioche', 'Pain de seigle'], 'la sauvegarde est la version d’avant');
+  assert.equal(a.ecrituresRecettes().length, 1, 'une seule écriture');
+  const base = a.recettesEnBase();
+  assert.equal(base.length, 3, 'rien ajouté ni supprimé');
+  assert.deepEqual(base[0], { id: 'r1', name: 'Baguette de tradition', notes: 'Pointage\n1. 1 h.', ingredients: [ing('a', 'Farine T65 (Tradition)', 1000), ing('b', 'Eau', 680), ing('c', 'Sel fin', 20)] });
+  assert.deepEqual(base.slice(1), EXISTANTES.slice(1), 'les autres recettes sont intactes');
+  assert.match(a.zone().textContent, /1 recette mise à jour .*1 refusée.*fournil-recettes-sauvegarde-/);
+  a.window.close();
+});
+
+test('mettre à jour : nom déjà pris par une autre recette → refusée ; serveur injoignable → rien', async () => {
+  const a = await chargerAppli({ recettes: EXISTANTES });
+  await choisirMaj(a, fichierGrigne([{ ...EXISTANTES[0], name: 'Brioche' }]));
+  assert.match(a.zone().textContent, /Rien à mettre à jour.*1 recette refusée/);
+  await choisirMaj(a, fichierGrigne([{ ...EXISTANTES[0], notes: 'Nouvelles notes' }]), 'b.json');
+  const avant = a.fake.writes.length, nbTelech = a.telechargements.length;
+  a.fake.setFailServerGet(true);
+  await confirmerMaj(a);
+  assert.equal(a.fake.writes.length, avant);
+  assert.equal(a.telechargements.length, nbTelech, 'pas de sauvegarde inutile');
+  assert.match(a.zone().textContent, /rien n’a été mis à jour/);
+  a.window.close();
+});
+
+test('mettre à jour : textes du fichier échappés dans l’aperçu', async () => {
+  const a = await chargerAppli({ recettes: EXISTANTES });
+  await choisirMaj(a, fichierGrigne([{ ...EXISTANTES[0], name: '<img src=x onerror=alert(1)>' }]));
+  assert.equal(a.zone().querySelector('img'), null);
+  assert.match(a.zone().textContent, /<img src=x/);
+  a.window.close();
+});

@@ -654,6 +654,7 @@ body.role-equipe #panel-library .edit-btn,
 body.role-equipe #panel-library .del-btn,
 body.role-equipe #panel-library .empty-actions,
 body.role-equipe #panel-library .rc-import-btn,
+body.role-equipe #panel-library .rc-maj-btn,
 body.role-equipe #mCorrect .groupe-seuil { display: none !important; }
 
 /* Compte sans accès / données pas prêtes */

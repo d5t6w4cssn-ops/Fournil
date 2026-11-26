@@ -82,6 +82,10 @@ Dans Recettes → Bibliothèque, carte « Mes recettes : exporter / importer » 
 - Importer : lit un fichier Grigne (versions 1 et 2), montre un aperçu, demande
   confirmation, ajoute sans jamais écraser (doublon identique ignoré, nom pris →
   « Nom (importée) »), affiche un bilan. Les règles suivent `~/grigne/src/js/core/export.js`.
+- Mettre à jour noms et notes (`planMiseAJour` dans `recettes/adaptation/echange.js`) : seulement
+  les recettes de même identifiant, avec les mêmes ingrédients (identifiants, ordre, quantités) et
+  le même TB ; change le nom, les notes et les noms d'ingrédients, rien d'autre. Aperçu, puis
+  sauvegarde complète téléchargée (`fournil-recettes-sauvegarde-…json`) juste avant l'écriture.
 
 ## Rôle « équipe » et feuilles de calcul (nuit du 25 novembre 2026, branche `nuit-equipe`)
 

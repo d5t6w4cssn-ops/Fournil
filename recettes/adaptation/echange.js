@@ -149,6 +149,119 @@ function planImport(current, imported){
   return { toAdd, skipped };
 }
 
+// Mise à jour des noms et des notes : ce que le fichier changerait, sans rien modifier.
+// Seules les recettes déjà présentes (même identifiant) sont concernées, et seulement
+// si leurs ingrédients sont les mêmes (mêmes identifiants, même ordre, mêmes quantités)
+// et leur TB aussi. On ne change alors que le nom de la recette, ses notes et les noms
+// de ses ingrédients. Jamais d'ajout, jamais de suppression, jamais de quantité touchée.
+function planMiseAJour(current, imported){
+  const changes = [], refusees = [];
+  let identiques = 0, absentes = 0;
+  const parId = new Map(current.map(r => [r.id, r]));
+  const nomsPris = new Map(current.map(r => [String(r.name || '').trim().toLowerCase(), r.id]));
+  for(const r of imported){
+    const c = parId.get(r.id);
+    if(!c){ absentes++; continue; }
+    const ci = Array.isArray(c.ingredients) ? c.ingredients : [];
+    const memes = ci.length === r.ingredients.length
+      && ci.every((i, k) => String(i.id) === String(r.ingredients[k].id) && Number(i.qtyG) === r.ingredients[k].qtyG)
+      && exTb(c.tb) === exTb(r.tb);
+    if(!memes){ refusees.push({ name: c.name, raison: 'ingrédients ou quantités différents' }); continue; }
+    const pris = nomsPris.get(r.name.trim().toLowerCase());
+    if(pris !== undefined && pris !== c.id){ refusees.push({ name: c.name, raison: `le nom « ${r.name} » est déjà pris` }); continue; }
+    const nomChange = c.name !== r.name;
+    const notesChange = String(c.notes || '') !== r.notes;
+    const ingChanges = r.ingredients.filter((i, k) => ci[k].name !== i.name).length;
+    if(!nomChange && !notesChange && !ingChanges){ identiques++; continue; }
+    changes.push({ id: c.id, ancienNom: c.name, name: r.name, notes: r.notes, ingNames: r.ingredients.map(i => i.name), nomChange, notesChange, ingChanges });
+  }
+  return { changes, refusees, identiques, absentes };
+}
+
+function sauvegardeFileName(d){
+  const p = n => String(n).padStart(2, '0');
+  const jour = window.FournilDate ? window.FournilDate.dateParis(d) : `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  return `fournil-recettes-sauvegarde-${jour}-${p(d.getHours())}h${p(d.getMinutes())}.json`;
+}
+
+function telecharger(data, fileName){
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function lireFichierGrigne(file){
+  if(file.size > EX_MAX_BYTES) return { erreur: 'Ce fichier est trop gros (5 Mo au plus).' };
+  let text;
+  try{ text = await readFileText(file); }
+  catch(e){ return { erreur: 'Impossible de lire ce fichier.' }; }
+  const parsed = parseImport(text);
+  if(parsed.error) return { erreur: {
+    json: 'Ce fichier n’est pas lisible : ce n’est pas un fichier d’export Grigne.',
+    format: 'Ce fichier n’est pas un fichier d’export Grigne.',
+    version: 'Ce fichier vient d’une version plus récente de Grigne : Fournil ne sait pas encore le lire.',
+  }[parsed.error] };
+  if(parsed.recipes.length === 0) return { erreur: 'Ce fichier ne contient aucune recette utilisable.' };
+  return { recipes: parsed.recipes };
+}
+
+async function onMiseAJourFile(file){
+  if(!file) return;
+  const lu = await lireFichierGrigne(file);
+  if(lu.erreur){ echange = { kind: 'erreur', text: lu.erreur }; rerender(); return; }
+  const plan = planMiseAJour(state.recipes, lu.recipes);
+  if(plan.changes.length === 0){
+    echange = { kind: 'erreur', text: 'Rien à mettre à jour : aucune recette de ce fichier ne correspond à une recette de ta bibliothèque avec les mêmes ingrédients, ou tout est déjà identique.'
+      + (plan.refusees.length ? ` ${pl(plan.refusees.length, 'recette refusée', 'recettes refusées')} (ingrédients ou quantités différents, ou nom déjà pris).` : '') };
+    rerender(); return;
+  }
+  echange = { kind: 'apercu-maj', fileName: file.name, imported: lu.recipes, plan };
+  rerender();
+}
+
+async function confirmMiseAJour(){
+  if(!echange || echange.kind !== 'apercu-maj') return;
+  const imported = echange.imported;
+  echange = { kind: 'info', text: 'Mise à jour en cours…' };
+  rerender();
+  // Repartir de la version du serveur : la sauvegarde et la mise à jour portent sur elle.
+  if(!(await reloadFromServer())){
+    echange = { kind: 'erreur', text: 'Impossible de joindre le serveur : rien n’a été mis à jour. Réessaie une fois connecté.' };
+    rerender(); return;
+  }
+  const plan = planMiseAJour(state.recipes, imported);
+  if(plan.changes.length === 0){
+    echange = { kind: 'bilan', ok: true, text: 'Mise à jour terminée : rien à changer, tout était déjà à jour.' };
+    rerender(); return;
+  }
+  // Sauvegarde complète juste avant : un fichier qu'on peut relire, au format habituel.
+  const maintenant = new Date();
+  const sauvegarde = sauvegardeFileName(maintenant);
+  telecharger(buildExport(state.recipes, maintenant).data, sauvegarde);
+  const parId = new Map(plan.changes.map(ch => [ch.id, ch]));
+  state.recipes = state.recipes.map(r => {
+    const ch = parId.get(r.id);
+    if(!ch) return r;
+    return { ...r, name: ch.name, notes: ch.notes, ingredients: r.ingredients.map((i, k) => ({ ...i, name: ch.ingNames[k] })) };
+  });
+  const ok = await saveRecipes();
+  echange = {
+    kind: 'bilan',
+    ok,
+    text: `Mise à jour terminée : ${pl(plan.changes.length, 'recette mise à jour', 'recettes mises à jour')} (noms et notes seulement, quantités inchangées).`
+      + (plan.refusees.length ? ` ${pl(plan.refusees.length, 'refusée', 'refusées')}.` : '')
+      + ` Sauvegarde d’avant : « ${sauvegarde} ».`
+      + (ok ? '' : ' Attention : l’envoi vers les autres appareils a échoué, la mise à jour n’est enregistrée que sur celui-ci.'),
+  };
+  rerender();
+}
+
 function readFileText(file){
   return new Promise((resolve, reject)=>{
     const fr = new FileReader();
@@ -255,7 +368,7 @@ function buildEchangeCard(){
   card.className = 'card rc-echange';
   card.innerHTML = `
     <h3>Mes recettes : exporter / importer</h3>
-    <p class="sub">Échange tes recettes avec Grigne, ou garde-en une copie. L’import ajoute des recettes, il n’en remplace jamais.</p>
+    <p class="sub">Échange tes recettes avec Grigne, ou garde-en une copie. L’import ajoute des recettes, il n’en remplace jamais. « Mettre à jour » change seulement les noms et les notes des recettes déjà présentes, si leurs ingrédients et quantités sont identiques, après une sauvegarde.</p>
     <div class="rc-echange-actions">
       <button type="button" class="btn-dark rc-export-btn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
@@ -265,13 +378,21 @@ function buildEchangeCard(){
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>
         Importer un fichier Grigne
       </button>
+      <button type="button" class="btn-soft rc-maj-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v5h-5M20 12a8 8 0 0 1-14 5.3M4 20v-5h5"/></svg>
+        Mettre à jour noms et notes
+      </button>
       <input type="file" class="rc-import-input" accept=".json,application/json" style="display:none">
+      <input type="file" class="rc-maj-input" accept=".json,application/json" style="display:none">
     </div>
     <div class="rc-echange-zone" role="status" aria-live="polite"></div>`;
   const input = card.querySelector('.rc-import-input');
   card.querySelector('.rc-export-btn').onclick = doExport;
   card.querySelector('.rc-import-btn').onclick = () => { input.value = ''; input.click(); };
   input.onchange = () => onImportFile(input.files && input.files[0]);
+  const inputMaj = card.querySelector('.rc-maj-input');
+  card.querySelector('.rc-maj-btn').onclick = () => { inputMaj.value = ''; inputMaj.click(); };
+  inputMaj.onchange = () => onMiseAJourFile(inputMaj.files && inputMaj.files[0]);
 
   const zone = card.querySelector('.rc-echange-zone');
   if(echange){
@@ -286,6 +407,21 @@ function buildEchangeCard(){
           <button type="button" class="btn-ghost rc-import-cancel">Annuler</button>
         </div>`;
       zone.querySelector('.rc-import-ok').onclick = confirmImport;
+      zone.querySelector('.rc-import-cancel').onclick = () => { echange = null; rerender(); };
+    } else if(echange.kind === 'apercu-maj'){
+      const { plan, fileName } = echange;
+      const n = plan.changes.length;
+      const detail = ch => [ch.notesChange ? 'notes' : '', ch.ingChanges ? pl(ch.ingChanges, 'nom d’ingrédient', 'noms d’ingrédients') : ''].filter(Boolean).join(', ');
+      zone.innerHTML = `
+        <div class="dropzone-status ok">Fichier « ${esc(fileName)} » : <strong>${pl(n, 'recette à mettre à jour', 'recettes à mettre à jour')}</strong>${plan.identiques ? `, ${pl(plan.identiques, 'déjà à jour', 'déjà à jour')}` : ''}${plan.absentes ? `, ${pl(plan.absentes, 'absente de ta bibliothèque (ignorée)', 'absentes de ta bibliothèque (ignorées)')}` : ''}. Seuls les noms et les notes changent, jamais les quantités.</div>
+        <ul class="rc-maj-liste">${plan.changes.map(ch => `<li>${ch.nomChange ? `${esc(ch.ancienNom)} → <strong>${esc(ch.name)}</strong>` : `<strong>${esc(ch.name)}</strong>`}${detail(ch) ? ` <span class="muet">(${esc(detail(ch))})</span>` : ''}</li>`).join('')}</ul>
+        ${plan.refusees.length ? `<div class="dropzone-status warn">Refusées : ${plan.refusees.map(r => `${esc(r.name)} (${esc(r.raison)})`).join(' ; ')}.</div>` : ''}
+        <p class="sub">Une sauvegarde complète de tes recettes sera téléchargée juste avant.</p>
+        <div class="rc-echange-actions">
+          <button type="button" class="btn-dark rc-maj-ok">Sauvegarder puis mettre à jour ${n > 1 ? 'les ' + n + ' recettes' : 'la recette'}</button>
+          <button type="button" class="btn-ghost rc-import-cancel">Annuler</button>
+        </div>`;
+      zone.querySelector('.rc-maj-ok').onclick = confirmMiseAJour;
       zone.querySelector('.rc-import-cancel').onclick = () => { echange = null; rerender(); };
     } else {
       const cls = echange.kind === 'erreur' || (echange.kind === 'bilan' && !echange.ok) ? 'warn' : 'ok';
