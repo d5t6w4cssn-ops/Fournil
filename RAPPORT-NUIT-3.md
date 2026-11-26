@@ -11,7 +11,7 @@ Branche de travail : `nuit-3`, partie de `main` à jour (`6351280`), poussée r�
 | 2. Saisie rapide des calculs | fait |
 | 3. CSP | fait |
 | 4. Nettoyage du dépôt | fait |
-| Fin : ESLint, tests, CI, docs | en cours |
+| Fin : ESLint, tests, CI, docs | fait |
 
 ## 1. Recettes au propre
 
@@ -168,7 +168,41 @@ Aucune branche non fusionnée à part `nuit-3`.
 - Étape 4 : seuls les styles prouvés inutilisés ont été supprimés ; tout ce qui restait
   « probable » ou « à vérifier » est laissé.
 
+## Vérifications finales (sur `nuit-3`, commit `bec621a`)
+
+- ESLint : **0 erreur** (`npx eslint .`).
+- Fichiers générés des recettes à jour (`node tools/importer-grigne.mjs --verifier`).
+- `npm test` : **180 tests sur 180** (178 au départ + `test_csp.js` (2) ; plus 1 test de
+  l'accès direct à la saisie rapide, et les 4 tests de « Mettre à jour noms et notes »
+  publiés ce soir).
+- `npm run test:regles` : **10 sur 10** (émulateur).
+- `npm run test:emulateur` : **1 sur 1** (nouveau : vrai Firebase sur les émulateurs, sous la CSP).
+- **CI GitHub verte** sur `nuit-3` (jobs `tests` et `regles`, ce dernier avec le test sur l'émulateur).
+- 72 captures de tous les écrans identiques à celles d'avant la nuit (à un lissage invisible près).
+- Documentation à jour : `CHANGELOG.md`, `ARCHITECTURE.md`, `SECURITY.md`, `docs/CODE-MORT.md`,
+  `CLAUDE.md`.
+- Aucune action sur le vrai Firebase ; `main` intacte ; aucun historique réécrit.
+
+## Ce qui reste (pas fait cette nuit)
+
+- Retirer les ~140 `onclick="…"` et sortir le script principal de `index.html`, pour une CSP
+  sans `'unsafe-inline'` (chantier proposé, voir étapes 3 et 4).
+- Les points « Reste à vérifier » (en jaune) de la fiche recettes : seul toi peux les compléter.
+- Les éléments « à vérifier » de `docs/CODE-MORT.md`.
+
 ## À valider par toi
 
-- La fiche `recettes-avant-apres.html`, puis appliquer `recettes-notes-propres.json` avec
-  « Mettre à jour noms et notes ».
+1. **Fiche recettes** : ouvre `/mnt/chromeos/MyFiles/Downloads/recettes-avant-apres.html`.
+   Si elle te convient : Recettes → Bibliothèque → « Mettre à jour noms et notes » →
+   `recettes-notes-propres.json` → l'aperçu doit dire « 14 recettes à mettre à jour » →
+   confirmer (une sauvegarde se télécharge avant).
+2. **Fusion de `nuit-3` dans `main`** (mise en ligne : bouton d'accès à la saisie rapide,
+   CSP, styles rangés). Après avoir regardé le rapport, tape :
+   `! git checkout main && git merge --ff-only nuit-3 && git push origin main`
+   Puis, après la mise en ligne, vérifie sur ton téléphone : connexion, Stock, Recettes,
+   saisie rapide (dictée comprise), import d'un PDF. En cas de souci, la version d'avant est
+   le commit `6351280` (`git revert` ou demande-moi).
+3. **Branches supprimées** : la liste est à l'étape 4 ; toutes récupérables par leur tag
+   `archive/<nom>`. Rien à faire si elle te convient.
+
+NUIT TERMINÉE
