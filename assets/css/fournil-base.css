@@ -226,7 +226,6 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
 .cal-event-text { flex:1; font-size:13px; }
 
 /* RÉSUMÉ HEBDO */
-.hebdo-card { background: var(--paper); border-radius: var(--r); padding: 13px 14px; margin-bottom: 9px; box-shadow: var(--sh); }
 .hebdo-prod-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(196,154,108,0.1); }
 .hebdo-prod-row:last-child { border-bottom: none; }
 .hebdo-prod-name { font-size: 13px; display: flex; align-items: center; gap: 6px; }

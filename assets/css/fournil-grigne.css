@@ -367,7 +367,7 @@ body.avec-nav .hdr-back { display: none; }
 .cal-legend-dot.charge-high { border: 1px solid var(--err); }
 .cal-day.charge-low:active, .cal-day.charge-mid:active, .cal-day.charge-high:active { filter: brightness(.95); }
 .cal-legend-item { font-size: 13px; color: var(--muted); }
-.cal-events, .hebdo-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.cal-events { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
 .cal-event-title { font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--ink); }
 .cal-event-item, .hebdo-prod-row { border-bottom: 1px solid var(--line2); }
 .cal-event-text { font-size: 14px; }
