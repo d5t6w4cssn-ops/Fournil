@@ -172,9 +172,8 @@ Aucune branche non fusionnée à part `nuit-3`.
 
 - ESLint : **0 erreur** (`npx eslint .`).
 - Fichiers générés des recettes à jour (`node tools/importer-grigne.mjs --verifier`).
-- `npm test` : **180 tests sur 180** (178 au départ + `test_csp.js` (2) ; plus 1 test de
-  l'accès direct à la saisie rapide, et les 4 tests de « Mettre à jour noms et notes »
-  publiés ce soir).
+- `npm test` : **180 tests sur 180** (177 au départ sur `main`, + 1 pour l'accès direct à
+  la saisie rapide, + 2 pour la CSP dans `tests/test_csp.js`).
 - `npm run test:regles` : **10 sur 10** (émulateur).
 - `npm run test:emulateur` : **1 sur 1** (nouveau : vrai Firebase sur les émulateurs, sous la CSP).
 - **CI GitHub verte** sur `nuit-3` (jobs `tests` et `regles`, ce dernier avec le test sur l'émulateur).
