@@ -50,5 +50,9 @@ export default [
     files: ['tests/**/*.mjs', 'tools/**/*.mjs', '*.mjs'],
     languageOptions: { ecmaVersion: 2022, sourceType: 'module', globals: { ...globals.node } },
     rules: COMMUNES,
+  },  {
+    // l'appli sur l'émulateur : du code exécuté dans la page (page.evaluate)
+    files: ['tests/emulateur/**/*.mjs'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser, ...PAGE } },
   },
 ];

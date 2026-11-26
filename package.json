@@ -5,7 +5,8 @@
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/test_*.js tests/grigne/*.test.mjs",
     "test:regles": "firebase emulators:exec --only firestore --project demo-fournil \"node --test --test-concurrency=1 tests/regles/test_*.mjs\"",
-    "migration:essai": "firebase emulators:exec --only firestore --project demo-fournil \"node tools/migration-equipe.mjs\""
+    "migration:essai": "firebase emulators:exec --only firestore --project demo-fournil \"node tools/migration-equipe.mjs\"",
+    "test:emulateur": "firebase emulators:exec --only firestore,auth --project demo-fournil \"node --test --test-concurrency=1 tests/emulateur/test_*.mjs\""
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

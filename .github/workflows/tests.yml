@@ -33,7 +33,7 @@ jobs:
         env:
           TZ: Europe/Paris
 
-  # Règles Firestore et migration « équipe », sur l'émulateur Firestore seulement
+  # Règles Firestore, migration « équipe » et appli complète, sur les émulateurs seulement
   # (projet fictif demo-fournil : aucun lien avec la vraie base, rien n'est publié).
   regles:
     runs-on: ubuntu-latest
@@ -54,3 +54,9 @@ jobs:
         run: npm install --global firebase-tools@15.36.0
       - name: Règles et migration sur l'émulateur
         run: npm run test:regles
+      - name: Navigateur pour l'appli sur l'émulateur
+        run: npx playwright install --with-deps chromium
+      # L'appli complète avec le vrai code Firebase, branchée sur les émulateurs Auth et
+      # Firestore (projet fictif), sous la CSP : connexion, synchro, hors ligne.
+      - name: Appli complète sur l'émulateur (CSP, connexion, synchro, hors ligne)
+        run: npm run test:emulateur

@@ -31,6 +31,24 @@ puis mentionnée dans le [CHANGELOG](CHANGELOG.md) une fois la correction en lig
   créent à la main dans la console, par le propriétaire.
 - Fiches PDF fabriquées sur l'appareil et téléchargées : rien n'est envoyé en ligne.
 - Échappement de tout texte affiché, vérifié par les tests.
+- **Content-Security-Policy** (balise `<meta>` en tête de `index.html`, car GitHub Pages ne
+  permet pas d'en-têtes) : la page ne charge que ses propres fichiers et le code Firebase
+  9.23 de gstatic ; elle ne contacte que Firestore, Firebase Auth, Open-Meteo et Nominatim
+  (météo) ; pas d'`eval`, pas d'objets (`object-src 'none'`), pas de changement de `<base>`,
+  formulaires vers la page seulement. Exceptions limitées à leur adresse exacte : l'iframe
+  d'authentification `fournils-5e5d1.firebaseapp.com` et l'image de test réseau de Firestore
+  (`www.google.com/images/cleardot.gif`). Vérifié par `tests/test_csp.js` (tous les écrans,
+  PDF, messages avec son ; un script étranger est refusé) et par `npm run test:emulateur`
+  (vrai code Firebase sur les émulateurs : connexion, synchro, hors ligne).
+  - Limite connue : `'unsafe-inline'` reste autorisé pour les scripts et les styles. Le script
+    principal est écrit dans la page et environ 140 boutons utilisent `onclick="…"`, dont
+    certains fabriqués avec les données. Retirer `'unsafe-inline'` demande de remplacer tous
+    ces `onclick` par des écouteurs dans le JavaScript et de sortir le script principal dans
+    un fichier : gros chantier, à faire écran par écran. En attendant, l'échappement
+    systématique (`esc`, `escJ`, testé) est la protection contre l'injection de code, et la
+    CSP empêche tout chargement ou envoi vers un autre site.
+  - Pas de `frame-ancestors` (ignoré dans une balise `<meta>`) : la page peut être affichée
+    dans un cadre par un autre site ; seul un en-tête HTTP l'empêcherait.
 - Aucun secret dans le dépôt : la configuration Firebase de `index.html` est publique par
   nature. Ne jamais ajouter de clé privée, de compte de service ni de mot de passe dans le
   dépôt (voir `.gitignore`).

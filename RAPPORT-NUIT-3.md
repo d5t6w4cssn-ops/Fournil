@@ -9,8 +9,8 @@ Branche de travail : `nuit-3`, partie de `main` à jour (`6351280`), poussée r�
 |---|---|
 | 1. Recettes au propre (fiche avant/après) | fait |
 | 2. Saisie rapide des calculs | fait |
-| 3. CSP | en cours |
-| 4. Nettoyage du dépôt | reste |
+| 3. CSP | fait |
+| 4. Nettoyage du dépôt | en cours |
 | Fin : ESLint, tests, CI, docs | reste |
 
 ## 1. Recettes au propre
@@ -58,9 +58,35 @@ sauvegarde complète juste avant d'écrire. Testé (4 tests) et essayé à blanc
 - **Où elle se trouve maintenant** : Recettes → Bibliothèque → bouton « Saisie rapide des
   calculs » (ou directement Recettes → Calculateur, en haut).
 
+## 3. CSP
+
+- Balise `<meta http-equiv="Content-Security-Policy">` en tête de `index.html` (GitHub Pages
+  ne permet pas d'en-têtes HTTP). Détail des règles et de leurs raisons : `SECURITY.md`.
+- **Vérifié** :
+  - `tests/test_csp.js` (Chromium, faux Firebase) : tous les écrans du Fournil, du Labo, du
+    Bureau et des Recettes, saisie rapide → feuille PDF, ancien message avec son : **aucun
+    refus**. Contre-épreuve : un script venu d'un autre site est bien refusé.
+  - `tests/test_pdf.js`, `test_petit_ecran.js`, `test_retour.js` tournent désormais sous la
+    CSP : import PDF (PDF.js local et son worker) OK.
+  - **Nouveau** `npm run test:emulateur` : l'appli avec le **vrai code Firebase** branché sur
+    les émulateurs Auth + Firestore (projet fictif `demo-fournil`, toute autre requête bloquée) :
+    connexion par l'écran de connexion, lecture, synchro serveur → appli et appli → serveur,
+    saisie hors ligne puis envoi au retour du réseau. **Passe.** Ajouté à la CI (job `regles`).
+  - Ce test a trouvé un vrai besoin : Firestore charge l'image `www.google.com/images/cleardot.gif`
+    pour tester le réseau ; autorisée à cette adresse exacte seulement.
+  - Voix : la dictée (`SpeechRecognition`) passe par le navigateur, pas par la page : la CSP
+    ne la concerne pas. Les boutons micro s'affichent sans refus.
+- `firebase.json` : ajout de la section `emulators` (Auth 9099, Firestore 8080, sans interface),
+  nécessaire pour l'émulateur Auth. Ne change rien à la publication des règles.
+
 ## Décisions prises
 
 - Étape 1 : pas de nouveau code d'import, celui de ce soir répond déjà à la demande.
+- Étape 2 : je n'ai pas déplacé la saisie rapide (le Calculateur reste sa place logique) ;
+  j'ai ajouté un accès direct visible depuis la Bibliothèque.
+- Étape 3 : CSP **sans** retirer `'unsafe-inline'` (scripts et styles). Le retirer casserait
+  les ~140 boutons `onclick="…"` de l'appli ; c'est un chantier à part, noté dans
+  `SECURITY.md`. Tout le reste est verrouillé (sources, connexions, objets, `base`, formulaires).
 
 ## À valider par toi
 
