@@ -2741,6 +2741,14 @@ if (root) {
     if (w) w.hidden = ok;
   });
   setupTabs();
+  // Accès direct à la saisie rapide des calculs depuis la Bibliothèque : elle se trouve
+  // en haut du Calculateur, où on ne la voyait pas.
+  root.querySelectorAll('[data-vers-saisie]').forEach((b) => b.addEventListener('click', () => {
+    state.tab = 'calculator';
+    render();
+    const champ = document.getElementById('rcSaisieTexte');
+    if (champ) { if (champ.scrollIntoView) champ.scrollIntoView({ block: 'center' }); champ.focus(); }
+  }));
   init();
   render();
   // Appelé par le script principal de Fournil à chaque nouvelle version de

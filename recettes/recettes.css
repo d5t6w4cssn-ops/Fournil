@@ -781,3 +781,10 @@ html:has(#appArea:not([hidden])) #tab-recettes { scroll-padding-bottom: calc(88p
 #tab-recettes .rc-feuille .weigh .n { flex: 1 1 9em; }
 #tab-recettes .rc-feuille .weigh .q { margin-left: auto; font-size: 24px; }
 #tab-recettes .rc-feuille .weigh .lead .q { font-size: 32px; }
+
+/* Accès direct à la saisie rapide des calculs (Bibliothèque) */
+#tab-recettes .rc-vers-saisie { display: flex; flex-direction: column; gap: 2px; width: 100%; margin: 0 0 18px; padding: 14px 16px; border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 14px; background: var(--paper); color: var(--ink); text-align: left; font: inherit; cursor: pointer; }
+#tab-recettes .rc-vers-saisie:hover { background: var(--row-alt); }
+#tab-recettes .rc-vers-saisie:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#tab-recettes .rc-vers-saisie-titre { font-weight: 600; font-size: 16px; }
+#tab-recettes .rc-vers-saisie-texte { font-size: 14px; color: var(--muted); }

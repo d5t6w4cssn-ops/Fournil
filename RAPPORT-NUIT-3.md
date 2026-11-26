@@ -8,8 +8,8 @@ Branche de travail : `nuit-3`, partie de `main` à jour (`6351280`), poussée r�
 | Étape | État |
 |---|---|
 | 1. Recettes au propre (fiche avant/après) | fait |
-| 2. Saisie rapide des calculs | en cours |
-| 3. CSP | reste |
+| 2. Saisie rapide des calculs | fait |
+| 3. CSP | en cours |
 | 4. Nettoyage du dépôt | reste |
 | Fin : ESLint, tests, CI, docs | reste |
 
@@ -38,6 +38,25 @@ de même identifiant ayant exactement les mêmes ingrédients et quantités ; il
 le nom, les notes et les noms d'ingrédients ; il montre un aperçu, puis télécharge une
 sauvegarde complète juste avant d'écrire. Testé (4 tests) et essayé à blanc avec tes
 14 recettes sur le faux Firebase. Je ne l'ai pas utilisé sur les vraies données.
+
+## 2. Saisie rapide des calculs
+
+- **Où elle était** : Recettes → onglet **Calculateur** (« Calcul » sur téléphone), tout en
+  haut, carte « Saisie rapide ». Elle est bien dans la version en ligne (vérifié sur
+  GitHub Pages) et elle marche (texte et dictée ; tests `tests/test_feuilles.js`).
+  Elle était seulement **difficile à trouver** : rien ne la signalait depuis la Bibliothèque,
+  le premier écran des Recettes.
+- **Correction** : un bouton bien visible **« Saisie rapide des calculs »** en haut de la
+  Bibliothèque. Il ouvre le Calculateur et place le curseur dans le champ de saisie.
+  Visible aussi pour le rôle équipe. Testé.
+- **Essai avec tes vraies recettes** (« 30 pains sportifs à 400 g, 20 campagnes à 500 g,
+  10 tradition à 250 g, 12 meules de 1 kg ») : Pain sportif et Meule trouvés directement ;
+  « tradition » proposé (à confirmer dans la liste) ; « campagnes » **pas reconnu** tant que
+  la recette s'appelle « Pain capagne » (faute de frappe). Avec les noms corrigés de
+  l'étape 1 (« Pain de campagne »), l'appli la propose. Une recette proche n'est jamais
+  choisie toute seule (choix prudent, inchangé).
+- **Où elle se trouve maintenant** : Recettes → Bibliothèque → bouton « Saisie rapide des
+  calculs » (ou directement Recettes → Calculateur, en haut).
 
 ## Décisions prises
 

@@ -172,3 +172,25 @@ test('allergènes : sur la feuille en cours, les calculs enregistrés et la Bibl
   assert.ok(cartes.every((c) => c.querySelector('.rc-allergenes')), 'chaque recette a ses allergènes');
   assert.deepEqual([...cartes[1].querySelectorAll('.rc-allergenes-liste li')].map((li) => li.textContent), ['Gluten', 'Œufs', 'Lait']);
 });
+
+test('saisie rapide : accès direct depuis la Bibliothèque (bouton visible, aussi pour l’équipe)', async (t) => {
+  const d = donneesDemo();
+  const a = await chargerAppli({ etat: d.state, labo: d.labo, recettes: d.recettes });
+  t.after(() => a.window.close());
+  const w = a.window, doc = w.document;
+  w.eval("openModule('fournil');sw('recettes')");
+  doc.getElementById('tab-library').click();
+  await a.pause(20);
+  const bouton = doc.querySelector('#panel-library [data-vers-saisie]');
+  assert.ok(bouton, 'bouton en haut de la Bibliothèque');
+  assert.match(bouton.textContent, /Saisie rapide des calculs/);
+  assert.equal(doc.getElementById('panel-calculator').hidden, true);
+  bouton.click();
+  await a.pause(20);
+  assert.equal(doc.getElementById('panel-calculator').hidden, false, 'le Calculateur s’ouvre');
+  assert.equal(doc.getElementById('tab-calculator').getAttribute('aria-selected'), 'true');
+  assert.equal(doc.activeElement && doc.activeElement.id, 'rcSaisieTexte', 'le champ de saisie a le curseur');
+  // le bouton n'est pas dans la liste des éléments cachés au rôle « équipe »
+  const css = require('fs').readFileSync(require('path').join(__dirname, '..', 'assets/css/fournil-grigne.css'), 'utf8');
+  assert.doesNotMatch(css, /role-equipe[^{]*rc-vers-saisie/);
+});

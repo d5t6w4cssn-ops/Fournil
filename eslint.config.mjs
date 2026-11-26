@@ -27,7 +27,7 @@ const COMMUNES = {
 };
 
 export default [
-  { ignores: ['node_modules/', 'vendor/', 'recettes/src/', 'recettes/recettes.js', 'test-results/', 'playwright-report/'] },
+  { ignores: ['node_modules/', 'vendor/', 'recettes/src/', 'recettes/recettes.js', 'test-results/', 'playwright-report/', 'reference/'] },
   js.configs.recommended,
   {
     // scripts classiques du navigateur, chargés par index.html
