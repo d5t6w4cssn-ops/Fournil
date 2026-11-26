@@ -158,26 +158,12 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
 .task-histo-time { font-size: 10px; color: var(--brown-light); flex-shrink: 0; }
 
 /* MATIÈRES PREMIÈRES */
-.mat-card { background: var(--paper); border-radius: var(--r); padding: 13px 14px; margin-bottom: 9px; box-shadow: var(--sh); position: relative; overflow: hidden; }
-.mat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--green); border-radius: 3px 0 0 3px; }
-.mat-card.low::before { background: var(--orange); }
-.mat-card.empty::before { background: var(--red); }
-.mat-card.dlc-soon::before { background: var(--red); }
-.mat-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .mat-name { flex: 1; font-weight: 500; font-size: 14px; }
-.mat-badges { display: flex; gap: 5px; align-items: center; }
 .mat-dlc-badge { font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; }
 .dlc-ok   { background: var(--green-light); color: var(--green); }
 .dlc-soon { background: var(--orange-light); color: var(--orange); }
 .dlc-exp  { background: var(--red-light); color: var(--red); }
-.mat-stock-row { display: flex; align-items: center; gap: 8px; }
-.mat-stock-val { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--brown); }
 .mat-unit { font-size: 11px; color: var(--brown-light); }
-.mat-ctrl { display: flex; align-items: center; background: var(--cream); border-radius: 8px; overflow: hidden; height: 34px; flex: 1; }
-.mat-btn { width: 34px; height: 34px; border: none; background: none; font-size: 18px; font-weight: 700; color: var(--brown-mid); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.mat-btn:active { background: var(--ocre-pale); }
-.mat-in { flex: 1; height: 34px; border: none; background: none; text-align: center; font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); min-width: 0; }
-.mat-in:focus { outline: none; }
 .mat-add-btn { width: 100%; background: var(--ink); color: var(--ocre-light); border: none; border-radius: 10px; padding: 12px; font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 14px; }
 
 /* COMMANDES CLIENTS */
