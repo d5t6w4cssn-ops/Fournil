@@ -11,7 +11,8 @@ const path = require('node:path');
 const { chromium } = require('playwright');
 
 const RACINE = path.join(__dirname, '..');
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.json': 'application/json' };
+// mêmes types que GitHub Pages (sinon Chromium ignore les feuilles de style)
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.woff2': 'font/woff2', '.svg': 'image/svg+xml' };
 
 function serveur() {
   const srv = http.createServer((req, res) => {
