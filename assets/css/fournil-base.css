@@ -209,7 +209,6 @@ body { background: var(--cream); font-family: var(--sans); color: var(--ink); mi
 .cal-day.today { background:var(--brown); color:var(--ocre-light); font-weight:700; }
 .cal-day.has-event::after { content:''; position:absolute; bottom:3px; width:4px; height:4px; border-radius:50%; background:var(--ocre); }
 .cal-day.today.has-event::after { background:var(--ocre-light); }
-.cal-day.other-month { opacity:0.3; }
 .cal-day.has-cmd::after { background:var(--red); }
 .cal-day.charge-low:active  { background:#A8C8A0; }
 .cal-day.charge-mid:active  { background:#F0C080; }
