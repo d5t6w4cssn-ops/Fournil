@@ -293,6 +293,27 @@ test('Réglages → Équipe : préparer les données (migration), ajouter un mem
   await a.pause(100);
 });
 
+test('Réglages → Équipe : deux membres gardés ; un UID déjà utilisé n’écrase pas le premier', async (t) => {
+  const { a, w, doc, toasts } = await ouvrir(t);
+  w.eval("openModule('fournil');sw('settings')");
+  const carte = () => doc.querySelector('#settingsList .carte-equipe');
+  const ajouter = async (uid, prenom) => {
+    carte().querySelector('#equipeUid').value = uid;
+    carte().querySelector('#equipePrenom').value = prenom;
+    carte().querySelector('[data-equipe=ajouter]').click();
+    await a.pause(80);
+  };
+  await ajouter('AnaisUid0000001', 'Anaïs');
+  await ajouter('SarahUid0000002', 'Sarah');
+  const noms = () => [...carte().querySelectorAll('.equipe-liste li span')].map((s) => s.textContent.split(' ')[0]);
+  assert.deepEqual(noms(), ['Anaïs', 'Sarah'], 'les deux sont affichées');
+  // même UID collé une deuxième fois : refusé, Anaïs reste
+  await ajouter('AnaisUid0000001', 'Julie');
+  assert.deepEqual(a.fake.docs.get('membres/AnaisUid0000001'), { prenom: 'Anaïs', role: 'equipe' });
+  assert.deepEqual(noms(), ['Anaïs', 'Sarah']);
+  assert.match(toasts.at(-1), /déjà utilisé pour Anaïs/);
+});
+
 test('équipe : saisie rapide du stock sans création de produit', async (t) => {
   const { a, w, doc } = await ouvrir(t, { utilisateur: LEA, docs: FICHE_LEA });
   w.eval("sw('stock')");

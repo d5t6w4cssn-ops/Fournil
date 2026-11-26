@@ -494,6 +494,10 @@
       if (!/^[A-Za-z0-9]{10,128}$/.test(uid)) { toast('Identifiant (UID) invalide : copie-le depuis la console Firebase'); return; }
       if (E.estAdmin(uid)) { toast('C’est ton propre compte'); return; }
       if (!prenom) { toast('Écris le prénom'); return; }
+      // Un UID déjà présent n'est jamais écrasé : avant, coller deux fois le même UID
+      // remplaçait le premier membre par le second, sans rien dire.
+      const deja = membres.find((m) => m.uid === uid);
+      if (deja) { toast(`Cet identifiant (UID) est déjà utilisé pour ${deja.prenom || 'un autre membre'} : vérifie que tu as bien copié celui du nouveau compte`); return; }
       base.collection('membres').doc(uid).set({ prenom, role: 'equipe' }).then(() => toast(`${prenom} ajouté·e à l’équipe ✓`), () => toast('Ajout refusé : réessaie'));
     };
     c.querySelectorAll('[data-equipe-retirer]').forEach((b) => {
